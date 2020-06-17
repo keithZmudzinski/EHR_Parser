@@ -1,0 +1,75 @@
+#Unigraph
+SIZE 2400 2400
+FONT Times New Roman:  10
+OFONT Arial Unicode MS:B 12
+BCOLOR 16777215
+FCOLOR 0
+ACOLOR 13487565
+SCOLOR 16711680
+CCOLOR 255
+DBOXES y
+DFRAME y
+DDATE y
+DFILE y
+DDIR n
+DRIG n
+DRST n
+FITS 100
+PORIENT L
+#
+55
+"<E>" 58 305 1 24 
+"" 1268 305 0 
+":measurement" 359 87 2 3 53 
+"of" 459 111 1 22 
+":drug" 648 410 1 27 
+"<E>" 321 87 1 2 
+"\"350 mg of Tylenol\" or \"low dose Tylenol\"" 395 51 0 
+"$drug_post_context(" 280 704 2 31 29 
+":context" 511 806 2 9 10 
+"<E>" 685 806 1 28 
+"\:+-+," 573 839 1 11 
+":context" 616 839 1 12 
+"<E>" 685 839 1 28 
+"\:+-+," 477 806 1 8 
+":context" 405 875 2 15 16 
+"<E>" 685 875 1 28 
+"\:+-+," 469 922 1 17 
+":context" 511 908 2 18 19 
+"<E>" 685 908 1 28 
+"\:+-+," 571 944 1 20 
+":context" 616 939 1 21 
+"<E>" 685 939 1 28 
+":measurement" 508 111 1 53 
+"<E>" 661 87 1 43 
+"<E>" 194 145 1 45 
+"<E>+plain" 510 410 1 26 
+"$drug(" 606 410 1 4 
+"$drug)" 706 410 1 40 
+"<E>" 738 806 1 38 
+"<E>" 357 806 2 13 14 
+"<E>/__$drug$|$drug_pre_context$|$drug_post_context$" 1140 704 1 1 
+"<E>" 521 704 1 38 
+"<E>" 585 219 1 43 
+"empty, no pre-context" 429 204 0 
+"empty, no post-context" 395 676 0 
+"OUTPUT emit: drug with pre- and post-context" 1184 701 0 
+"1% plain lidocaine where \"plain\" is a forgettable modifier" 520 375 0 
+"<E>" 320 219 1 32 
+"$drug_post_context)" 800 704 1 42 
+"<E>" 437 410 1 25 
+"<E>" 868 410 1 49 
+"<E>" 243 704 1 7 
+"<E>" 853 704 1 30 
+"$drug_pre_context)" 736 145 1 44 
+"<E>" 935 145 1 50 
+"$drug_pre_context(" 242 145 2 5 37 
+"eg \"Tylenol: 650mg\" or \"Tylenol - 30mg\"" 509 781 0 
+"\"Tylenol 650mg: to be taken three times daily\"" 721 897 0 
+"\"Tylenol: 650mg: as needed\"" 680 957 0 
+"<E>" 725 537 1 41 
+"<E>" 755 261 1 39 
+"START" 36 332 0 
+"END" 1287 332 0 
+"<E>+of" 614 87 1 23 
+"\"1ml of 1% myradol\"" 486 139 0 

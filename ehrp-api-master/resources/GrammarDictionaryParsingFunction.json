@@ -1,0 +1,29 @@
+[
+    {
+        "grammar": "drug.fst2",
+        "dictionaries": [
+            "DrugBank.bin",
+            "RxNorm.bin",
+            "OrangeBook.bin",
+            "DrugsAtFDA.bin"
+        ],
+        "parsing_function": "drugParser"
+    },
+    {
+        "grammar": "prescription.fst2",
+        "dictionaries": [
+            "DrugBank.bin",
+            "RxNorm.bin",
+            "OrangeBook.bin",
+            "DrugsAtFDA.bin"
+        ],
+        "parsing_function": "prescriptionParser"
+    },
+    {
+        "grammar": "disorder.fst2",
+        "dictionaries": [
+            "meddra.bin"
+        ],
+        "parsing_function": "disorderParser"
+    }
+]

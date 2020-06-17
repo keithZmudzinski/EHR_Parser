@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="ehrpui">
+  <head>
+    <%- include('header'); %>
+    <title>ehrp-ui | Home</title>
+    <script type="text/javascript" src="javascripts/home.js"></script>
+  </head>
+  <body ng-app="ehrpui" ng-controller="homeController">
+
+<!--- =============  EXTRACT ============= --->
+
+    <!--- Input form and title of extract option --->
+    <div id="extract-options" class="container text-center" align="center">
+      <h3 class="text-center">Extract Entities</h3>
+      <div class="row">
+        <div class="form-group" ng-init="initMedText()">
+          <textarea class="form-control" id="med-text" ng-model="medText" rows="15"
+          onkeyup = "if(event.keyCode == 13) document.getElementById('extract-btn').click();" placeholder="text"></textarea>
+        </div>
+        <div class="col-md-1">
+          <button id="extract-btn" type="submit" class="btn btn-success" ng-click="extract();" >Extract</button>
+        </div>
+      </div>
+    </div>
+
+    <!--- Displays message above returned tables --->
+    <h6 id="extract-msg" class="text-center">{{ extractMsg }}</h6>
+
+    <!--- Container for extract results --->
+    <div id="extract-results" class="container hidden">
+      <div class="row">
+        <div class="col-md-25">
+
+          <!-- Extract Drugs table --->
+          <div ng-if="_extractDrugs">
+              <%- include('tables/extract/extractDrugsTable'); %>
+          </div>
+
+          <!-- Extract Disorders table --->
+          <div ng-if="_extractDisorders">
+              <%- include('tables/extract/extractDisordersTable'); %>
+          </div>
+
+          <!-- Extract Prescriptions table --->
+          <div ng-if="_extractPrescriptions">
+              <%- include('tables/extract/extractPrescriptionsTable'); %>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
+<!--- =============  LOOKUP ============= --->
+
+  <!--- Input and title of lookup option --->
+  <div id="lookup-options" class="container text-center" align="center">
+    <h3 class="text-center">Lookup concepts</h3>
+    <div class="row" >
+      <div class="form-group">
+        <input class="form-control" id="med-term" ng-model="medTerm"
+        onkeyup = "if(event.keyCode == 13) document.getElementById('lookup-btn').click();" placeholder="text"></input>
+      </div>
+      <div class="col-md-1">
+        <button id="lookup-btn" type="submit" class="btn btn-success" ng-click="lookup();" >Lookup</button>
+      </div>
+    </div>
+  </div>
+
+  <!--- Container for lookup results --->
+  <h6 id="lookup-msg" class="text-center">{{ lookupMsg }}</h6>
+  <div id="lookup-results" class="container hidden">
+    <div class="row">
+      <div class="col-md-25">
+
+        <!--- Lookup Drugs table --->
+        <div ng-if="_lookupDrugs">
+            <%- include('tables/lookup/lookupDrugsTable'); %>
+        </div>
+
+        <!-- Lookup Disorders table --->
+        <div ng-if="_lookupDisorders">
+            <%- include('tables/lookup/lookupDisordersTable'); %>
+        </div>
+
+        <!-- Lookup Prescriptions table --->
+        <div ng-if="_lookupPrescriptions">
+            <%- include('tables/lookup/lookupPrescriptionsTable'); %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  </body>
+</html>

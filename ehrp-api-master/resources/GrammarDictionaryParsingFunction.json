@@ -5,6 +5,7 @@
             "DrugBank.bin",
             "RxNorm.bin",
             "OrangeBook.bin",
+            "ATC.bin",
             "NDDF.bin",
             "DrugsAtFDA.bin"
         ],
@@ -16,6 +17,7 @@
             "DrugBank.bin",
             "RxNorm.bin",
             "OrangeBook.bin",
+            "ATC.bin",
             "NDDF.bin",
             "DrugsAtFDA.bin"
         ],

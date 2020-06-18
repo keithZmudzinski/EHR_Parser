@@ -25,8 +25,8 @@
         <a href="https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo={{prescription.umid}}" target="_blank">{{prescription.umid}}</a>
       </td>
 
-      <td ng-if="prescription.onto == 'NDDF'" class="no-wrap">
-        <a href="http://bioportal.bioontology.org/search?q={{prescription.umid}}&ontologies=NDDF&include_properties=false&include_views=false&includeObsolete=false&require_definition=false&exact_match=false&categories=" target="_blank">{{prescription.umid}}</a>
+      <td ng-if="prescription.onto == 'NDDF' || prescription.onto == 'ATC'" class="no-wrap">
+        <a href="http://bioportal.bioontology.org/search?q={{prescription.umid}}&ontologies={{prescription.onto}}&include_properties=false&include_views=false&includeObsolete=false&require_definition=false&exact_match=false&categories=" target="_blank">{{prescription.umid}}</a>
       </td>
 
       <td class="word-wrap">{{ prescription.onto }}</td>

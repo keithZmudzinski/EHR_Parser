@@ -33,7 +33,7 @@ Provides two APIs:
     Optional parameter: 'types'; this should be a list of strings of types of medical terms you want to be extracted. If not
     provided, all types are tried.
     
-      Possible values for 'type':
+      Possible values in 'types':
         * 'drug'
         * 'prescription'
         * 'disorder'

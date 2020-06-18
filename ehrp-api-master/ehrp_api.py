@@ -42,7 +42,7 @@ class Lookup(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('text', type=str, required=True, location='args',
                                help="text for finding concept id")
-        self.reqparse.add_argument('type', type=str, required=True, location='args',
+        self.reqparse.add_argument('type', type=str, required=False, location='args',
                                 help='Type of concept to lookup')
         super(Lookup, self).__init__()
 
@@ -92,7 +92,7 @@ def main():
     @app.errorhandler(404)
     def page_not_found(error):
         '''Error message for page not found'''
-        return "page not found : " + error
+        return "page not found : {}".format(error)
 
     # Handle internal server error
     @app.errorhandler(500)

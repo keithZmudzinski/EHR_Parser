@@ -1,8 +1,8 @@
 # Electronic Health Record Parser
 Service to extract information from raw EHR documents.
 
-### Usage
-#### UI
+##
+### UI
 1. install nodejs
 2. `cd` into the ehrp-ui-master directory
 3. execute `npm install`
@@ -10,8 +10,8 @@ Service to extract information from raw EHR documents.
 5. Visit URL at http://localhost:3020/<br>
 Port numbers and REST api can be configured in bin/settings.js file
 
-#### Flask Server
-##### Requirements
+### Flask Server
+#### Requirements
 * [python-unitex](https://github.com/patwat/python-unitex)
 * Flask
 * flask-restful
@@ -25,7 +25,7 @@ Provides two APIs:
         * 'drug'
         * 'prescription'
         * 'disorder'
-        
+
   2. POST request to provide medical text to process.<br>
     URL : http://localhost:8020/ehrp/extract<br>
     Required parameter: 'text'; this should be the text you want to process.<br>
@@ -35,7 +35,8 @@ Provides two APIs:
         * 'drug'
         * 'prescription'
         * 'disorder'
-        
+
 Returns a JSON object
 
-
+## Error response codes
+* 400: Malformed url, check your base url to see if it conforms to one of the two above.

@@ -192,7 +192,7 @@ class ConceptParser:
     #     ]
     # }
     def drugParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('drugs');
+        concepts = self.make_concepts_object('drug');
 
         for context in contexts:
             parts = context.split('\t')
@@ -224,7 +224,7 @@ class ConceptParser:
     #     ]
     # }
     def disorderParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('disorders');
+        concepts = self.make_concepts_object('disorder');
 
         for context in contexts:
             parts = context.split('\t')
@@ -257,7 +257,7 @@ class ConceptParser:
     #     ]
     # }
     def prescriptionParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('prescriptions');
+        concepts = self.make_concepts_object('prescription');
 
         for context in contexts:
             parts = context.split('\t')

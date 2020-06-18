@@ -32,17 +32,17 @@
         <div class="col-md-25">
 
           <!-- Extract Drugs table --->
-          <div ng-if="_extractDrugs">
+          <div ng-if="_extractDrug">
               <%- include('tables/extract/extractDrugsTable'); %>
           </div>
 
           <!-- Extract Disorders table --->
-          <div ng-if="_extractDisorders">
+          <div ng-if="_extractDisorder">
               <%- include('tables/extract/extractDisordersTable'); %>
           </div>
 
           <!-- Extract Prescriptions table --->
-          <div ng-if="_extractPrescriptions">
+          <div ng-if="_extractPrescription">
               <%- include('tables/extract/extractPrescriptionsTable'); %>
           </div>
 
@@ -73,17 +73,17 @@
       <div class="col-md-25">
 
         <!--- Lookup Drugs table --->
-        <div ng-if="_lookupDrugs">
+        <div ng-if="_lookupDrug">
             <%- include('tables/lookup/lookupDrugsTable'); %>
         </div>
 
         <!-- Lookup Disorders table --->
-        <div ng-if="_lookupDisorders">
+        <div ng-if="_lookupDisorder">
             <%- include('tables/lookup/lookupDisordersTable'); %>
         </div>
 
         <!-- Lookup Prescriptions table --->
-        <div ng-if="_lookupPrescriptions">
+        <div ng-if="_lookupPrescription">
             <%- include('tables/lookup/lookupPrescriptionsTable'); %>
         </div>
 

@@ -20,8 +20,9 @@ class DictionaryParser():
     def parse_dictionaries(self):
         for entity in self.entities:
             # This is expected format, need to make dictionary comply with expected format
-            label = entity.split(',')[0]
-            cid = (entity.split(',')[-1]).split('.')[0]
+            parts = entity.split(',')
+            label = parts[0]
+            cid = parts[-1].split('.')[0]
 
             # Get ontology name based on if ontology name in entity. Should be exactly one ontology name per entity.
             onto = [ ontology for ontology in self.ontology_names if ontology.lower() in entity.lower() ][0]

@@ -19,7 +19,7 @@ class ConceptParser:
     # dictionaries: list of paths to dictionaries to apply to text
     # parsing_function: input as name of parsing function to use, changed to function pointer to function of same name
     # parsing_function_map: dictionary used to transform parsing_function from string to function pointer
-    # dictionary_names: strictly the names of the dictionaries being used, no file extensions or paths attached
+    # ontology_names: strictly the names of the ontologies being used, no file extensions or paths attached
     # index: file path of the index created by ConceptParser.locate_grammar()
 
     def __init__(self, **kwargs):
@@ -43,12 +43,6 @@ class ConceptParser:
         except AttributeError:
             sys.stderr.write('ConceptParser.setup requires ConceptParser.parsing_function attribute to be set')
 
-        try:
-            # Make dictionary names from dictionary paths for use in DictionaryParser
-            self.dictionary_names = self.make_dictionary_names()
-        except AttributeError:
-            sys.stderr.write('ConceptParser.setup requires ConceptParser.dictionaries attribute to be set')
-
     def parse(self):
         ''' Apply given dictionaries, grammar, and parsing function to text. Return dictionary of found concepts. '''
 
@@ -71,7 +65,7 @@ class ConceptParser:
         compound_words = "%s%s"%(UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlc"))
 
         # Parse all entities that matched in any dictionary
-        dictionary_parser = DictionaryParser(self.get_text(simple_words), self.get_text(compound_words), self.dictionary_names)
+        dictionary_parser = DictionaryParser(self.get_text(simple_words), self.get_text(compound_words), self.ontology_names)
         dictionary_parser.parse_dictionaries()
 
         # Assign dictionaries
@@ -137,12 +131,6 @@ class ConceptParser:
         if concordance_built_successfully is False:
             sys.stderr.write("[ERROR] Concord failed!\n")
             sys.exit(1)
-
-    def make_dictionary_names(self):
-        ''' Separate dictionary names from dictionary file paths. '''
-        dictionary_names_with_extensions = [ os.path.basename(dictionary_path) for dictionary_path in self.dictionaries ]
-        dictionary_names_without_extensions = [ os.path.splitext(with_extension)[0] for with_extension in dictionary_names_with_extensions ]
-        return dictionary_names_without_extensions
 
     def get_text(self, file_path):
         '''Get text contents from a file'''

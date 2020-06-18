@@ -5,9 +5,17 @@
             "DrugBank.bin",
             "RxNorm.bin",
             "OrangeBook.bin",
-            "ATC.bin",
-            "NDDF.bin",
+            "ATC_Ingredients.bin",
+            "FDB_Ingredients.bin",
             "DrugsAtFDA.bin"
+        ],
+        "ontologies": [
+            "DrugBank",
+            "RxNorm",
+            "OrangeBook",
+            "ATC",
+            "NDDF",
+            "DrugsAtFDA"
         ],
         "parsing_function": "drugParser"
     },
@@ -17,16 +25,27 @@
             "DrugBank.bin",
             "RxNorm.bin",
             "OrangeBook.bin",
-            "ATC.bin",
-            "NDDF.bin",
+            "ATC_Ingredients.bin",
+            "FDB_Ingredients.bin",
             "DrugsAtFDA.bin"
+        ],
+        "ontologies": [
+            "DrugBank",
+            "RxNorm",
+            "OrangeBook",
+            "ATC",
+            "NDDF",
+            "DrugsAtFDA"
         ],
         "parsing_function": "prescriptionParser"
     },
     {
         "grammar": "disorder.fst2",
         "dictionaries": [
-            "meddra.bin"
+            "Meddra.bin"
+        ],
+        "ontologies": [
+            "Meddra"
         ],
         "parsing_function": "disorderParser"
     }

@@ -113,6 +113,7 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
 
         concept_parser.grammar = grammar_path
         concept_parser.dictionaries = dictionary_paths
+        concept_parser.ontology_names = grammar_dictionary_parser['ontologies']
         concept_parser.parsing_function = grammar_dictionary_parser['parsing_function']
 
         # Make use of ConceptParser member variables that might not be set during object construction
@@ -121,7 +122,7 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
         # Process snt using concept_parser.grammar, concept_parser.dictionaries, and concept_parser.parsing_function
         concepts = concept_parser.parse()
 
-        # Don't append if no concepts found.
+        # Append only if at least one concept found.
         if len(concepts['instances']):
             list_of_concepts.append(concepts)
 

@@ -31,7 +31,7 @@ Provides two APIs:
     URL : http://localhost:8020/ehrp/extract<br>
     Required parameter: 'text'; this should be the text you want to process.<br>
     Optional parameter: 'types'; this should be a list of strings of types of medical terms you want to be extracted. If not
-    provided, all types are tried.
+    provided, all types are tried. If only one type is desired, use a list with just one element.
     
       Possible values in 'types':
         * 'drug'
@@ -39,7 +39,7 @@ Provides two APIs:
         * 'disorder'
         
       NOTE: Content type should be in JSON format, e.g. if using the `requests` library for python:<br>
-    `resp = requests.post('http://localhost:8020/ehrp/extract', json={'text': text, 'types':type})`
+    `resp = requests.post('http://localhost:8020/ehrp/extract', json={'text': text, 'types':types_list})`
 
 Both GET and POST requests return JSON objects.
 ___

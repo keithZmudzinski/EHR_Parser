@@ -2,7 +2,7 @@
 Service to extract information from raw EHR documents.
 
 ## Usage
-### UI
+### Example Interface
 1. install nodejs
 2. `cd` into the ehrp-ui-master directory
 3. execute `npm install`
@@ -10,11 +10,15 @@ Service to extract information from raw EHR documents.
 5. Visit URL at http://localhost:3020/<br>
 Port numbers and REST api can be configured in bin/settings.js file
 ___
-### Flask Server
+### API Server
 #### Requirements
 * [python-unitex](https://github.com/patwat/python-unitex)
 * Flask
 * flask-restful
+* python 3
+
+1. `cd` into the ehrp-api-master directory
+2. execute `python ./ehrp-api.py`
 
 Provides two APIs:
   1. GET request to lookup specific medical terms.<br>

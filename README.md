@@ -1,27 +1,32 @@
 # Electronic Health Record Parser
 Service to extract information from raw EHR documents.
 
-##
-### UI
+## Usage
+### Example Interface
 1. install nodejs
 2. `cd` into the ehrp-ui-master directory
 3. execute `npm install`
 4. execute `npm start` to start the local server
 5. Visit URL at http://localhost:3020/<br>
 Port numbers and REST api can be configured in bin/settings.js file
-
-### Flask Server
+___
+### API Server
 #### Requirements
 * [python-unitex](https://github.com/patwat/python-unitex)
 * Flask
 * flask-restful
+* python 3
+
+1. `cd` into the ehrp-api-master directory
+2. execute `python ./ehrp-api.py`
 
 Provides two APIs:
   1. GET request to lookup specific medical terms.<br>
     URL : http://localhost:8020/ehrp/lookup?text=hypertension<br>
     Required parameter: 'text'; this should be the term you want to lookup.<br>
-    Optional parameter 'type': The type of term you are looking up. If not provided, all types are tried.<br>
-        Possible values for type:
+    Optional parameter 'type': The type of term you are looking up. If not provided, all types are tried.
+    
+      Possible values for 'type':
         * 'drug'
         * 'prescription'
         * 'disorder'
@@ -30,16 +35,18 @@ Provides two APIs:
     URL : http://localhost:8020/ehrp/extract<br>
     Required parameter: 'text'; this should be the text you want to process.<br>
     Optional parameter: 'types'; this should be a list of strings of types of medical terms you want to be extracted. If not
-    provided, all types are tried.<br>
-        Possible values in types:
+    provided, all types are tried. If only one type is desired, use a list with just one element.
+    
+      Possible values in 'types':
         * 'drug'
         * 'prescription'
         * 'disorder'
-    NOTE: Content type should be in JSON format, e.g. if using the `requests` library for python:<br>
-    `resp = requests.post('http://localhost:8020/ehrp/extract', json={'text': text, 'types':type})`
+        
+      NOTE: Content type should be in JSON format, e.g. if using the `requests` library for python:<br>
+    `resp = requests.post('http://localhost:8020/ehrp/extract', json={'text': text, 'types':types_list})`
 
 Both GET and POST requests return JSON objects.
-
+___
 ## Error response codes
 * 400: Malformed url; check your base url to see if it conforms to one of the two above.
 * 422: Raised if optional parameter has unknown value; check the value(s) you are using for `type` or `types`, make sure it is one of the allowable types listed above.

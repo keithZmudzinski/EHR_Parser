@@ -14,8 +14,10 @@
         <a href="https://www.drugbank.ca/drugs/{{drug.umid}}" target="_blank">{{drug.umid}}</a>
       </td>
 
+      <!--- RXNORM ontology can use two types of identifiers, need to differentiate --->
       <td ng-if="drug.onto == 'MEDDRA' || drug.onto == 'RXNORM'" class="no-wrap">
-        <a href="http://bioportal.bioontology.org/ontologies/{{drug.onto}}?p=classes&conceptid={{drug.umid}}" target="_blank">{{drug.umid}}</a>
+        <a ng-if="drug.umid[0] == 'C'" href="http://bioportal.bioontology.org/search?q={{drug.umid}}&ontologies={{drug.onto}}&include_properties=false&include_views=false&includeObsolete=false&require_definition=false&exact_match=false&categories=" target="_blank">{{drug.umid}}</a>
+        <a ng-if="drug.umid[0] != 'C'" href="http://bioportal.bioontology.org/ontologies/{{drug.onto}}?p=classes&conceptid={{drug.umid}}" target="_blank">{{drug.umid}}</a>
       </td>
 
       <td ng-if="drug.onto == 'DRUGSATFDA'" class="no-wrap">

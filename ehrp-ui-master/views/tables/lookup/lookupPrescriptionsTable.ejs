@@ -18,7 +18,8 @@
       </td>
 
       <td ng-if="prescription.onto == 'MEDDRA' || prescription.onto == 'RXNORM'" class="no-wrap">
-        <a href="http://bioportal.bioontology.org/ontologies/{{prescription.onto}}?p=classes&conceptid={{prescription.umid}}" target="_blank">{{prescription.umid}}</a>
+        <a ng-if="prescription.umid[0] == 'C'" href="http://bioportal.bioontology.org/search?q={{prescription.umid}}&ontologies={{prescription.onto}}&include_properties=false&include_views=false&includeObsolete=false&require_definition=false&exact_match=false&categories=" target="_blank">{{prescription.umid}}</a>
+        <a ng-if="prescription.umid[0] != 'C'" href="http://bioportal.bioontology.org/ontologies/{{prescription.onto}}?p=classes&conceptid={{prescription.umid}}" target="_blank">{{prescription.umid}}</a>
       </td>
 
       <td ng-if="prescription.onto == 'DRUGSATFDA'" class="no-wrap">

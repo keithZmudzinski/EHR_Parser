@@ -38,7 +38,7 @@ Provides two APIs:
         * 'prescription'
         * 'disorder'
         
-    NOTE: Content type should be in JSON format, e.g. if using the `requests` library for python:<br>
+      NOTE: Content type should be in JSON format, e.g. if using the `requests` library for python:<br>
     `resp = requests.post('http://localhost:8020/ehrp/extract', json={'text': text, 'types':type})`
 
 Both GET and POST requests return JSON objects.

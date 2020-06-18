@@ -176,4 +176,5 @@ def tokenize_text(snt_file_path, alphabet, kwargs):
 
 # TODO: Raise exception that can be handled, to return a more descriptive error
 def incorrect_concept_type(incorrect_type):
-    abort(401)
+    # Unprocessable entity error
+    abort(422)

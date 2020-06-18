@@ -18,7 +18,7 @@ Port numbers and REST api can be configured in bin/settings.js file
 
 Provides two APIs:
   1. GET request to lookup specific medical terms.<br>
-    URL : http://localhost:8020/ehrp/lookup?text=hpertension<br>
+    URL : http://localhost:8020/ehrp/lookup?text=hypertension<br>
     Required parameter: 'text'; this should be the term you want to lookup.<br>
     Optional parameter 'type': The type of term you are looking up. If not provided, all types are tried.<br>
         Possible values for type:
@@ -35,8 +35,11 @@ Provides two APIs:
         * 'drug'
         * 'prescription'
         * 'disorder'
+    NOTE: Content type should be in JSON format, e.g. if using the `requests` library for python:<br>
+    `resp = requests.post('http://localhost:8020/ehrp/extract', json={'text': text, 'types':type})`
 
-Returns a JSON object
+Both GET and POST requests return JSON objects.
 
 ## Error response codes
-* 400: Malformed url, check your base url to see if it conforms to one of the two above.
+* 400: Malformed url; check your base url to see if it conforms to one of the two above.
+* 422: Raised if optional parameter has unknown value; check the value(s) you are using for `type` or `types`, make sure it is one of the allowable types listed above.

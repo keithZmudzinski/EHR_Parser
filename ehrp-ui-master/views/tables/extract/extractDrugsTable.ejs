@@ -20,6 +20,9 @@
       <td ng-if="drug.onto == 'DRUGSATFDA'" class="no-wrap">
         <a href="https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo={{drug.umid}}" target="_blank">{{drug.umid}}</a>
       </td>
+      <td ng-if="drug.onto == 'NDDF'" class="no-wrap">
+        <a href="http://bioportal.bioontology.org/search?q={{drug.umid}}&ontologies=NDDF&include_properties=false&include_views=false&includeObsolete=false&require_definition=false&exact_match=false&categories=" target="_blank">{{drug.umid}}</a>
+      </td>
 
       <td class="no-wrap">{{drug.onto}}</td>
       <td class="word-wrap">{{drug.context.replace("\t","*")}}</td>

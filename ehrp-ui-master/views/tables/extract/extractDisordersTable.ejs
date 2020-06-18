@@ -14,9 +14,6 @@
       <td ng-if="disorder.onto == 'MEDDRA' || disorder.onto == 'RXNORM'" class="no-wrap">
         <a href="http://bioportal.bioontology.org/ontologies/{{disorder.onto}}?p=classes&conceptid={{disorder.umid}}" target="_blank">{{disorder.umid}}</a>
       </td>
-      <td ng-if="disorder.onto == 'DRUGBANK'" class="no-wrap">
-        <a href="https://www.drugbank.ca/drugs/{{disorder.umid}}" target="_blank">{{disorder.umid}}</a>
-      </td>
 
       <td class="no-wrap">{{disorder.onto}}</td>
       <td class="word-wrap">{{disorder.context.replace("\t","*")}}</td>

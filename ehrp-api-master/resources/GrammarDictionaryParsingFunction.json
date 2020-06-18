@@ -5,6 +5,7 @@
             "DrugBank.bin",
             "RxNorm.bin",
             "OrangeBook.bin",
+            "NDDF.bin",
             "DrugsAtFDA.bin"
         ],
         "parsing_function": "drugParser"
@@ -15,6 +16,7 @@
             "DrugBank.bin",
             "RxNorm.bin",
             "OrangeBook.bin",
+            "NDDF.bin",
             "DrugsAtFDA.bin"
         ],
         "parsing_function": "prescriptionParser"

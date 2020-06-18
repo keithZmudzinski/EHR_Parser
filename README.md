@@ -1,4 +1,4 @@
-# EHR_Parser
+# Electronic Health Record Parser
 Service to extract information from raw EHR documents.
 
 ### Usage
@@ -19,14 +19,16 @@ Port numbers and REST api can be configured in bin/settings.js file
 Provides two APIs:
   1. GET request to lookup specific medical terms.<br>
     URL : http://localhost:8020/ehrp/lookup?text=hpertension<br>
+    Required parameter: 'text'; this should be the term you want to lookup.<br>
     Optional parameter 'type': The type of term you are looking up. If not provided, all types are tried.<br>
         Possible values for type:
         * 'drug'
         * 'prescription'
         * 'disorder'
+        
   2. POST request to provide medical text to process.<br>
     URL : http://localhost:8020/ehrp/extract<br>
-    Required parameter: 'text'; this should be the text you want to process<br>
+    Required parameter: 'text'; this should be the text you want to process.<br>
     Optional parameter: 'types'; this should be a list of strings of types of medical terms you want to be extracted. If not
     provided, all types are tried.<br>
         Possible values in types:

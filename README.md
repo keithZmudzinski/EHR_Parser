@@ -1,7 +1,7 @@
 # Electronic Health Record Parser
 Service to extract information from raw EHR documents.
-___
-##
+
+## Usage
 ### UI
 1. install nodejs
 2. `cd` into the ehrp-ui-master directory
@@ -22,7 +22,7 @@ Provides two APIs:
     Required parameter: 'text'; this should be the term you want to lookup.<br>
     Optional parameter 'type': The type of term you are looking up. If not provided, all types are tried.
     
-      Possible values for type:
+      Possible values for 'type':
         * 'drug'
         * 'prescription'
         * 'disorder'
@@ -33,10 +33,10 @@ Provides two APIs:
     Optional parameter: 'types'; this should be a list of strings of types of medical terms you want to be extracted. If not
     provided, all types are tried.
     
-      <ul><lh>Possible values in types:</lh>
-        <li>'drug'</li>
-        <li>'prescription'</li>
-        <li>'disorder'</li>
+      Possible values for 'type':
+        * 'drug'
+        * 'prescription'
+        * 'disorder'
         
     NOTE: Content type should be in JSON format, e.g. if using the `requests` library for python:<br>
     `resp = requests.post('http://localhost:8020/ehrp/extract', json={'text': text, 'types':type})`

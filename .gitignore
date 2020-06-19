@@ -105,4 +105,4 @@ ENV/
 index
 data
 data-prep/
-../query_test.py
+query_test.py

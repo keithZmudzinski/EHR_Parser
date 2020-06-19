@@ -54,7 +54,7 @@
     "parsing_function": "disorderParser"
   },
   {
-    "grammar": "diseaseid_keith.fst2",
+    "grammar": "chf.fst2",
     "dictionaries": [
       "DrugBank.bin",
       "RxNorm.bin",
@@ -73,6 +73,6 @@
       "NDDF",
       "DrugsAtFDA"
     ],
-    "parsing_function": "disorderParser"
+    "parsing_function": "chfParser"
   }
 ]

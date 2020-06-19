@@ -33,6 +33,8 @@ class ConceptParser:
             'drugParser': self.drugParser,
             'disorderParser': self.disorderParser,
             'prescriptionParser': self.prescriptionParser,
+            'diseaseParser': self.diseaseParser,
+            'chfParser': self.chfParser,
         }
 
     def setup(self):
@@ -245,7 +247,7 @@ class ConceptParser:
     #     ]
     # }
     def prescriptionParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('prescription');
+        concepts = self.make_concepts_object('prescription')
 
         for context in contexts:
             parts = context.split('\t')
@@ -282,4 +284,26 @@ class ConceptParser:
                 'context': context
             })
 
+        return concepts
+
+    def diseaseParser(self, contexts, id_dict, onto_dict):
+        concepts = self.make_concepts_object('disease')
+        for i, context in enumerate(contexts):
+            print('Entry {}'.format(i), context)
+        return concepts
+
+    def chfParser(self, contexts, id_dict, onto_dict):
+        concepts = self.make_concepts_object('chf')
+
+        for i, context in enumerate(contexts):
+            parts = context.split('\t')
+            trigger = parts[1]
+            trigger, key = trigger.split('__')
+            context = parts[0] + trigger + parts[2]
+
+            concepts['instances'].append({
+                'type': key,
+                'trigger': trigger,
+                'context': context
+            })
         return concepts

@@ -46,6 +46,11 @@
               <%- include('tables/extract/extractPrescriptionsTable'); %>
           </div>
 
+          <!-- Extract CHF table --->
+          <div ng-if="_extractChf">
+              <%- include('tables/extract/extractChfTable'); %>
+          </div>
+
       </div>
     </div>
   </div>
@@ -85,6 +90,11 @@
         <!-- Lookup Prescriptions table --->
         <div ng-if="_lookupPrescription">
             <%- include('tables/lookup/lookupPrescriptionsTable'); %>
+        </div>
+
+        <!-- Extract CHF table --->
+        <div ng-if="_lookupChf">
+            <%- include('tables/lookup/lookupChfTable'); %>
         </div>
 
       </div>

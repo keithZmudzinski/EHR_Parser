@@ -33,6 +33,7 @@ class ConceptParser:
             'drugParser': self.drugParser,
             'disorderParser': self.disorderParser,
             'prescriptionParser': self.prescriptionParser,
+            'pnaParser': self.pnaParser,
         }
 
     def setup(self):
@@ -201,13 +202,13 @@ class ConceptParser:
         return concepts
 
     # {
-    #     name: disorders,
+    #     name: disorder,
     #     instances: [
     #         {
     #             label: '',
     #             umid: '',
     #             onto: '',
-    #             context: '',
+    #             context: ''
     #         }
     #     ]
     # }
@@ -233,14 +234,14 @@ class ConceptParser:
         return concepts
 
     # {
-    #     name: prescriptions,
+    #     name: prescription,
     #     instances: [
     #         {
     #             drug: '',
     #             dosage: '',
     #             umid: '',
     #             onto: '',
-    #             context: '',
+    #             context: ''
     #         }
     #     ]
     # }
@@ -281,5 +282,32 @@ class ConceptParser:
                 'onto': used_ontology,
                 'context': context
             })
+
+        return concepts
+
+    # {
+    #     name: pna,
+    #     instances: [
+    #         {
+    #             type: '',
+    #             trigger: '',
+    #             context: ''
+    #         }
+    #     ]
+    # }
+    def pnaParser(self, contexts, id_dict, onto_dict):
+        concepts = self.make_concepts_object('pna')
+
+        for context in contexts:
+            parts = context.split('\t')
+            trigger = parts[1]
+            trigger, type = trigger.split('__')
+            context = parts[0] + trigger + parts[2]
+
+            concepts['instances'].append(({
+                'type': type,
+                'trigger': trigger,
+                'context': context
+            }))
 
         return concepts

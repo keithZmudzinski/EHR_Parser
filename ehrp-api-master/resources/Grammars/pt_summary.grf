@@ -1,0 +1,82 @@
+#Unigraph
+SIZE 2500 869
+FONT Times New Roman:  10
+OFONT Arial Unicode MS:B 12
+BCOLOR 16777215
+FCOLOR 0
+ACOLOR 13487565
+SCOLOR 16711680
+CCOLOR 255
+DBOXES y
+DFRAME y
+DDATE y
+DFILE y
+DDIR n
+DRIG n
+DRST n
+FITS 100
+PORIENT L
+#
+62
+"<E>" 53 214 1 19 
+"" 2410 214 0 
+"<E>" 1340 214 2 28 29 
+"yr+<MOT><<^yea>>" 584 164 2 4 5 
+"old" 727 164 1 11 
+"-" 702 146 1 4 
+"yo+y\/o" 607 214 1 11 
+"y" 607 247 2 8 20 
+"." 639 247 1 9 
+"o" 665 247 2 10 21 
+"." 696 247 1 22 
+"<E>" 766 214 2 23 24 
+"<NB>" 380 214 1 47 
+"<E>+-" 543 214 3 3 6 7 
+"<E>" 277 214 1 46 
+"<E>" 179 214 2 14 16 
+"is" 213 197 1 17 
+"a+an" 247 197 1 14 
+"patient" 113 196 1 15 
+"<E>" 87 214 2 15 18 
+"<E>" 639 269 1 9 
+"<E>" 696 271 1 22 
+"<E>" 722 247 1 11 
+"<MOT>/$[0,2]$" 823 214 1 57 
+"<E>" 653 377 1 13 
+"who has complaints of" 1600 214 1 37 
+"who is being seen for" 1600 247 1 38 
+"admitted on <NB>\/<NB>\/<NB> for" 1600 283 1 39 
+"patient" 1381 197 1 29 
+"<E>" 1443 214 1 35 
+"<MOT><<^present>>" 1651 177 1 33 
+"with+w+e" 1600 118 1 36 
+"<E>+who" 1600 177 1 30 
+"with+for" 1837 177 1 41 
+"who was admitted" 1600 314 1 40 
+"<E>" 1486 214 7 25 26 27 31 32 34 42 
+"<E>" 1837 118 1 41 
+"<E>" 1837 214 1 41 
+"<E>" 1837 247 1 41 
+"<E>" 1837 283 1 41 
+"<E>" 1837 314 1 41 
+"<E>" 1969 214 1 52 
+"<E>" 1600 376 1 43 
+"<E>" 1837 376 1 41 
+"Patient is a 35 year-old Native American gentleman who presents with ..." 149 138 0 
+"Patient Summary line (upto presentation)" 28 49 0 
+"$age(" 349 214 1 12 
+"$age)" 441 214 1 13 
+"male+M+man+gentleman/MALE" 1071 214 1 51 
+"female+F+woman/FEMALE" 1184 296 1 51 
+"<E>" 932 214 2 58 59 
+"$|gender)" 1319 214 1 2 
+"<E>/ __$age$,$gender$" 2084 214 1 1 
+"pregnancy info" 1036 421 0 
+"<E>" 1076 296 1 49 
+"G<NB>P<NB>+gravida <NB>, para <NB>" 1022 387 2 49 56 
+"<E>/FEMALE" 1184 387 1 51 
+"$|gender(" 903 214 1 50 
+"<E>/${1}$" 974 214 3 48 54 55 
+"<E>/${0}$UNK" 1071 124 1 51 
+"down-weight this path over known gender" 1033 101 0 
+"TODO: becareful of this output!" 2050 155 0 

@@ -37,6 +37,7 @@ class ConceptParser:
             'amiParser': self.amiParser,
             'pnaParser': self.pnaParser,
             'comorbiditiesParser': self.comorbiditiesParser,
+            'pt_summaryParser': self.pt_summaryParser,
         }
 
     def setup(self):
@@ -388,6 +389,35 @@ class ConceptParser:
             concepts['instances'].append(({
                 'type': type,
                 'trigger': trigger,
+                'context': context
+            }))
+        return concepts
+
+    # {
+    #     name: pt_summary,
+    #     instances: [
+    #         {
+    #             trigger: '',
+    #             age: '',
+    #             gender: '',
+    #             context: ''
+    #         }
+    #     ]
+    # }
+    def pt_summaryParser(self, contexts, id_dict, onto_dict):
+        concepts = self.make_concepts_object('pt_summary')
+
+        for context in contexts:
+            parts = context.split('\t')
+            trigger = parts[1]
+            trigger, info = trigger.split('__')
+            age, gender = info.split(',')
+            context = parts[0] + trigger + parts[2]
+
+            concepts['instances'].append(({
+                'trigger': trigger,
+                'age': age,
+                'gender': gender,
                 'context': context
             }))
         return concepts

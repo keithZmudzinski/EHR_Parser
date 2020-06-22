@@ -33,6 +33,8 @@ class ConceptParser:
             'drugParser': self.drugParser,
             'disorderParser': self.disorderParser,
             'prescriptionParser': self.prescriptionParser,
+            'chfParser': self.chfParser,
+            'amiParser': self.amiParser,
             'pnaParser': self.pnaParser,
         }
 
@@ -246,7 +248,7 @@ class ConceptParser:
     #     ]
     # }
     def prescriptionParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('prescription');
+        concepts = self.make_concepts_object('prescription')
 
         for context in contexts:
             parts = context.split('\t')
@@ -284,7 +286,59 @@ class ConceptParser:
             })
 
         return concepts
+      
+     # {
+    #     name: chf,
+    #     instances: [
+    #         {
+    #             type: '',
+    #             trigger: '',
+    #             context: ''
+    #         }
+    #     ]
+    # }
+    def chfParser(self, contexts, id_dict, onto_dict):
+        concepts = self.make_concepts_object('chf')
 
+        for i, context in enumerate(contexts):
+            parts = context.split('\t')
+            trigger = parts[1]
+            trigger, key = trigger.split('__')
+            context = parts[0] + trigger + parts[2]
+
+            concepts['instances'].append({
+                'type': key,
+                'trigger': trigger,
+                'context': context
+            })
+        return concepts
+
+       # {
+    #     name: ami,
+    #     instances: [
+    #         {
+    #             type: '',
+    #             trigger: '',
+    #             context: ''
+    #         }
+    #     ]
+    # }
+    def amiParser(self, contexts, id_dict, onto_dict):
+        concepts = self.make_concepts_object('ami')
+
+        for i, context in enumerate(contexts):
+            parts = context.split('\t')
+            trigger = parts[1]
+            trigger, key = trigger.split('__')
+            context = parts[0] + trigger + parts[2]
+
+            concepts['instances'].append({
+                'type': key,
+                'trigger': trigger,
+                'context': context
+            })
+        return concepts
+      
     # {
     #     name: pna,
     #     instances: [
@@ -309,5 +363,4 @@ class ConceptParser:
                 'trigger': trigger,
                 'context': context
             }))
-
         return concepts

@@ -36,6 +36,7 @@ class ConceptParser:
             'chfParser': self.chfParser,
             'amiParser': self.amiParser,
             'pnaParser': self.pnaParser,
+            'comorbiditiesParser': self.comorbiditiesParser,
         }
 
     def setup(self):
@@ -286,7 +287,7 @@ class ConceptParser:
             })
 
         return concepts
-      
+
      # {
     #     name: chf,
     #     instances: [
@@ -338,7 +339,7 @@ class ConceptParser:
                 'context': context
             })
         return concepts
-      
+
     # {
     #     name: pna,
     #     instances: [
@@ -351,6 +352,32 @@ class ConceptParser:
     # }
     def pnaParser(self, contexts, id_dict, onto_dict):
         concepts = self.make_concepts_object('pna')
+
+        for context in contexts:
+            parts = context.split('\t')
+            trigger = parts[1]
+            trigger, type = trigger.split('__')
+            context = parts[0] + trigger + parts[2]
+
+            concepts['instances'].append(({
+                'type': type,
+                'trigger': trigger,
+                'context': context
+            }))
+        return concepts
+
+    # {
+    #     name: comorbidities,
+    #     instances: [
+    #         {
+    #             type: '',
+    #             trigger: '',
+    #             context: ''
+    #         }
+    #     ]
+    # }
+    def comorbiditiesParser(self, contexts, id_dict, onto_dict):
+        concepts = self.make_concepts_object('comorbidities')
 
         for context in contexts:
             parts = context.split('\t')

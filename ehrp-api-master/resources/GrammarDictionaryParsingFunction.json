@@ -118,5 +118,27 @@
       "DrugsAtFDA"
     ],
     "parsing_function": "pnaParser"
-  }
+  },
+  {
+      "grammar": "comorbidities.fst2",
+      "dictionaries": [
+        "DrugBank.bin",
+        "RxNorm.bin",
+        "OrangeBook.bin",
+        "RxNorm_Tradenames.bin",
+        "RxNorm_Ingredients.bin",
+        "ATC_Ingredients.bin",
+        "FDB_Ingredients.bin",
+        "DrugsAtFDA.bin"
+      ],
+      "ontologies": [
+        "DrugBank",
+        "RxNorm",
+        "OrangeBook",
+        "ATC",
+        "NDDF",
+        "DrugsAtFDA"
+      ],
+      "parsing_function": "comorbiditiesParser"
+    }
 ]

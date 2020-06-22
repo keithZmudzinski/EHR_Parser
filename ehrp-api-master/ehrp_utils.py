@@ -16,7 +16,6 @@ from unitex.tools import UnitexConstants, normalize, tokenize
 from unitex.resources import free_persistent_alphabet, load_persistent_alphabet
 
 # Constants reflecting project file layout, please update if you change where files are stored.
-GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH = 'resources/GrammarDictionaryParsingFunction.json'
 GRAMMAR_RELATIVE_PATH = 'resources/Grammars/'
 DICTIONARY_RELATIVE_PATH = 'resources/Dictionaries'
 
@@ -33,7 +32,7 @@ def free_alphabets(options):
     free_persistent_alphabet(options['resources']['alphabet-sorted'])
 
 # Called from ehrp_api.py
-def extract_concepts(options, text, concepts_to_get='ALL'):
+def extract_concepts(options, all_groupings, text, concepts_to_get='ALL'):
     '''
     Extracts concepts from text.
     Returns dictionary of found concepts.
@@ -41,8 +40,7 @@ def extract_concepts(options, text, concepts_to_get='ALL'):
 
     print("Extracting concepts from text . . .")
 
-    # Load dict and grammar groupings from file
-    all_groupings = get_groupings_from_file(GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH)
+    # Load chosen dict and grammar groupings from all_groupings
     chosen_groupings = get_concepts_from_groupings(all_groupings, concepts_to_get)
 
     # Create Unitex file to hold input text

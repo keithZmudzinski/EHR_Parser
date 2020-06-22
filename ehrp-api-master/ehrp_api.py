@@ -6,7 +6,7 @@ from __future__ import print_function
 import argparse
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource, reqparse
-from ehrp_utils import load_alphabets, free_alphabets, extract_concepts
+from ehrp_utils import load_alphabets, free_alphabets, extract_concepts, get_groupings_from_file
 from unitex import init_log_system
 from unitex.config import UnitexConfig
 import yaml
@@ -30,9 +30,9 @@ class Extract(Resource):
         types = args['types']
 
         if types == None:
-            concepts = extract_concepts(OPTIONS, text)
+            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text)
         else:
-            concepts = extract_concepts(OPTIONS, text, types)
+            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text, types)
 
         return jsonify(concepts)
 
@@ -55,15 +55,20 @@ class Lookup(Resource):
         type = args['type']
 
         if type == None:
-            concepts = extract_concepts(OPTIONS, text)
+            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text)
         else:
-            concepts = extract_concepts(OPTIONS, text, [type])
+            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text, [type])
 
         return jsonify(concepts)
 
 def main():
     '''Main method : parse arguments and start API'''
     global OPTIONS
+    global ALL_GROUPINGS
+
+    # Relative file path to user-defined json. Pleas update if project file-layout is changed.
+    GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH = 'resources/GrammarDictionaryParsingFunction.json'
+
     parser = argparse.ArgumentParser()
     # RESOURCE LOCATIONS
     parser.add_argument('--conf', type=str, default='resources/unitex-med.yaml',
@@ -83,6 +88,7 @@ def main():
     OPTIONS = UnitexConfig(config)
     init_log_system(OPTIONS["verbose"], OPTIONS["debug"], OPTIONS["log"])
     load_alphabets(OPTIONS)
+    ALL_GROUPINGS = get_groupings_from_file(GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH)
 
     print("Starting app . . .")
     app = Flask(__name__)

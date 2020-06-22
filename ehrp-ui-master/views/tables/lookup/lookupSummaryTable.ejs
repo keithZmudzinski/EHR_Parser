@@ -1,0 +1,13 @@
+<table class="table table-striped table-hover table-condensed table-responsive">
+  <caption>Patient summary</caption>
+  <thead>
+    <th>Age</th>
+    <th>Gender</th>
+  </thead>
+  <tbody>
+    <tr ng-repeat="info in _lookupPt_summary.instances">
+      <td class="no-wrap">{{info.age}}</td>
+      <td class="no-wrap">{{info.gender}}</td>
+    </tr>
+  </tbody>
+</table>

@@ -4,9 +4,10 @@ Biomedical text processing API for EHR Phenotyping
 
 from __future__ import print_function
 import argparse
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from flask_restful import Api, Resource, reqparse
 from ehrp_utils import load_alphabets, free_alphabets, extract_concepts, get_groupings_from_file
+from werkzeug.datastructures import FileStorage
 from unitex import init_log_system
 from unitex.config import UnitexConfig
 import yaml
@@ -15,22 +16,37 @@ class Extract(Resource):
     '''Extract API for extracting Biomedical named entities and their respective concept IDs'''
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('text', type=str, required=True, location='json',
-                               help="text for extracting entities and concept ids")
-        self.reqparse.add_argument('types', type=list, required=False, default=None,
-                               location='json', help="type of concept to extract")
+        # Define allowable arguments
+        self.reqparse.add_argument('text', required=False, default=None,
+                               location='values', help="text for extracting entities and concept ids")
+        self.reqparse.add_argument('types', type=str, required=False, default=None, action='append',
+                               location='values', help="type of concept to extract")
+        self.reqparse.add_argument('file', type=FileStorage, required=False, default=None,
+                               location='files', help="optional file to be parsed, at most one of 'text' or 'file' should have data")
         super(Extract, self).__init__()
 
     def post(self):
         '''POST method'''
         print("POST - Extract")     # for debugging
 
+        # Get arguments
         args = self.reqparse.parse_args()
         text = args['text']
         types = args['types']
+        file = args['file']
 
+        # If both set or neither set
+        if text and file or not(text or file):
+            abort(422)
+
+        # If file is set, text isn't, and so we update text with the contents of file
+        if file:
+            text = file.read()
+
+        # If no types specified, look for all types
         if types == None:
             concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text)
+        # Otherwise use the types specified
         else:
             concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text, types)
 
@@ -42,7 +58,7 @@ class Lookup(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('text', type=str, required=True, location='args',
                                help="text for finding concept id")
-        self.reqparse.add_argument('type', type=str, required=False, default=None,
+        self.reqparse.add_argument('type', type=str, required=False, default=None, action='append',
                                location='args', help='Type of concept to lookup')
         super(Lookup, self).__init__()
 
@@ -57,7 +73,7 @@ class Lookup(Resource):
         if type == None:
             concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text)
         else:
-            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text, [type])
+            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text, type)
 
         return jsonify(concepts)
 

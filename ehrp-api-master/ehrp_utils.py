@@ -135,7 +135,6 @@ def get_groupings_from_file(file_path):
 def get_concepts_from_groupings(all_groupings, concepts_to_get):
     ''' Returns list of concepts to get as specified by user '''
     concepts = []
-    print(concepts_to_get)
 
     # If all concepts are desired, just return all groupings
     if concepts_to_get == 'ALL':

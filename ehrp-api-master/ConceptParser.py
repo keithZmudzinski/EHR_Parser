@@ -202,7 +202,7 @@ class ConceptParser:
                         'context': parts[0] + label + parts[2]
                     })
                 except KeyError as kerror:
-                    print("Key Error : {}".format(kerror))
+                    continue
         return concepts
 
     # {
@@ -234,7 +234,7 @@ class ConceptParser:
                         'context': parts[0] + label + parts[2]
                     })
                 except KeyError as kerror:
-                    print("Key Error : {}".format(kerror))
+                    continue
         return concepts
 
     # {
@@ -266,7 +266,7 @@ class ConceptParser:
                 continue
 
             # The dosage and drug for which the prescription was made
-            full_dosage, drug = dosage_and_full_context.split('__')
+            full_dosage, drug = dosage_and_full_context.split('__SeparatE__')
 
             # Full context surrounding prescription
             context = parts[0] + full_dosage + parts[2]
@@ -277,7 +277,6 @@ class ConceptParser:
             except KeyError as kerror:
                 drug_id = 'NA'
                 used_ontology = 'NA'
-                print("Key Error : {}".format(kerror))
 
             concepts['instances'].append({
                 'drug': drug,
@@ -305,7 +304,7 @@ class ConceptParser:
         for i, context in enumerate(contexts):
             parts = context.split('\t')
             trigger = parts[1]
-            trigger, key = trigger.split('__')
+            trigger, key = trigger.split('__SeparatE__')
             context = parts[0] + trigger + parts[2]
 
             concepts['instances'].append({
@@ -331,7 +330,7 @@ class ConceptParser:
         for i, context in enumerate(contexts):
             parts = context.split('\t')
             trigger = parts[1]
-            trigger, key = trigger.split('__')
+            trigger, key = trigger.split('__SeparatE__')
             context = parts[0] + trigger + parts[2]
 
             concepts['instances'].append({
@@ -357,7 +356,7 @@ class ConceptParser:
         for context in contexts:
             parts = context.split('\t')
             trigger = parts[1]
-            trigger, type = trigger.split('__')
+            trigger, type = trigger.split('__SeparatE__')
             context = parts[0] + trigger + parts[2]
 
             concepts['instances'].append(({
@@ -383,7 +382,7 @@ class ConceptParser:
         for context in contexts:
             parts = context.split('\t')
             trigger = parts[1]
-            trigger, type = trigger.split('__')
+            trigger, type = trigger.split('__SeparatE__')
             context = parts[0] + trigger + parts[2]
 
             concepts['instances'].append(({
@@ -410,7 +409,7 @@ class ConceptParser:
         for context in contexts:
             parts = context.split('\t')
             trigger = parts[1]
-            trigger, info = trigger.split('__')
+            trigger, info = trigger.split('__SeparatE__')
             age, gender = info.split(',')
             context = parts[0] + trigger + parts[2]
 

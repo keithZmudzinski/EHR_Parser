@@ -35,7 +35,7 @@ PORIENT L
 "<E>" 277 214 2 57 61 
 "<E>" 179 214 2 14 16 
 "is" 213 197 1 17 
-"a+an" 247 197 1 14 
+"a+an" 243 171 1 14 
 "patient" 113 196 1 15 
 "<E>" 87 214 2 15 18 
 "<E>" 639 269 1 9 
@@ -68,7 +68,7 @@ PORIENT L
 "$age)" 441 214 1 13 
 "<E>" 932 214 2 52 55 
 "$|gender)" 1295 214 1 2 
-"<E>/ $age.SET$__$age$,$gender$" 2045 171 1 64 
+"<E>/ $age.SET$__SeparatE__$age$,$gender$" 2045 171 1 64 
 "$|gender(" 903 214 1 48 
 "<E>/${0}$UNK" 1071 124 1 49 
 "down-weight this path over known gender" 1033 101 0 
@@ -81,6 +81,6 @@ PORIENT L
 "age is unknown, but gender is found" 409 447 0 
 "<E>/${0}$" 297 428 1 58 
 "Prefer known age and possibly unknown gender + over unknown age and known gender" 158 328 0 
-"<E>/$age.UNSET$__UNK,$gender$" 2045 248 1 65 
+"<E>/$age.UNSET$__SeparatE__UNK,$gender$" 2045 248 1 65 
 "<E>" 2307 171 1 1 
 "<E>" 2307 248 1 1 

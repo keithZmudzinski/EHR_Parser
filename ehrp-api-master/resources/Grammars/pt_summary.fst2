@@ -85,12 +85,12 @@ f
 %$age(
 %$age)
 %$|gender)
-%<E>/ $age.SET$__$age$,$gender$
+%<E>/ $age.SET$__SeparatE__$age$,$gender$
 %$|gender(
 %<E>/${0}$UNK
 %<E>/${1}$
 %<E>/${0}$
-%<E>/$age.UNSET$__UNK,$gender$
+%<E>/$age.UNSET$__SeparatE__UNK,$gender$
 %female/FEMALE
 %F/FEMALE
 %woman/FEMALE

@@ -21,20 +21,20 @@ PORIENT L
 "<E>" 70 200 17 2 6 11 15 26 34 62 77 95 118 121 128 137 158 166 174 180 
 "" 1783 204 0 
 "<E>" 370 143 1 20 
-"<E>/__PNA_WORD" 1047 143 1 4 
+"<E>/__SeparatE__PNA_WORD" 1047 143 1 4 
 "<E>" 1534 143 1 1 
 "PNA word" 409 121 0 
 "<E>" 370 80 1 21 
-"<E>/__PNA_CODE" 1047 80 1 8 
+"<E>/__SeparatE__PNA_CODE" 1047 80 1 8 
 "<E>" 1534 80 1 1 
 "ICD9 codes" 409 63 0 
 "PNA DiseaseID WHHS" 70 45 0 
 "<E>" 370 210 1 19 
-"<E>/__PNA_PHRASE" 1047 210 1 13 
+"<E>/__SeparatE__PNA_PHRASE" 1047 210 1 13 
 "<E>" 1534 210 1 1 
 "PNA phrase" 409 193 0 
 "<E>" 370 343 1 17 
-"<E>/__PNA_PHRASE_OTHER" 1047 343 1 22 
+"<E>/__SeparatE__PNA_PHRASE_OTHER" 1047 343 1 22 
 ":pna_phrase_other" 632 343 1 16 
 "PNA false positive phrase,e.g., asp pna" 412 309 0 
 ":pna_phrase" 629 210 1 12 
@@ -46,7 +46,7 @@ PORIENT L
 "<TOKEN><<[^.:]>>/$[0,10]$" 644 485 1 24 
 "<E>" 370 485 1 23 
 "PNA negated" 412 441 0 
-"<E>/__PNA_NEGATED" 1047 485 1 29 
+"<E>/__SeparatE__PNA_NEGATED" 1047 485 1 29 
 "<E>" 1534 485 1 1 
 ":pna_phrase" 773 609 3 37 43 49 
 ":word_or_pnc/$[0,15]$" 676 609 1 30 
@@ -55,37 +55,37 @@ PORIENT L
 "<E>" 370 609 1 38 
 "1. PNA" 516 584 0 
 "<E>" 630 609 1 31 
-"<E>/__PNA_PROBLEM_ONE" 1004 609 1 32 
+"<E>/__SeparatE__PNA_PROBLEM_ONE" 1004 609 1 32 
 "<E>" 453 609 3 33 39 45 
 ":problem_top_three" 504 669 1 40 
 "<E>" 630 669 1 42 
 ":pna_phrase" 773 669 3 43 49 55 
 ":word_or_pnc/$[0,15]$" 676 669 1 41 
-"<E>/__PNA_PROBLEM_TOP_THREE" 1004 804 1 44 
+"<E>/__SeparatE__PNA_PROBLEM_TOP_THREE" 1004 804 1 44 
 "<E>" 1232 804 1 51 
 ":problem_top_five" 504 727 1 46 
 "<E>" 630 727 1 48 
 ":pna_phrase" 773 727 2 49 57 
 ":word_or_pnc/$[0,15]$" 676 727 1 47 
-"<E>/__PNA_PROBLEM_TOP_FIVE" 1004 862 1 50 
+"<E>/__SeparatE__PNA_PROBLEM_TOP_FIVE" 1004 862 1 50 
 "<E>" 1232 862 1 51 
 "<E>" 1345 609 1 59 
 "2-3. PNA" 512 647 0 
 "4-5. PNA" 510 705 0 
 "Problem #1-5. PNA" 395 573 0 
-"<E>/__PNA_PROBLEM_THREE" 1004 669 1 56 
+"<E>/__SeparatE__PNA_PROBLEM_THREE" 1004 669 1 56 
 "<E>" 1232 669 1 51 
-"<E>/__PNA_PROBLEM_FIVE" 1004 727 1 58 
+"<E>/__SeparatE__PNA_PROBLEM_FIVE" 1004 727 1 58 
 "<E>" 1232 727 1 51 
 "<E>" 1534 609 1 1 
 "MAIN: Assessment, Impression, Chief Complaint or Active Problem" 442 989 0 
 ":pna_phrase" 794 1030 2 63 67 
 "<E>" 370 1030 1 70 
-"<E>/__PNA_MAIN_FIRST" 1024 1030 1 68 
+"<E>/__SeparatE__PNA_MAIN_FIRST" 1024 1030 1 68 
 "<E>" 1366 1030 1 72 
 "<TOKEN>/$[1,10]$" 708 1090 1 66 
 ":pna_phrase" 792 1090 1 67 
-"<E>/__PNA_MAIN" 1024 1090 1 69 
+"<E>/__SeparatE__PNA_MAIN" 1024 1090 1 69 
 "<E>" 1257 1030 1 64 
 "<E>" 1257 1090 1 64 
 ":main_issue" 528 1030 1 71 
@@ -94,7 +94,7 @@ PORIENT L
 ":pna_phrase" 808 1232 1 76 
 "<TOKEN>/$[0,5]$" 632 1232 1 73 
 "likely+<MOT><<^probabl>>+<MOT><<^pos>>+underlying" 477 1232 1 74 
-"<E>/__PNA_STRONG_WORD" 1024 1232 1 78 
+"<E>/__SeparatE__PNA_STRONG_WORD" 1024 1232 1 78 
 "<E>" 370 1232 2 79 75 
 "<E>" 1534 1232 1 1 
 ":pna_phrase" 473 1327 1 80 
@@ -114,14 +114,14 @@ PORIENT L
 "<E>" 479 1624 1 90 
 "<E>" 479 1542 1 86 
 "<E>" 377 1542 3 94 93 99 
-"<E>/__PNA_DRUG_CONTEXT" 1043 1542 1 97 
+"<E>/__SeparatE__PNA_DRUG_CONTEXT" 1043 1542 1 97 
 "<E>" 1345 1542 1 105 
 "PNA drug (with context)" 413 1506 0 
 "<E>" 479 1701 1 100 
 ":pna_drugs" 532 1701 1 104 
-"<E>/__PNA_DRUG" 1043 1701 1 102 
+"<E>/__SeparatE__PNA_DRUG" 1043 1701 1 102 
 "<E>" 1181 1701 1 97 
-"<E>/__$drug_cat$" 1043 1748 1 102 
+"<E>/__SeparatE__$drug_cat$" 1043 1748 1 102 
 "<E>" 882 1701 2 101 103 
 "<E>" 1546 1542 1 1 
 "mrsa" 782 1894 1 112 
@@ -134,7 +134,7 @@ PORIENT L
 "<E>" 888 1976 1 116 
 "<E>" 485 1976 1 111 
 "<E>" 485 1894 1 107 
-"<E>/__PNA_MRSA" 1049 1894 1 117 
+"<E>/__SeparatE__PNA_MRSA" 1049 1894 1 117 
 "<E>" 1351 1894 1 119 
 "<E>" 388 1894 2 115 114 
 "<E>" 1537 1894 1 1 
@@ -143,12 +143,12 @@ PORIENT L
 ":pna_bacterial_prefixes" 630 406 1 123 
 "<MOT>/$[0,1]$" 807 406 1 124 
 ":pna_phrase" 901 406 1 125 
-"<E>/__PNA_BACTERIA" 1047 406 1 126 
+"<E>/__SeparatE__PNA_BACTERIA" 1047 406 1 126 
 "<E>" 1534 406 1 1 
 "PNA bacterial mentions" 412 379 0 
 "<E>" 370 273 1 129 
 ":pna_aspiration" 629 273 1 130 
-"<E>/__PNA_ASPIRATION" 1047 273 1 131 
+"<E>/__SeparatE__PNA_ASPIRATION" 1047 273 1 131 
 "<E>" 1534 273 1 1 
 "PNA by aspiration (NOT diseaseid counted)" 409 251 0 
 "<E>" 1326 2106 1 144 
@@ -157,7 +157,7 @@ PORIENT L
 "$]" 667 2106 1 140 
 "<E>" 388 2106 1 141 
 "Pneumonitis" 422 2077 0 
-"<E>/__PNEUMONITIS_MAIN" 1143 2106 1 133 
+"<E>/__SeparatE__PNEUMONITIS_MAIN" 1143 2106 1 133 
 "<TOKEN>/$[0,10]$" 700 2106 1 142 
 ":main_issue" 473 2106 1 143 
 "<E>" 825 2106 1 134 
@@ -185,12 +185,12 @@ PORIENT L
 "interstitial" 669 2187 1 165 
 ":pna_words_vague" 760 2187 1 162 
 "<E>" 388 2187 1 161 
-"<E>/__PNA_INTERSTILIAL" 1143 2187 1 168 
+"<E>/__SeparatE__PNA_INTERSTILIAL" 1143 2187 1 168 
 "<E>" 1326 2187 1 169 
 "<E>" 1537 2187 1 1 
 "Interstilial PNA" 426 2167 0 
-"<E>/__PNA_LUNG_EVENTS" 1331 2401 1 159 
-"<E>/__PNA_VACCINE" 1143 2272 1 175 
+"<E>/__SeparatE__PNA_LUNG_EVENTS" 1331 2401 1 159 
+"<E>/__SeparatE__PNA_VACCINE" 1143 2272 1 175 
 ":pna_vaccine" 616 2272 1 172 
 "<E>" 388 2272 1 173 
 "<E>" 1537 2272 1 1 

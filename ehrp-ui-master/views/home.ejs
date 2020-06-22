@@ -55,6 +55,12 @@
           <div ng-if="_extractAmi">
               <%- include('tables/extract/extractAmiTable'); %>
           </div>
+
+          <!-- Extract Pna table --->
+          <div ng-if="_extractPna">
+              <%- include('tables/extract/extractPnaTable'); %>
+          </div>
+
       </div>
     </div>
   </div>
@@ -104,6 +110,11 @@
         <!-- Lookup Ami table --->
         <div ng-if="_lookupAmi">
             <%- include('tables/lookup/lookupAmiTable'); %>
+
+        <!-- Extract Pna table --->
+        <div ng-if="_lookupPna">
+            <%- include('tables/lookup/lookupPnaTable'); %>
+
         </div>
 
       </div>

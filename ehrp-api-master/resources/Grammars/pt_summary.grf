@@ -17,9 +17,9 @@ DRST n
 FITS 100
 PORIENT L
 #
-62
+66
 "<E>" 53 214 1 19 
-"" 2410 214 0 
+"" 2390 213 0 
 "<E>" 1340 214 2 28 29 
 "yr+<MOT><<^yea>>" 584 164 2 4 5 
 "old" 727 164 1 11 
@@ -32,7 +32,7 @@ PORIENT L
 "<E>" 766 214 2 23 24 
 "<NB>" 380 214 1 47 
 "<E>+-" 543 214 3 3 6 7 
-"<E>" 277 214 1 46 
+"<E>" 277 214 2 57 61 
 "<E>" 179 214 2 14 16 
 "is" 213 197 1 17 
 "a+an" 247 197 1 14 
@@ -41,7 +41,7 @@ PORIENT L
 "<E>" 639 269 1 9 
 "<E>" 696 271 1 22 
 "<E>" 722 247 1 11 
-"<MOT>/$[0,2]$" 823 214 1 57 
+"<MOT>/$[0,2]$" 823 214 1 51 
 "<E>" 653 377 1 13 
 "who has complaints of" 1600 214 1 37 
 "who is being seen for" 1600 247 1 38 
@@ -59,24 +59,28 @@ PORIENT L
 "<E>" 1837 247 1 41 
 "<E>" 1837 283 1 41 
 "<E>" 1837 314 1 41 
-"<E>" 1969 214 1 52 
+"<E>" 1969 213 2 50 63 
 "<E>" 1600 376 1 43 
 "<E>" 1837 376 1 41 
-"Patient is a 35 year-old Native American gentleman who presents with ..." 149 138 0 
+"Patient is a 35 year-old Native American gentleman who presents with ..." 69 137 0 
 "Patient Summary line (upto presentation)" 28 49 0 
 "$age(" 349 214 1 12 
 "$age)" 441 214 1 13 
-"male+M+man+gentleman/MALE" 1071 214 1 51 
-"female+F+woman/FEMALE" 1184 296 1 51 
-"<E>" 932 214 2 58 59 
-"$|gender)" 1319 214 1 2 
-"<E>/ __$age$,$gender$" 2084 214 1 1 
-"pregnancy info" 1036 421 0 
-"<E>" 1076 296 1 49 
-"G<NB>P<NB>+gravida <NB>, para <NB>" 1022 387 2 49 56 
-"<E>/FEMALE" 1184 387 1 51 
-"$|gender(" 903 214 1 50 
-"<E>/${1}$" 974 214 3 48 54 55 
-"<E>/${0}$UNK" 1071 124 1 51 
+"<E>" 932 214 2 52 55 
+"$|gender)" 1295 214 1 2 
+"<E>/ $age.SET$__$age$,$gender$" 2045 171 1 64 
+"$|gender(" 903 214 1 48 
+"<E>/${0}$UNK" 1071 124 1 49 
 "down-weight this path over known gender" 1033 101 0 
-"TODO: becareful of this output!" 2050 155 0 
+"TODO: becareful of this output!" 2076 149 0 
+":gender_phrase_keith/${1}$" 1034 214 1 49 
+":gender_phrase_keith" 1075 428 1 59 
+"<E>/${1}$" 316 214 1 46 
+"$|gender(" 1035 428 1 56 
+"$|gender)" 1254 428 1 2 
+"age is unknown, but gender is found" 409 447 0 
+"<E>/${0}$" 297 428 1 58 
+"Prefer known age and possibly unknown gender + over unknown age and known gender" 158 328 0 
+"<E>/$age.UNSET$__UNK,$gender$" 2045 248 1 65 
+"<E>" 2307 171 1 1 
+"<E>" 2307 248 1 1 

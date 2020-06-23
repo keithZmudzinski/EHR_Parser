@@ -6,7 +6,7 @@
     <th>Context</th>
   </thead>
   <tbody>
-    <tr ng-repeat="comorbidity in _lookupComorbidities.instances">
+    <tr ng-repeat="comorbidity in _lookupComorbidity.instances">
       <td class="no-wrap">{{comorbidity.trigger}}</td>
       <td class="no-wrap">{{comorbidity.type}}</td>
       <td class="word-wrap">{{comorbidity.context.replace("\t","*")}}</td>

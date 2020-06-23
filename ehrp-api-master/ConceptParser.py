@@ -36,7 +36,7 @@ class ConceptParser:
             'chfParser': self.chfParser,
             'amiParser': self.amiParser,
             'pnaParser': self.pnaParser,
-            'comorbiditiesParser': self.comorbiditiesParser,
+            'comorbidityParser': self.comorbidityParser,
             'pt_summaryParser': self.pt_summaryParser,
         }
 
@@ -367,7 +367,7 @@ class ConceptParser:
         return concepts
 
     # {
-    #     name: comorbidities,
+    #     name: comorbidity,
     #     instances: [
     #         {
     #             type: '',
@@ -376,8 +376,8 @@ class ConceptParser:
     #         }
     #     ]
     # }
-    def comorbiditiesParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('comorbidities')
+    def comorbidityParser(self, contexts, id_dict, onto_dict):
+        concepts = self.make_concepts_object('comorbidity')
 
         for context in contexts:
             parts = context.split('\t')

@@ -38,6 +38,7 @@ class ConceptParser:
             'pnaParser': self.pnaParser,
             'comorbidityParser': self.comorbidityParser,
             'pt_summaryParser': self.pt_summaryParser,
+            'lookupParser': self.lookupParser,
         }
 
     def setup(self):
@@ -170,7 +171,34 @@ class ConceptParser:
 #   Each concept is a dictionary of desired attributes and values.
 #   Each concept has the same set of attributes, but of course different values.
 
+    # {
+    #     name: lookup,
+    #     instances: [
+    #         {
+    #             umid: '',
+    #             onto: '',
+    #         }
+    #     ]
+    # }
+    def lookupParser(self, contexts, id_dict, onto_dict):
+        concepts = self.make_concepts_object('lookup');
 
+        term = contexts[0].strip().lower()
+        try:
+            # Find term in dictionaries
+            id = id_dict[term]
+            onto = onto_dict[term]
+
+            # Save term
+            concepts['instances'].append({
+                'umid': id,
+                'onto': onto
+            })
+        # If term is not in any dictionary
+        except KeyError:
+            pass
+
+        return concepts
 
 
     # {

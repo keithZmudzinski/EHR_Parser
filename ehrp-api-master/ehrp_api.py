@@ -3,6 +3,7 @@ Biomedical text processing API for EHR Phenotyping
 '''
 
 from __future__ import print_function
+import os
 import argparse
 from flask import Flask, jsonify, request, abort
 from flask_restful import Api, Resource, reqparse
@@ -58,22 +59,18 @@ class Lookup(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('text', type=str, required=True, location='args',
                                help="text for finding concept id")
-        self.reqparse.add_argument('types', type=str, required=False, default=None, action='append',
-                               location='args', help='Types of concept to lookup')
         super(Lookup, self).__init__()
 
     def get(self):
         '''GET method'''
         print("GET - Lookup")         # for debugging
 
+        # Get argument
         args = self.reqparse.parse_args()
         text = args['text']
-        type = args['types']
 
-        if type == None:
-            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text)
-        else:
-            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text, type)
+        # Get results
+        concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text, ['lookup'])
 
         return jsonify(concepts)
 
@@ -83,7 +80,7 @@ def main():
     global ALL_GROUPINGS
 
     # Relative file path to user-defined json. Pleas update if project file-layout is changed.
-    GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH = 'resources/GrammarDictionaryParsingFunction.json'
+    GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH = os.path.join('resources', 'GrammarDictionaryParsingFunction.json')
 
     parser = argparse.ArgumentParser()
     # RESOURCE LOCATIONS
@@ -104,6 +101,8 @@ def main():
     OPTIONS = UnitexConfig(config)
     init_log_system(OPTIONS["verbose"], OPTIONS["debug"], OPTIONS["log"])
     load_alphabets(OPTIONS)
+
+    # Get all grammar, dictionary, parsing function groupings
     ALL_GROUPINGS = get_groupings_from_file(GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH)
 
     print("Starting app . . .")

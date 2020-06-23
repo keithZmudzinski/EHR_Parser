@@ -16,8 +16,9 @@ from unitex.tools import UnitexConstants, normalize, tokenize
 from unitex.resources import free_persistent_alphabet, load_persistent_alphabet
 
 # Constants reflecting project file layout, please update if you change where files are stored.
-GRAMMAR_RELATIVE_PATH = 'resources/Grammars/'
-DICTIONARY_RELATIVE_PATH = 'resources/Dictionaries'
+RESOURCES_RELATIVE_PATH = 'resources'
+GRAMMAR_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Grammars')
+DICTIONARY_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Dictionaries')
 
 # Called from ehrp_api.py
 def load_alphabets(options):
@@ -115,6 +116,7 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
         concept_parser.parsing_function = grammar_dictionary_parser['parsing_function']
 
         # Make use of ConceptParser member variables that might not be set during object construction
+        # Maps parsing_function string to function reference
         concept_parser.setup()
 
         # Process snt using concept_parser.grammar, concept_parser.dictionaries, and concept_parser.parsing_function

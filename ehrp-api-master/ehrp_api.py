@@ -58,8 +58,8 @@ class Lookup(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('text', type=str, required=True, location='args',
                                help="text for finding concept id")
-        self.reqparse.add_argument('type', type=str, required=False, default=None, action='append',
-                               location='args', help='Type of concept to lookup')
+        self.reqparse.add_argument('types', type=str, required=False, default=None, action='append',
+                               location='args', help='Types of concept to lookup')
         super(Lookup, self).__init__()
 
     def get(self):
@@ -68,7 +68,7 @@ class Lookup(Resource):
 
         args = self.reqparse.parse_args()
         text = args['text']
-        type = args['type']
+        type = args['types']
 
         if type == None:
             concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text)

@@ -21,17 +21,17 @@ The API provides two main functions; `extract` and `lookup`. `extract` is used t
 
 #### To make requests to the API
   1. `lookup` functionality is accessible through a `GET` request to the following URL<br>
-    URL : http://localhost:8020/ehrp/lookup?text=hypertension
+    URL : http://localhost:8020/ehrp/lookup?text=hypertension<br>
     ##### Parameters
     Required: 'text'; this should be the term you want to lookup.<br>
-    Optional: 'type'; The type of term you are looking up. If not provided, all types are tried.<br>
+    Optional: 'types'; The type of term you are looking up. If not provided, all types are tried.<br>
       Possible values for 'type':
         * 'drug'
         * 'prescription'
         * 'disorder'
         * 'chf'
         * 'ami'
-        * 'pna'
+        * ''
         * 'disorder'
 
   2. POST request to provide medical text to process.<br>

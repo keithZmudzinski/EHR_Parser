@@ -183,14 +183,20 @@ class ConceptParser:
     def lookupParser(self, contexts, id_dict, onto_dict):
         concepts = self.make_concepts_object('lookup');
 
-        term = contexts[0].strip().lower()
+        # What the user provided
+        raw_term = contexts[0].strip()
+
+        # Used to match against dictionaries
+        term = raw_term.lower()
+
+        # Find term in dictionaries
         try:
-            # Find term in dictionaries
             id = id_dict[term]
             onto = onto_dict[term]
 
             # Save term
             concepts['instances'].append({
+                'term': raw_term,
                 'umid': id,
                 'onto': onto
             })

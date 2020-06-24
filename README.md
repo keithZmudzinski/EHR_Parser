@@ -91,8 +91,8 @@ ___
 Both GET and POST requests return JSON objects.
 
 ### Error response codes
-* 400: Malformed url; check your base url to see if it conforms to one of the two above.
-* 422: Raised if optional parameter has unknown value; check the value(s) you are using for `type` or `types`, make sure it is one of the allowable types listed above.
+* 400: Malformed url; check your base url and parameter names to see if they conform to the descriptions above.
+* 422: Raised if 'types' parameter has unknown value; check the value(s) you are using for 'types', make sure it is one of the allowable types listed above.
 
 
 

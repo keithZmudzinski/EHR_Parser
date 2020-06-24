@@ -39,6 +39,7 @@ class ConceptParser:
             'comorbidityParser': self.comorbidityParser,
             'pt_summaryParser': self.pt_summaryParser,
             'lookupParser': self.lookupParser,
+            'masterParser': self.masterParser,
         }
 
     def setup(self):
@@ -237,6 +238,7 @@ class ConceptParser:
                     })
                 except KeyError as kerror:
                     continue
+
         return concepts
 
     # {
@@ -269,6 +271,7 @@ class ConceptParser:
                     })
                 except KeyError as kerror:
                     continue
+
         return concepts
 
     # {
@@ -292,8 +295,6 @@ class ConceptParser:
             dosage_and_full_context = dosage.split('|')[0]
             pre_dosage = dosage.split('|')[1]
             post_dosage = dosage.split('|')[2]
-
-            # print('Context' + context)
 
             # Skip if has no pre or post dosage
             if not(pre_dosage or post_dosage):
@@ -346,6 +347,7 @@ class ConceptParser:
                 'trigger': trigger,
                 'context': context
             })
+
         return concepts
 
        # {
@@ -372,6 +374,7 @@ class ConceptParser:
                 'trigger': trigger,
                 'context': context
             })
+
         return concepts
 
     # {
@@ -398,6 +401,7 @@ class ConceptParser:
                 'trigger': trigger,
                 'context': context
             }))
+
         return concepts
 
     # {
@@ -424,6 +428,7 @@ class ConceptParser:
                 'trigger': trigger,
                 'context': context
             }))
+
         return concepts
 
     # {
@@ -453,4 +458,33 @@ class ConceptParser:
                 'gender': gender,
                 'context': context
             }))
+
         return concepts
+
+    # masterParser is exception to schema of returned dictionaries
+    # It returns a list of dictionaries, each dictionary made by a different parsing function
+    # There is a try/except block in extract_concepts to handle this case.
+    def masterParser(self, contexts, id_dict, onto_dict):
+        used_concepts = {}
+        parsed_concepts = []
+
+        # Separate contexts by the parsing function they specify
+        for context in contexts:
+            left_context, output, right_context = context.split('\t')
+            to_parse, parsing_function = output.split('__ParsingFunction__')
+            to_parse = left_context + '\t' + to_parse + '\t' + right_context
+
+            # If haven't seen parsing_function yet, add it
+            if not(used_concepts.get(parsing_function, False)):
+                used_concepts[parsing_function] = [to_parse]
+            # Otherwise, add to the list
+            else:
+                used_concepts[parsing_function].append(to_parse)
+
+        # Apply appropriate parsing function to list of contexts
+        for parsing_function_str, context_list in used_concepts.items():
+            parsing_function = self.parsing_function_map[parsing_function_str]
+            concepts = parsing_function(context_list, id_dict, onto_dict)
+            parsed_concepts.append(concepts)
+
+        return parsed_concepts

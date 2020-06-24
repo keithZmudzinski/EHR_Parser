@@ -186,5 +186,29 @@
       "DrugsAtFDA"
     ],
     "parsing_function": "pt_summaryParser"
+  },
+  {
+    "grammar": "master.fst2",
+    "dictionaries": [
+      "DrugBank.bin",
+      "RxNorm.bin",
+      "OrangeBook.bin",
+      "RxNorm_Tradenames.bin",
+      "RxNorm_Ingredients.bin",
+      "ATC_Ingredients.bin",
+      "FDB_Ingredients.bin",
+      "DrugsAtFDA.bin",
+      "Meddra.bin"
+    ],
+    "ontologies": [
+      "DrugBank",
+      "RxNorm",
+      "OrangeBook",
+      "ATC",
+      "NDDF",
+      "DrugsAtFDA",
+      "Meddra"
+    ],
+    "parsing_function": "masterParser"
   }
 ]

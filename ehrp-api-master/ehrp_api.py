@@ -36,6 +36,10 @@ class Extract(Resource):
         types = args['types']
         file = args['file']
 
+        # If user tries to use 'lookup' graph in extract operation
+        if 'lookup' in types:
+            abort(422)
+
         # If both set or neither set
         if text and file or not(text or file):
             abort(422)

@@ -1,5 +1,5 @@
 #Unigraph
-SIZE 1188 840
+SIZE 1887 884
 FONT Times New Roman:  10
 OFONT Arial Unicode MS:B 12
 BCOLOR 16777215
@@ -17,7 +17,11 @@ DRST n
 FITS 100
 PORIENT L
 #
-3
-"<E>" 51 196 1 2 
-"" 300 200 0 
-"<DISORDER>" 147 165 1 1 
+7
+"<E>" 58 167 1 2 
+"" 827 224 0 
+"<DISORDER>" 151 167 2 3 1 
+"- + \/ + \" \"" 264 224 1 4 
+"<DISORDER>" 322 224 2 1 5 
+"-+\/ + \" \"" 448 280 1 6 
+"<DISORDER>" 511 280 1 1 

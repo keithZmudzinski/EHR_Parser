@@ -71,6 +71,13 @@ angular.module('ehrpui').controller('homeController', function ($scope, $http, $
         // Break list of different types into distinct variables
         for (const result of extractResults) {
 
+            // Change ontology names  to uppercase
+            for (var instance of result.instances) {
+              if (instance.onto) {
+                instance.onto = instance.onto.toUpperCase();
+              }
+            }
+
             // Create angular variable
             // normalize result.name, replacing all whitespace with underscores
             variableName = result.name.replace('/\s/g', '_').toLowerCase();
@@ -126,6 +133,14 @@ angular.module('ehrpui').controller('homeController', function ($scope, $http, $
 
           // Break list of different types into distinct variables
           for (const result of lookupResults) {
+
+              // Change ontology names to uppercase
+              for (var instance of result.instances) {
+                if (instance.onto) {
+                  instance.onto = instance.onto.toUpperCase();
+                }
+              }
+
               // Create angular variable
               // normalize result.name, replacing all whitespace with underscores
               variableName = result.name.replace('/\s/g', '_').toLowerCase();

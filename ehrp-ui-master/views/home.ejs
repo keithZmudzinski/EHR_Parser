@@ -97,44 +97,9 @@
     <div class="row">
       <div class="col-md-25">
 
-        <!-- Lookup Summary table --->
-        <div ng-if="_lookupPt_summary">
-            <%- include('tables/lookup/lookupSummaryTable'); %>
-        </div>
-
-        <!--- Lookup Drugs table --->
-        <div ng-if="_lookupDrug">
-            <%- include('tables/lookup/lookupDrugsTable'); %>
-        </div>
-
-        <!-- Lookup Disorders table --->
-        <div ng-if="_lookupDisorder">
-            <%- include('tables/lookup/lookupDisordersTable'); %>
-        </div>
-
-        <!-- Lookup Prescriptions table --->
-        <div ng-if="_lookupPrescription">
-            <%- include('tables/lookup/lookupPrescriptionsTable'); %>
-        </div>
-
-        <!-- Extract Chf table --->
-        <div ng-if="_lookupChf">
-            <%- include('tables/lookup/lookupChfTable'); %>
-        </div>
-
-        <!-- Lookup Ami table --->
-        <div ng-if="_lookupAmi">
-            <%- include('tables/lookup/lookupAmiTable'); %>
-
-        <!-- Lookup Pna table --->
-        <div ng-if="_lookupPna">
-            <%- include('tables/lookup/lookupPnaTable'); %>
-
-        </div>
-
-        <!-- Lookup Comorbidities table --->
-        <div ng-if="_lookupComorbidity">
-            <%- include('tables/lookup/lookupComorbidityTable'); %>
+        <!--- Lookup table --->
+        <div ng-if="_lookupLookup">
+            <%- include('tables/lookup/lookupTable'); %>
         </div>
 
       </div>

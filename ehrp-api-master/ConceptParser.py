@@ -232,7 +232,7 @@ class ConceptParser:
                     concepts['instances'].append({
                         'label': label,
                         'umid': umid,
-                        'onto': onto.upper(),
+                        'onto': onto,
                         'context': parts[0] + label + parts[2]
                     })
                 except KeyError as kerror:
@@ -264,7 +264,7 @@ class ConceptParser:
                     concepts['instances'].append({
                         'label': label,
                         'umid': umid,
-                        'onto': onto.upper(),
+                        'onto': onto,
                         'context': parts[0] + label + parts[2]
                     })
                 except KeyError as kerror:
@@ -307,7 +307,7 @@ class ConceptParser:
 
             try:
                 drug_id = id_dict[drug.lower()]
-                used_ontology = onto_dict[drug.lower()].upper()
+                used_ontology = onto_dict[drug.lower()]
             except KeyError as kerror:
                 drug_id = 'NA'
                 used_ontology = 'NA'

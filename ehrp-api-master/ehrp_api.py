@@ -19,9 +19,9 @@ class Extract(Resource):
         self.reqparse = reqparse.RequestParser()
         # Define allowable arguments
         self.reqparse.add_argument('text', required=False, default=None,
-                               location='values', help="text for extracting entities and concept ids")
+                               location=['values', 'json'], help="text for extracting entities and concept ids")
         self.reqparse.add_argument('types', type=str, required=False, default=None, action='append',
-                               location='values', help="type of concept to extract")
+                               location=['values', 'json'], help="type of concept to extract")
         self.reqparse.add_argument('file', type=FileStorage, required=False, default=None,
                                location='files', help="optional file to be parsed, at most one of 'text' or 'file' should have data")
         super(Extract, self).__init__()
@@ -37,11 +37,13 @@ class Extract(Resource):
         file = args['file']
 
         # If user tries to use 'lookup' graph in extract operation
-        if 'lookup' in types:
+        if types and 'lookup' in types:
+            print('[ERROR] User tried to use \'lookup\' in extract operation')
             abort(422)
 
         # If both set or neither set
-        if text and file or not(text or file):
+        if (text and file) or not(text or file):
+            print('[ERROR] Either both text and file are being used, or neither are')
             abort(422)
 
         # If file is set, text isn't, and so we update text with the contents of file

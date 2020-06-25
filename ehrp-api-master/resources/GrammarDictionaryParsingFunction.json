@@ -43,7 +43,8 @@
       "NDDF",
       "DrugsAtFDA"
     ],
-    "parsing_function": "drugParser"
+    "parsing_function": "drugParser",
+    "sub_graph": "True"
   },
   {
     "grammar": "prescription.fst2",
@@ -185,7 +186,8 @@
       "NDDF",
       "DrugsAtFDA"
     ],
-    "parsing_function": "pt_summaryParser"
+    "parsing_function": "pt_summaryParser",
+    "sub_graph": "True"
   },
   {
     "grammar": "master.fst2",

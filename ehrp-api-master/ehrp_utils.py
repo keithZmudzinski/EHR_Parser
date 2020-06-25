@@ -122,13 +122,13 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
         # Process snt using concept_parser.grammar, concept_parser.dictionaries, and concept_parser.parsing_function
         concepts = concept_parser.parse()
 
-        # Append only if at least one concept found.
         try:
+            # Append only if at least one concept found.
             if len(concepts['instances']):
                 list_of_concepts.append(concepts)
         # This happens if we are parsing the master graph
         except TypeError:
-            list_of_concepts = concepts
+            list_of_concepts.extend(concepts)
 
     return list_of_concepts
 
@@ -142,10 +142,15 @@ def get_concepts_from_groupings(all_groupings, concepts_to_get):
     ''' Returns list of concepts to get as specified by user '''
     concepts = []
 
-    # If all concepts desired, use master graph, it's faster
+    # If all concepts desired, use master graph and any sub-graphs not included in master graph.
+    # This is faster than making many individual queries.
     if concepts_to_get == 'ALL':
-        only_master = [grouping for grouping in all_groupings if grouping['grammar'] == 'master.fst2']
-        return only_master
+        for grouping in all_groupings:
+            if grouping.get('sub_graph', False):
+                concepts.append(grouping)
+            elif grouping['grammar'] == 'master.fst2':
+                concepts.append(grouping)
+        return concepts
 
     for concept in concepts_to_get:
         # Match desired concepts with associated grouping

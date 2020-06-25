@@ -17,7 +17,7 @@ DRST n
 FITS 100
 PORIENT L
 #
-186
+182
 "<E>" 70 200 17 2 6 11 15 26 34 62 77 95 118 121 128 137 158 166 174 180 
 "" 1783 204 0 
 "<E>" 370 143 1 20 
@@ -80,7 +80,7 @@ PORIENT L
 "<E>" 1534 609 1 1 
 "MAIN: Assessment, Impression, Chief Complaint or Active Problem" 442 989 0 
 ":pna_phrase" 794 1030 2 63 67 
-"<E>" 370 1030 1 182 
+"<E>" 370 1030 1 70 
 "<E>/__SeparatE__PNA_MAIN_FIRST" 1024 1030 1 68 
 "<E>" 1366 1030 1 72 
 "<TOKEN>/$[1,10]$" 708 1090 1 66 
@@ -88,7 +88,7 @@ PORIENT L
 "<E>/__SeparatE__PNA_MAIN" 1024 1090 1 69 
 "<E>" 1257 1030 1 64 
 "<E>" 1257 1090 1 64 
-":main_issue" 528 1030 1 183 
+":main_issue" 528 1030 1 71 
 "<E>" 652 1030 2 61 65 
 "<E>" 1534 1030 1 1 
 ":pna_phrase" 808 1232 1 76 
@@ -155,11 +155,11 @@ PORIENT L
 "pneumonitis+pneumonitic+pneumonitits" 924 2106 1 139 
 "history+h\/o" 603 2106 1 136 
 "$]" 667 2106 1 140 
-"<E>" 388 2106 1 184 
+"<E>" 388 2106 1 141 
 "Pneumonitis" 422 2077 0 
 "<E>/__SeparatE__PNEUMONITIS_MAIN" 1143 2106 1 133 
 "<TOKEN>/$[0,10]$" 700 2106 1 142 
-":main_issue" 436 2106 1 185 
+":main_issue" 436 2106 1 143 
 "<E>" 825 2106 1 134 
 "$![" 567 2106 1 135 
 "<E>" 1537 2106 1 1 
@@ -200,7 +200,3 @@ PORIENT L
 "<E>" 1537 2602 1 1 
 "<E>" 387 2602 1 176 
 "Various captured pre-contexts: confirmatory, probable, possible, historial, negated" 443 2563 0 
-"$|catch_output(" 488 1030 1 70 
-"$|catch_output)" 628 1030 1 71 
-"$|catch_output(" 413 2106 1 141 
-"$|catch_output)" 539 2106 1 143 

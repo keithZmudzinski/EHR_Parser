@@ -18,394 +18,394 @@ FITS 100
 PORIENT L
 #
 391
-"<E>" 53 294 26 85 44 57 65 98 117 129 144 151 160 109 189 200 216 247 253 268 282 283 289 300 311 333 342 366 384
-"" 1750 322 0
-"hemoptysis" 691 3222 2 3 28
-"<E>/__SeparatE__HEMOPTYSIS_MAIN" 1194 3222 1 37
-"pe+<MOT><<^pulm>> <MOT><<^emb>>" 691 3281 2 5 28
-"<E>/__SeparatE__PULM_EMBOL_MAIN" 1194 3281 1 37
-"dvt+<MOT><<(vein)|(venous)>> <MOT><<^throm>>" 691 3345 2 7 28
-"<E>/__SeparatE__DVT_MAIN" 1194 3345 1 37
-"<MOT><<^pulm>> edema" 691 3389 2 9 28
-"<E>/__SeparatE__PULM_EDEMA_MAIN" 1194 3389 1 37
-"<MOT><<^pulm>>" 691 3442 1 12
-"<E>/__SeparatE__PULM_OTHER_MAIN" 1194 3442 1 37
-"<MOT>" 819 3442 2 11 28
-":cmp_words" 691 3489 2 14 28
-"<E>/__SeparatE__CMP_MAIN" 1194 3489 1 37
-"anemia+anaemia" 691 3545 2 16 28
-"<E>/__SeparatE__ANEMIA_MAIN" 1194 3545 1 37
-"cardiomegaly+cmg" 691 3602 2 18 28
-"<E>/__SeparatE__CMG_MAIN" 1194 3602 1 37
-"abd+abdomen" 691 3648 2 20 28
-"<E>/__SeparatE__ABD_MAIN" 1194 3648 1 37
-"syncope+syncopal+passed out+faint+dizzy+dizziness" 690 3821 2 22 28
-"<E>/__SeparatE__SYNCOPE_MAIN" 1193 3821 1 37
-"<MOT><<^cel.*tis>>" 690 3896 2 24 28
-"<E>/__SeparatE__CELLULITIS_MAIN" 1193 3896 1 37
-"uti+urinary" 692 4147 2 26 28
-"<E>/__SeparatE__UTI_MAIN" 1195 4147 1 37
-"<E>/__SeparatE__DIARRHEA_MAIN" 1195 4205 1 37
-"<E>/__SeparatE__MISC_MAIN" 411 3922 1 37
-"afib+atrial fibrillation+a-fib+af" 692 4274 2 30 28
-"<E>/__SeparatE__AFIB_MAIN" 1195 4274 1 37
-"<MOT><<^bronc>>" 692 4323 2 32 28
-"<E>/__SeparatE__BRONC_MAIN" 1195 4323 1 37
-"<E>/__SeparatE__CVA_MAIN" 1194 3179 1 37
-"hypoxia" 691 3128 2 35 28
-"<E>/__SeparatE__HYPOXIA_MAIN" 1195 3128 1 37
-"cva+cerebrovascular" 691 3179 2 33 28
-"<E>" 1617 3648 1 1
-":main_issue" 347 343 1 67
-":sob_phrase" 926 343 1 40
-"<E>/__SeparatE__SOB_MAIN" 1017 343 1 48
-"<E>" 1558 294 1 1
-"<E>" 699 343 1 51
-"<TOKEN>/$[0,10]$" 574 343 1 42
-"<E>" 262 294 3 45 38 173
-":sob_phrase" 926 294 1 46
-"<E>/__SeparatE__SOB_PHRASE" 1017 294 1 47
-"<E>" 1200 294 1 41
-"<E>" 1200 343 1 41
-"<E>/__SeparatE__HTN_MAIN" 1017 449 1 53
-":htn_phrase" 926 449 1 49
-"<E>" 804 343 1 39
-"<E>" 804 449 1 50
-"<E>" 1200 449 1 41
-":main_issue" 347 449 1 70
-"<E>" 699 449 1 52
-"<TOKEN>/$[0,10]$" 574 449 1 55
-"<E>" 262 449 1 54
-"<E>/__SeparatE__CAD_MAIN" 1017 520 1 61
-":cad_phrase" 926 520 1 58
-"<E>" 804 520 1 59
-"<E>" 1200 520 1 41
-":main_issue" 347 520 1 73
-"<E>" 699 520 1 60
-"<TOKEN>/$[0,10]$" 574 520 1 63
-"<E>" 262 520 1 62
-"history+h\/o" 475 343 1 68
-"$![" 439 343 1 66
-"$]" 539 343 1 43
-"history+h\/o" 475 449 1 71
-"$![" 439 449 1 69
-"$]" 539 449 1 56
-"history+h\/o" 475 520 1 74
-"$![" 439 520 1 72
-"$]" 539 520 1 64
-"SOB" 295 262 0
-"HTN" 295 419 0
-"CAD" 295 496 0
-"<E>/__SeparatE__AMS_MAIN" 1017 623 1 81
-":ams_phrase" 926 623 1 78
-"<E>" 804 623 1 79
-"<E>" 1200 623 1 41
-":main_issue" 347 623 1 87
-"<E>" 699 623 1 80
-"<TOKEN>/$[0,10]$" 574 623 1 83
-"<E>" 262 623 1 82
-"history+h\/o" 477 623 1 88
-"$![" 441 623 1 86
-"$]" 541 623 1 84
-"AMS" 297 599 0
-"General Symptoms and Comorbidities for DiseaseID" 20 29 0
-"<E>/__SeparatE__ACS_MAIN" 1018 712 1 94
-":acs_phrase" 927 712 1 91
-"<E>" 805 712 1 92
-"<E>" 1201 712 1 41
-":main_issue" 348 712 1 100
-"<E>" 700 712 1 93
-"<TOKEN>/$[0,10]$" 575 712 1 96
-"<E>" 263 712 1 95
-"history+h\/o" 478 712 1 101
-"$![" 442 712 1 99
-"$]" 542 712 1 97
-"ACS" 298 688 0
-":main_issue" 318 3128 1 107
-"<E>" 424 3648 23 2 4 6 8 10 13 34 36 15 17 19 21 25 29 31 182 183 208 210 23 318 320 324
-"<TOKEN>/$[0,10]$" 545 3128 1 104
-"history+h\/o" 448 3128 1 108
-"$![" 412 3128 1 106
-"$]" 512 3128 1 105
-"<E>" 271 3128 1 103
-"<E>/__SeparatE__ARF_MAIN" 1019 802 1 113
-":arf_phrase" 928 802 1 110
-"<E>" 806 802 1 111
-"<E>" 1202 802 1 41
-":main_issue" 349 802 1 119
-"<E>" 701 802 1 112
-"<TOKEN>/$[0,10]$" 576 802 1 115
-"<E>" 264 802 1 114
-"history+h\/o" 479 802 1 120
-"$![" 443 802 1 118
-"$]" 543 802 1 116
-"ARF" 299 778 0
-"<E>/__SeparatE__CKD_MAIN" 1020 884 1 125
-":ckd_phrase" 929 884 1 122
-"<E>" 807 884 1 123
-"<E>" 1203 884 1 41
-":main_issue" 350 884 1 131
-"<E>" 702 884 1 124
-"<TOKEN>/$[0,10]$" 577 884 1 127
-"<E>" 265 884 1 126
-"history+h\/o" 480 884 1 132
-"$![" 444 884 1 130
-"$]" 544 884 1 128
-"CKD" 300 860 0
-"gi+<MOT><<^gastroi>>+578.9" 741 958 1 138
-"<E>/__SeparatE__GI_BLEED_MAIN" 1020 958 1 142
-"<E>" 702 958 1 134
-"<TOKEN>/$[0,10]$" 577 958 1 136
-"<MOT><<^bleed>>" 887 958 1 135
-"history+h\/o" 480 958 1 140
-"$]" 544 958 1 137
-"$![" 444 958 1 139
-"<E>" 1203 958 1 41
-":main_issue" 350 958 1 141
-"<E>" 265 958 1 143
-"GI" 300 934 0
-"<E>" 1202 1051 1 41
-"<MOT><<^dis>>+<MOT><<^fail>>" 887 1051 1 153
-"history+h\/o" 479 1051 1 150
-"<MOT><<^resp>>" 740 1051 1 147
-"$]" 543 1051 1 154
-"<E>" 264 1051 1 155
-"Respiratory distress" 299 1027 0
-"<E>/__SeparatE__RESP_MAIN" 1019 1051 1 146
-"<TOKEN>/$[0,10]$" 576 1051 1 156
-":main_issue" 349 1051 1 157
-"<E>" 701 1051 1 149
-"$![" 443 1051 1 148
-"$![" 450 146 1 162
-"$]" 550 146 1 167
-"<E>" 262 146 2 165 178
-"<E>/__SeparatE__CP_MAIN" 1017 146 1 163
-"history+h\/o" 486 146 1 159
-"<E>" 1200 146 1 41
-":cp_phrase" 926 146 1 161
-":main_issue" 356 146 1 158
-"<E>" 708 146 1 164
-"<TOKEN>/$[0,10]$" 583 146 1 166
-"Chest pain" 272 76 0
-"CP is worth separating out more detail" 338 116 0
-"SOB is worth separating out in more detail" 321 305 0
-":sob_phrase" 926 250 1 175
-"<E>" 1200 250 1 41
-":negation_words" 450 250 1 174
-"<MOT>+,/$[0,5]$" 651 250 1 171
-"<E>/__SeparatE__SOB_NEGATED" 1017 250 1 172
-":cp_phrase" 926 76 1 180
-"<E>" 1200 76 1 41
-":negation_words" 358 76 1 179
-"<MOT>+,/$[0,5]$" 559 76 1 176
-"<E>/__SeparatE__CP_NEGATED" 1017 76 1 177
-"no CP phrase only... not like SOB" 762 110 0
-"cough+nausea+vomit+fever+wound+fracture+ankle+facial+foot+feet+groin+hip+knee+thumb+wrist+ear+rib+neck+stomach" 691 4494 1 322
-"<MOT><<^diar.*h.*a$>>" 692 4205 2 27 28
-"Grab-bag of other things... TODO: refine iterate" 322 3082 0
-"<E>" 1202 1126 1 41
-":dm_phrase" 885 1126 1 191
-"history+h\/o" 477 1126 1 188
-"$]" 541 1126 1 192
-"<E>" 262 1126 1 193
-"Diabetes" 297 1102 0
-"<E>/__SeparatE__DM_MAIN" 1017 1126 1 185
-"<TOKEN>/$[0,10]$" 574 1126 1 194
-":main_issue" 347 1126 1 195
-"<E>" 699 1126 1 186
-"$![" 441 1126 1 187
-"<E>" 1202 1223 1 41
-":copd_phrase" 887 1223 1 202
-"history+h\/o" 479 1223 1 199
-"$]" 543 1223 1 203
-"<E>" 264 1223 1 204
-"COPD" 299 1199 0
-"<E>/__SeparatE__COPD_MAIN" 1019 1223 1 196
-"<TOKEN>/$[0,10]$" 576 1223 1 205
-":main_issue" 349 1223 1 206
-"<E>" 701 1223 1 197
-"$![" 443 1223 1 198
-"TODO: split out if gets any uglier" 780 1007 0
-"<MOT><<^pleural>> <MOT><<^eff>>+<MOT><<^pulmon>> <MOT><<^eff>>+<MOT><<^pericardi>> <MOT><<^eff>>" 691 3703 2 209 28
-"<E>/__SeparatE__EFFUSION_MAIN" 1193 3703 1 37
-"cpap" 691 3749 2 211 28
-"<E>/__SeparatE__CPAP_MAIN" 1193 3749 1 37
-"<E>" 1203 1292 1 41
-"<MOT><<^sep[st]i>>+<MOT><<^bact.*mia>>+sirs" 802 1292 1 218
-"history+h\/o" 480 1292 1 215
-"$]" 544 1292 1 219
-"<E>" 265 1292 2 220 326
-"Sepsis" 300 1268 0
-"<E>/__SeparatE__SEPSIS_MAIN" 1020 1292 1 212
-"<TOKEN>/$[0,10]$" 577 1292 1 221
-":main_issue" 350 1292 1 222
-"<E>" 702 1292 1 213
-"$![" 444 1292 1 214
-"<E>/__SeparatE__MVC_WORDS" 1034 1909 1 284
-"following" 670 2086 1 229
-"$]" 544 1990 1 265
-"history+h\/o" 480 1990 1 225
-"<MOT><<^exac>>" 761 2373 2 235 277
-"history+h\/o" 483 1847 1 261
-"trauma+surgery" 752 2086 1 250
-"<E>" 1211 2232 1 41
-"<E>" 1211 2537 1 41
-"<E>" 1173 2086 1 260
-"<E>/__SeparatE__PREGNANCY" 1033 2537 1 231
-"<E>" 353 1908 1 279
-"<E>/__SeparatE__EXACERB_ASTHMA" 955 2373 1 281
-":pregnancy_clues" 655 2537 1 233
-"<E>" 1207 1847 1 41
-":main_issue" 350 1990 1 256
-"<E>/__SeparatE__BNP_ELEVATED" 1033 2232 1 230
-"<E>" 1152 2413 1 270
-"<E>/__SeparatE__SURG_FRAC_OTHER" 1033 2086 1 232
-"<E>/__SeparatE__SURG_FRAC_MAIN" 1033 1990 1 260
-"copd" 658 2413 1 276
-"<E>/__SeparatE__MVC_MAIN" 1034 1847 1 237
-"<E>/__SeparatE__EXACERB_COPD" 955 2413 1 240
-"<E>" 586 2373 2 264 243
-"<E>" 266 2373 1 246
-":main_issue" 353 1847 1 266
-"BNP elevated" 303 2207 0
-"<E>+and" 823 2086 2 229 241
-"elevated+increased+high+hi+raised" 678 2232 1 278
-"surgery+fracture+trauma" 753 1990 2 242 241
-"<E>" 266 2537 1 236
-"<MOT>/$[0,2]$" 554 2060 1 224
-":mvc_words" 756 1909 1 223
-"$![" 444 1990 1 226
-"bnp" 678 2287 1 267
-"Motor vehicle" 304 1821 0
-"Exacerbation of ..." 303 2349 0
-"<E>" 1211 1990 1 41
-"$]" 547 1847 1 269
-"<MOT><<^resp>>" 394 2086 2 254 224
-"<E>" 702 1990 1 252
-"asthma" 658 2373 1 227
-"<TOKEN>/$[0,10]$" 577 1990 1 263
-"$![" 447 1847 1 228
-"elevated+increased+high+hi+raised" 811 2287 1 239
-"<E>" 266 1990 2 238 262
-"<TOKEN>/$[0,10]$" 580 1847 1 273
-"<E>" 1211 2373 1 41
-"<E>" 524 2287 1 257
-"Surgery or facture or other traumas unlikely to be disease" 303 1951 0
-"<E>" 705 1847 1 275
-"Pregnancy" 307 2509 0
-":mvc_words" 756 1847 2 244 223
-"<MOT><<^exac>>" 761 2413 2 245 277
-"<E>/__SeparatE__EXACERB_OTHER" 955 2452 1 280
-"bnp" 811 2232 1 239
-"<E>" 708 1909 1 255
-"<E>" 1152 2452 1 270
-"<E>" 1152 2373 1 270
-"<E>" 269 1847 2 248 234
-"<E>" 266 2232 2 251 271
-"<E>" 1150 1909 1 237
-"<E>" 1207 1387 1 41
-"hiv+AIDS+pneumocystis" 805 1387 1 291
-"history+h\/o" 484 1387 1 288
-"$]" 548 1387 1 292
-"<E>" 269 1387 1 293
-"HIV" 304 1363 0
-"<E>/__SeparatE__HIV_MAIN" 1024 1387 1 285
-"<TOKEN>/$[0,10]$" 581 1387 1 294
-":main_issue" 354 1387 1 295
-"<E>" 706 1387 1 286
-"$![" 448 1387 1 287
-"<E>" 1208 1476 1 41
-"pancreatitis+577#.#0" 806 1476 1 302
-"history+h\/o" 485 1476 1 299
-"$]" 549 1476 1 303
-"<E>" 270 1476 1 304
-"Pancreatitis" 304 1452 0
-"<E>/__SeparatE__PANCREATITIS_MAIN" 1025 1476 1 296
-"<TOKEN>/$[0,10]$" 582 1476 1 305
-":main_issue" 355 1476 1 306
-"<E>" 707 1476 1 297
-"$![" 449 1476 1 298
-"<E>" 1204 1571 1 41
-"cabg+artery bypass graft" 802 1571 1 313
-"history+h\/o" 481 1571 1 310
-"$]" 545 1571 1 314
-"<E>" 266 1571 1 315
-"CABG" 300 1542 0
-"<E>/__SeparatE__CABG_MAIN" 1021 1571 1 307
-"<TOKEN>/$[0,10]$" 578 1571 1 316
-":main_issue" 351 1571 1 317
-"<E>" 703 1571 1 308
-"$![" 445 1571 1 309
-"<MOT><<^cir.*hosis>>" 690 3935 2 319 28
-"<E>/__SeparatE__CIRRHOSIS_MAIN" 1193 3935 0
-"sirs" 689 3972 2 321 28
-"<E>/__SeparatE__SIRS_MAIN" 1193 3972 0
-"<E>" 1194 4493 1 28
-"UGLY!! Fix?" 359 3809 0
-":cancer_words" 689 4026 2 325 28
-"<E>/__SeparatE__CANCER_MAIN" 1193 4026 1 37
-"<E>" 349 1326 1 327
-"in septic shock" 802 1326 1 328
-"<E>" 981 1326 1 218
-"<E>" 1204 1656 1 41
-"aortic stenosis" 814 1656 1 335
-"history+h\/o" 481 1656 1 332
-"$]" 545 1656 1 336
-"<E>" 266 1656 1 337
-"Aortic Stenosis" 300 1627 0
-"<E>/__SeparatE__AS_MAIN" 1021 1656 1 329
-"<TOKEN>/$[0,10]$" 578 1656 1 338
-":main_issue" 351 1656 1 339
-"<E>" 703 1656 2 330 340
-"$![" 445 1656 1 331
-"mild+moderate+severe" 739 1693 1 341
-"as" 819 1693 1 335
-"<E>" 266 2632 2 346 359
-"<E>/__SeparatE__ANGINA_PHRASE" 1033 2691 1 356
-"$]" 562 2632 1 349
-"history+h\/o" 498 2632 1 344
-":main_issue" 368 2632 1 347
-"$![" 462 2632 1 345
-"<E>" 720 2632 2 350 351
-"<TOKEN>/$[0,10]$" 595 2632 1 348
-"angina" 795 2615 1 357
-"unstable angina+acute angina" 795 2648 1 358
-"<E>/__SeparatE__ANGINA_MAIN" 1033 2615 1 354
-"<E>/__SeparatE__ANGINA_UNSTABLE_MAIN" 1033 2648 1 355
-"<E>" 1216 2615 1 41
-"<E>" 1174 2648 1 354
-"<E>" 1174 2691 1 354
-"<E>" 921 2615 2 352 343
-"<E>" 921 2648 2 353 343
-"<E>" 370 2691 1 360
-"angina" 795 2691 1 343
-"<E>" 348 2830 1 362
-"<MOT><<^isch>>" 767 2830 1 363
-":cmp_words" 906 2830 1 364
-"<E>/__SeparatE__ISCHEMIC_CMP" 1033 2830 1 365
-"<E>" 1174 2830 1 378
-"<E>" 266 2785 2 369 361
-"$]" 544 2785 1 372
-"history+h\/o" 480 2785 1 367
-":main_issue" 350 2785 1 370
-"$![" 444 2785 1 368
-"<E>" 702 2785 1 375
-"<TOKEN>/$[0,10]$" 577 2785 1 371
-"Angina (specially pulled in addition to chest pain)" 309 2599 0
-"Ischemic Cardiomyopathy" 301 2757 0
-"<MOT><<^isch>>" 767 2785 1 376
-":cmp_words" 904 2785 2 364 377
-"<E>/__SeparatE__ISCHEMIC_CMP_MAIN" 1033 2785 1 378
-"<E>" 1216 2785 1 41
-"angina negation handled as part of chest pain" 410 2676 0
-"<E>" 1208 1761 1 41
-"MRSA+MSSA+methicillin resistant staphylococcus aureus" 746 1761 1 386
-"history+h\/o" 485 1761 1 383
-"$]" 549 1761 1 387
-"<E>" 270 1761 1 388
-"MRSA or MSSA" 305 1737 0
-"<E>/__SeparatE__MRSA_MAIN" 1025 1761 1 380
-"<TOKEN>/$[0,10]$" 582 1761 1 389
-":main_issue" 355 1761 1 390
-"<E>" 707 1761 1 381
-"$![" 449 1761 1 382
+"<E>" 53 294 26 85 44 57 65 98 117 129 144 151 160 109 189 200 216 247 253 268 282 283 289 300 311 333 342 366 384 
+"" 1750 322 0 
+"hemoptysis" 691 3222 2 3 28 
+"<E>/__SeparatE__HEMOPTYSIS_MAIN" 1194 3222 1 37 
+"pe+<MOT><<^pulm>> <MOT><<^emb>>" 691 3281 2 5 28 
+"<E>/__SeparatE__PULM_EMBOL_MAIN" 1194 3281 1 37 
+"dvt+<MOT><<(vein)|(venous)>> <MOT><<^throm>>" 691 3345 2 7 28 
+"<E>/__SeparatE__DVT_MAIN" 1194 3345 1 37 
+"<MOT><<^pulm>> edema" 691 3389 2 9 28 
+"<E>/__SeparatE__PULM_EDEMA_MAIN" 1194 3389 1 37 
+"<MOT><<^pulm>>" 691 3442 1 12 
+"<E>/__SeparatE__PULM_OTHER_MAIN" 1194 3442 1 37 
+"<MOT>" 819 3442 2 11 28 
+":cmp_words" 691 3489 2 14 28 
+"<E>/__SeparatE__CMP_MAIN" 1194 3489 1 37 
+"anemia+anaemia" 691 3545 2 16 28 
+"<E>/__SeparatE__ANEMIA_MAIN" 1194 3545 1 37 
+"cardiomegaly+cmg" 691 3602 2 18 28 
+"<E>/__SeparatE__CMG_MAIN" 1194 3602 1 37 
+"abd+abdomen" 691 3648 2 20 28 
+"<E>/__SeparatE__ABD_MAIN" 1194 3648 1 37 
+"syncope+syncopal+passed out+faint+dizzy+dizziness" 690 3821 2 22 28 
+"<E>/__SeparatE__SYNCOPE_MAIN" 1193 3821 1 37 
+"<MOT><<^cel.*tis>>" 690 3896 2 24 28 
+"<E>/__SeparatE__CELLULITIS_MAIN" 1193 3896 1 37 
+"uti+urinary" 692 4147 2 26 28 
+"<E>/__SeparatE__UTI_MAIN" 1195 4147 1 37 
+"<E>/__SeparatE__DIARRHEA_MAIN" 1195 4205 1 37 
+"<E>/__SeparatE__MISC_MAIN" 411 3922 1 37 
+"afib+atrial fibrillation+a-fib+af" 692 4274 2 30 28 
+"<E>/__SeparatE__AFIB_MAIN" 1195 4274 1 37 
+"<MOT><<^bronc>>" 692 4323 2 32 28 
+"<E>/__SeparatE__BRONC_MAIN" 1195 4323 1 37 
+"<E>/__SeparatE__CVA_MAIN" 1194 3179 1 37 
+"hypoxia" 691 3128 2 35 28 
+"<E>/__SeparatE__HYPOXIA_MAIN" 1195 3128 1 37 
+"cva+cerebrovascular" 691 3179 2 33 28 
+"<E>" 1617 3648 1 1 
+":main_issue" 347 343 1 67 
+":sob_phrase" 926 343 1 40 
+"<E>/__SeparatE__SOB_MAIN" 1017 343 1 48 
+"<E>" 1558 294 1 1 
+"<E>" 699 343 1 51 
+"<TOKEN>/$[0,10]$" 574 343 1 42 
+"<E>" 262 294 3 45 38 173 
+":sob_phrase" 926 294 1 46 
+"<E>/__SeparatE__SOB_PHRASE" 1017 294 1 47 
+"<E>" 1200 294 1 41 
+"<E>" 1200 343 1 41 
+"<E>/__SeparatE__HTN_MAIN" 1017 449 1 53 
+":htn_phrase" 926 449 1 49 
+"<E>" 804 343 1 39 
+"<E>" 804 449 1 50 
+"<E>" 1200 449 1 41 
+":main_issue" 347 449 1 70 
+"<E>" 699 449 1 52 
+"<TOKEN>/$[0,10]$" 574 449 1 55 
+"<E>" 262 449 1 54 
+"<E>/__SeparatE__CAD_MAIN" 1017 520 1 61 
+":cad_phrase" 926 520 1 58 
+"<E>" 804 520 1 59 
+"<E>" 1200 520 1 41 
+":main_issue" 347 520 1 73 
+"<E>" 699 520 1 60 
+"<TOKEN>/$[0,10]$" 574 520 1 63 
+"<E>" 262 520 1 62 
+"history+h\/o" 475 343 1 68 
+"$![" 439 343 1 66 
+"$]" 539 343 1 43 
+"history+h\/o" 475 449 1 71 
+"$![" 439 449 1 69 
+"$]" 539 449 1 56 
+"history+h\/o" 475 520 1 74 
+"$![" 439 520 1 72 
+"$]" 539 520 1 64 
+"SOB" 295 262 0 
+"HTN" 295 419 0 
+"CAD" 295 496 0 
+"<E>/__SeparatE__AMS_MAIN" 1017 623 1 81 
+":ams_phrase" 926 623 1 78 
+"<E>" 804 623 1 79 
+"<E>" 1200 623 1 41 
+":main_issue" 347 623 1 87 
+"<E>" 699 623 1 80 
+"<TOKEN>/$[0,10]$" 574 623 1 83 
+"<E>" 262 623 1 82 
+"history+h\/o" 477 623 1 88 
+"$![" 441 623 1 86 
+"$]" 541 623 1 84 
+"AMS" 297 599 0 
+"General Symptoms and Comorbidities for DiseaseID" 20 29 0 
+"<E>/__SeparatE__ACS_MAIN" 1018 712 1 94 
+":acs_phrase" 927 712 1 91 
+"<E>" 805 712 1 92 
+"<E>" 1201 712 1 41 
+":main_issue" 348 712 1 100 
+"<E>" 700 712 1 93 
+"<TOKEN>/$[0,10]$" 575 712 1 96 
+"<E>" 263 712 1 95 
+"history+h\/o" 478 712 1 101 
+"$![" 442 712 1 99 
+"$]" 542 712 1 97 
+"ACS" 298 688 0 
+":main_issue" 318 3128 1 107 
+"<E>" 424 3648 23 2 4 6 8 10 13 34 36 15 17 19 21 25 29 31 182 183 208 210 23 318 320 324 
+"<TOKEN>/$[0,10]$" 545 3128 1 104 
+"history+h\/o" 448 3128 1 108 
+"$![" 412 3128 1 106 
+"$]" 512 3128 1 105 
+"<E>" 271 3128 1 103 
+"<E>/__SeparatE__ARF_MAIN" 1019 802 1 113 
+":arf_phrase" 928 802 1 110 
+"<E>" 806 802 1 111 
+"<E>" 1202 802 1 41 
+":main_issue" 349 802 1 119 
+"<E>" 701 802 1 112 
+"<TOKEN>/$[0,10]$" 576 802 1 115 
+"<E>" 264 802 1 114 
+"history+h\/o" 479 802 1 120 
+"$![" 443 802 1 118 
+"$]" 543 802 1 116 
+"ARF" 299 778 0 
+"<E>/__SeparatE__CKD_MAIN" 1020 884 1 125 
+":ckd_phrase" 929 884 1 122 
+"<E>" 807 884 1 123 
+"<E>" 1203 884 1 41 
+":main_issue" 350 884 1 131 
+"<E>" 702 884 1 124 
+"<TOKEN>/$[0,10]$" 577 884 1 127 
+"<E>" 265 884 1 126 
+"history+h\/o" 480 884 1 132 
+"$![" 444 884 1 130 
+"$]" 544 884 1 128 
+"CKD" 300 860 0 
+"gi+<MOT><<^gastroi>>+578.9" 741 958 1 138 
+"<E>/__SeparatE__GI_BLEED_MAIN" 1020 958 1 142 
+"<E>" 702 958 1 134 
+"<TOKEN>/$[0,10]$" 577 958 1 136 
+"<MOT><<^bleed>>" 887 958 1 135 
+"history+h\/o" 480 958 1 140 
+"$]" 544 958 1 137 
+"$![" 444 958 1 139 
+"<E>" 1203 958 1 41 
+":main_issue" 350 958 1 141 
+"<E>" 265 958 1 143 
+"GI" 300 934 0 
+"<E>" 1202 1051 1 41 
+"<MOT><<^dis>>+<MOT><<^fail>>" 887 1051 1 153 
+"history+h\/o" 479 1051 1 150 
+"<MOT><<^resp>>" 740 1051 1 147 
+"$]" 543 1051 1 154 
+"<E>" 264 1051 1 155 
+"Respiratory distress" 299 1027 0 
+"<E>/__SeparatE__RESP_MAIN" 1019 1051 1 146 
+"<TOKEN>/$[0,10]$" 576 1051 1 156 
+":main_issue" 349 1051 1 157 
+"<E>" 701 1051 1 149 
+"$![" 443 1051 1 148 
+"$![" 450 146 1 162 
+"$]" 550 146 1 167 
+"<E>" 262 146 2 165 178 
+"<E>/__SeparatE__CP_MAIN" 1017 146 1 163 
+"history+h\/o" 486 146 1 159 
+"<E>" 1200 146 1 41 
+":cp_phrase" 926 146 1 161 
+":main_issue" 356 146 1 158 
+"<E>" 708 146 1 164 
+"<TOKEN>/$[0,10]$" 583 146 1 166 
+"Chest pain" 272 76 0 
+"CP is worth separating out more detail" 338 116 0 
+"SOB is worth separating out in more detail" 321 305 0 
+":sob_phrase" 926 250 1 175 
+"<E>" 1200 250 1 41 
+":negation_words" 450 250 1 174 
+"<MOT>+,/$[0,5]$" 651 250 1 171 
+"<E>/__SeparatE__SOB_NEGATED" 1017 250 1 172 
+":cp_phrase" 926 76 1 180 
+"<E>" 1200 76 1 41 
+":negation_words" 358 76 1 179 
+"<MOT>+,/$[0,5]$" 559 76 1 176 
+"<E>/__SeparatE__CP_NEGATED" 1017 76 1 177 
+"no CP phrase only... not like SOB" 762 110 0 
+"cough+nausea+vomit+fever+wound+fracture+ankle+facial+foot+feet+groin+hip+knee+thumb+wrist+ear+rib+neck+stomach" 691 4494 1 322 
+"<MOT><<^diar.*h.*a$>>" 692 4205 2 27 28 
+"Grab-bag of other things... TODO: refine iterate" 322 3082 0 
+"<E>" 1202 1126 1 41 
+":dm_phrase" 885 1126 1 191 
+"history+h\/o" 477 1126 1 188 
+"$]" 541 1126 1 192 
+"<E>" 262 1126 1 193 
+"Diabetes" 297 1102 0 
+"<E>/__SeparatE__DM_MAIN" 1017 1126 1 185 
+"<TOKEN>/$[0,10]$" 574 1126 1 194 
+":main_issue" 347 1126 1 195 
+"<E>" 699 1126 1 186 
+"$![" 441 1126 1 187 
+"<E>" 1202 1223 1 41 
+":copd_phrase" 887 1223 1 202 
+"history+h\/o" 479 1223 1 199 
+"$]" 543 1223 1 203 
+"<E>" 264 1223 1 204 
+"COPD" 299 1199 0 
+"<E>/__SeparatE__COPD_MAIN" 1019 1223 1 196 
+"<TOKEN>/$[0,10]$" 576 1223 1 205 
+":main_issue" 349 1223 1 206 
+"<E>" 701 1223 1 197 
+"$![" 443 1223 1 198 
+"TODO: split out if gets any uglier" 780 1007 0 
+"<MOT><<^pleural>> <MOT><<^eff>>+<MOT><<^pulmon>> <MOT><<^eff>>+<MOT><<^pericardi>> <MOT><<^eff>>" 691 3703 2 209 28 
+"<E>/__SeparatE__EFFUSION_MAIN" 1193 3703 1 37 
+"cpap" 691 3749 2 211 28 
+"<E>/__SeparatE__CPAP_MAIN" 1193 3749 1 37 
+"<E>" 1203 1292 1 41 
+"<MOT><<^sep[st]i>>+<MOT><<^bact.*mia>>+sirs" 802 1292 1 218 
+"history+h\/o" 480 1292 1 215 
+"$]" 544 1292 1 219 
+"<E>" 265 1292 2 220 326 
+"Sepsis" 300 1268 0 
+"<E>/__SeparatE__SEPSIS_MAIN" 1020 1292 1 212 
+"<TOKEN>/$[0,10]$" 577 1292 1 221 
+":main_issue" 350 1292 1 222 
+"<E>" 702 1292 1 213 
+"$![" 444 1292 1 214 
+"<E>/__SeparatE__MVC_WORDS" 1034 1909 1 284 
+"following" 670 2086 1 229 
+"$]" 544 1990 1 265 
+"history+h\/o" 480 1990 1 225 
+"<MOT><<^exac>>" 761 2373 2 235 277 
+"history+h\/o" 483 1847 1 261 
+"trauma+surgery" 752 2086 1 250 
+"<E>" 1211 2232 1 41 
+"<E>" 1211 2537 1 41 
+"<E>" 1173 2086 1 260 
+"<E>/__SeparatE__PREGNANCY" 1033 2537 1 231 
+"<E>" 353 1908 1 279 
+"<E>/__SeparatE__EXACERB_ASTHMA" 955 2373 1 281 
+":pregnancy_clues" 655 2537 1 233 
+"<E>" 1207 1847 1 41 
+":main_issue" 350 1990 1 256 
+"<E>/__SeparatE__BNP_ELEVATED" 1033 2232 1 230 
+"<E>" 1152 2413 1 270 
+"<E>/__SeparatE__SURG_FRAC_OTHER" 1033 2086 1 232 
+"<E>/__SeparatE__SURG_FRAC_MAIN" 1033 1990 1 260 
+"copd" 658 2413 1 276 
+"<E>/__SeparatE__MVC_MAIN" 1034 1847 1 237 
+"<E>/__SeparatE__EXACERB_COPD" 955 2413 1 240 
+"<E>" 586 2373 2 264 243 
+"<E>" 266 2373 1 246 
+":main_issue" 353 1847 1 266 
+"BNP elevated" 303 2207 0 
+"<E>+and" 823 2086 2 229 241 
+"elevated+increased+high+hi+raised" 678 2232 1 278 
+"surgery+fracture+trauma" 753 1990 2 242 241 
+"<E>" 266 2537 1 236 
+"<MOT>/$[0,2]$" 554 2060 1 224 
+":mvc_words" 756 1909 1 223 
+"$![" 444 1990 1 226 
+"bnp" 678 2287 1 267 
+"Motor vehicle" 304 1821 0 
+"Exacerbation of ..." 303 2349 0 
+"<E>" 1211 1990 1 41 
+"$]" 547 1847 1 269 
+"<MOT><<^resp>>" 394 2086 2 254 224 
+"<E>" 702 1990 1 252 
+"asthma" 658 2373 1 227 
+"<TOKEN>/$[0,10]$" 577 1990 1 263 
+"$![" 447 1847 1 228 
+"elevated+increased+high+hi+raised" 811 2287 1 239 
+"<E>" 266 1990 2 238 262 
+"<TOKEN>/$[0,10]$" 580 1847 1 273 
+"<E>" 1211 2373 1 41 
+"<E>" 524 2287 1 257 
+"Surgery or facture or other traumas unlikely to be disease" 303 1951 0 
+"<E>" 705 1847 1 275 
+"Pregnancy" 307 2509 0 
+":mvc_words" 756 1847 2 244 223 
+"<MOT><<^exac>>" 761 2413 2 245 277 
+"<E>/__SeparatE__EXACERB_OTHER" 955 2452 1 280 
+"bnp" 811 2232 1 239 
+"<E>" 708 1909 1 255 
+"<E>" 1152 2452 1 270 
+"<E>" 1152 2373 1 270 
+"<E>" 269 1847 2 248 234 
+"<E>" 266 2232 2 251 271 
+"<E>" 1150 1909 1 237 
+"<E>" 1207 1387 1 41 
+"hiv+AIDS+pneumocystis" 805 1387 1 291 
+"history+h\/o" 484 1387 1 288 
+"$]" 548 1387 1 292 
+"<E>" 269 1387 1 293 
+"HIV" 304 1363 0 
+"<E>/__SeparatE__HIV_MAIN" 1024 1387 1 285 
+"<TOKEN>/$[0,10]$" 581 1387 1 294 
+":main_issue" 354 1387 1 295 
+"<E>" 706 1387 1 286 
+"$![" 448 1387 1 287 
+"<E>" 1208 1476 1 41 
+"pancreatitis+577#.#0" 806 1476 1 302 
+"history+h\/o" 485 1476 1 299 
+"$]" 549 1476 1 303 
+"<E>" 270 1476 1 304 
+"Pancreatitis" 304 1452 0 
+"<E>/__SeparatE__PANCREATITIS_MAIN" 1025 1476 1 296 
+"<TOKEN>/$[0,10]$" 582 1476 1 305 
+":main_issue" 355 1476 1 306 
+"<E>" 707 1476 1 297 
+"$![" 449 1476 1 298 
+"<E>" 1204 1571 1 41 
+"cabg+artery bypass graft" 802 1571 1 313 
+"history+h\/o" 481 1571 1 310 
+"$]" 545 1571 1 314 
+"<E>" 266 1571 1 315 
+"CABG" 300 1542 0 
+"<E>/__SeparatE__CABG_MAIN" 1021 1571 1 307 
+"<TOKEN>/$[0,10]$" 578 1571 1 316 
+":main_issue" 351 1571 1 317 
+"<E>" 703 1571 1 308 
+"$![" 445 1571 1 309 
+"<MOT><<^cir.*hosis>>" 690 3935 2 319 28 
+"<E>/__SeparatE__CIRRHOSIS_MAIN" 1193 3935 0 
+"sirs" 689 3972 2 321 28 
+"<E>/__SeparatE__SIRS_MAIN" 1193 3972 0 
+"<E>" 1194 4493 1 28 
+"UGLY!! Fix?" 359 3809 0 
+":cancer_words" 689 4026 2 325 28 
+"<E>/__SeparatE__CANCER_MAIN" 1193 4026 1 37 
+"<E>" 349 1326 1 327 
+"in septic shock" 802 1326 1 328 
+"<E>" 981 1326 1 218 
+"<E>" 1204 1656 1 41 
+"aortic stenosis" 814 1656 1 335 
+"history+h\/o" 481 1656 1 332 
+"$]" 545 1656 1 336 
+"<E>" 266 1656 1 337 
+"Aortic Stenosis" 300 1627 0 
+"<E>/__SeparatE__AS_MAIN" 1021 1656 1 329 
+"<TOKEN>/$[0,10]$" 578 1656 1 338 
+":main_issue" 351 1656 1 339 
+"<E>" 703 1656 2 330 340 
+"$![" 445 1656 1 331 
+"mild+moderate+severe" 739 1693 1 341 
+"as" 819 1693 1 335 
+"<E>" 266 2632 2 346 359 
+"<E>/__SeparatE__ANGINA_PHRASE" 1033 2691 1 356 
+"$]" 562 2632 1 349 
+"history+h\/o" 498 2632 1 344 
+":main_issue" 368 2632 1 347 
+"$![" 462 2632 1 345 
+"<E>" 720 2632 2 350 351 
+"<TOKEN>/$[0,10]$" 595 2632 1 348 
+"angina" 795 2615 1 357 
+"unstable angina+acute angina" 795 2648 1 358 
+"<E>/__SeparatE__ANGINA_MAIN" 1033 2615 1 354 
+"<E>/__SeparatE__ANGINA_UNSTABLE_MAIN" 1033 2648 1 355 
+"<E>" 1216 2615 1 41 
+"<E>" 1174 2648 1 354 
+"<E>" 1174 2691 1 354 
+"<E>" 921 2615 2 352 343 
+"<E>" 921 2648 2 353 343 
+"<E>" 370 2691 1 360 
+"angina" 795 2691 1 343 
+"<E>" 348 2830 1 362 
+"<MOT><<^isch>>" 767 2830 1 363 
+":cmp_words" 906 2830 1 364 
+"<E>/__SeparatE__ISCHEMIC_CMP" 1033 2830 1 365 
+"<E>" 1174 2830 1 378 
+"<E>" 266 2785 2 369 361 
+"$]" 544 2785 1 372 
+"history+h\/o" 480 2785 1 367 
+":main_issue" 350 2785 1 370 
+"$![" 444 2785 1 368 
+"<E>" 702 2785 1 375 
+"<TOKEN>/$[0,10]$" 577 2785 1 371 
+"Angina (specially pulled in addition to chest pain)" 309 2599 0 
+"Ischemic Cardiomyopathy" 301 2757 0 
+"<MOT><<^isch>>" 767 2785 1 376 
+":cmp_words" 904 2785 2 364 377 
+"<E>/__SeparatE__ISCHEMIC_CMP_MAIN" 1033 2785 1 378 
+"<E>" 1216 2785 1 41 
+"angina negation handled as part of chest pain" 410 2676 0 
+"<E>" 1208 1761 1 41 
+"MRSA+MSSA+methicillin resistant staphylococcus aureus" 746 1761 1 386 
+"history+h\/o" 485 1761 1 383 
+"$]" 549 1761 1 387 
+"<E>" 270 1761 1 388 
+"MRSA or MSSA" 305 1737 0 
+"<E>/__SeparatE__MRSA_MAIN" 1025 1761 1 380 
+"<TOKEN>/$[0,10]$" 582 1761 1 389 
+":main_issue" 355 1761 1 390 
+"<E>" 707 1761 1 381 
+"$![" 449 1761 1 382 

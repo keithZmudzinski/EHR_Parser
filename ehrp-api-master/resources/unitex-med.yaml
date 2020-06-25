@@ -63,7 +63,7 @@ tools:
     negation_operator: tilde
     number_of_matches: null
     output_mode: merge
-    protect_dic_chars: false 
+    protect_dic_chars: false
     sntdir: null
     start_on_space: false
     stop_token_count: null

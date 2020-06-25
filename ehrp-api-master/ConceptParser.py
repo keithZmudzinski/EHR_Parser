@@ -418,6 +418,7 @@ class ConceptParser:
         concepts = self.make_concepts_object('comorbidity')
 
         for context in contexts:
+            print(context)
             parts = context.split('\t')
             trigger = parts[1]
             trigger, type = trigger.split('__SeparatE__')
@@ -446,6 +447,7 @@ class ConceptParser:
         concepts = self.make_concepts_object('pt_summary')
 
         for context in contexts:
+            # print(context)
             parts = context.split('\t')
             trigger = parts[1]
             trigger, info = trigger.split('__SeparatE__')
@@ -470,6 +472,7 @@ class ConceptParser:
 
         # Separate contexts by the parsing function they specify
         for context in contexts:
+            print('Context:', context)
             left_context, output, right_context = context.split('\t')
             to_parse, parsing_function = output.split('__ParsingFunction__')
             to_parse = left_context + '\t' + to_parse + '\t' + right_context

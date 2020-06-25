@@ -36,9 +36,10 @@ class Extract(Resource):
         types = args['types']
         file = args['file']
 
-        # If user tries to use 'lookup' graph in extract operation
-        if types and 'lookup' in types:
-            print('[ERROR] User tried to use \'lookup\' in extract operation')
+        # If user tries to use 'lookup' graph in extract operation or user 'master' specifically.
+        if types and ( ('lookup' in types) or ('master' in types) ):
+            print('''[ERROR] User tried to use \'lookup\' in extract operation
+                  or specified master graph''')
             abort(422)
 
         # If both set or neither set

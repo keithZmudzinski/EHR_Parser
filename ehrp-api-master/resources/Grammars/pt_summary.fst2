@@ -1,5 +1,5 @@
 0000000002
--1 pt_summary_keith
+-1 pt_summary
 : 37 4 36 3 14 2 11 1 
 : 13 5 12 5 
 : 37 4 36 3 11 1 
@@ -41,7 +41,7 @@ t
 : 7 39 
 : 10 36 
 f 
--2 gender_phrase_keith
+-2 gender_phrase
 : 51 1 50 1 49 1 48 1 44 3 42 2 41 1 40 1 39 1 
 t 
 : 10 4 
@@ -85,7 +85,7 @@ f
 %$age(
 %$age)
 %$|gender)
-%<E>/ $age.SET$__SeparatE__$age$,$gender$
+%<E>/$age.SET$__SeparatE__$age$,$gender$
 %$|gender(
 %<E>/${0}$UNK
 %<E>/${1}$

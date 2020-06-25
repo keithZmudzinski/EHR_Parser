@@ -1,5 +1,5 @@
 #Unigraph
-SIZE 1887 884
+SIZE 1188 840
 FONT Times New Roman:  10
 OFONT Arial Unicode MS:B 12
 BCOLOR 16777215
@@ -17,7 +17,8 @@ DRST n
 FITS 100
 PORIENT L
 #
-3
+4
 "<E>" 70 200 1 2 
 "" 300 200 0 
-"<WORD>" 162 200 2 1 2 
+"<WORD>" 158 200 2 1 2 
+"Used for the lookup functionality. Just seach whatever the user inputs." 36 128 0 

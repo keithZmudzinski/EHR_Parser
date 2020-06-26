@@ -20,7 +20,6 @@ RESOURCES_RELATIVE_PATH = 'resources'
 GRAMMAR_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Grammars')
 DICTIONARY_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Dictionaries')
 
-
 # Called from ehrp_api.py
 def load_alphabets(options):
     ''' Place alphabets in persistent space for re-use. '''

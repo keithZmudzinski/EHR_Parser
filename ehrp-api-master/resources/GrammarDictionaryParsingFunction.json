@@ -1,216 +1,44 @@
 [
   {
     "grammar": "lookup.fst2",
-    "dictionaries": [
-      "DrugBank.bin",
-      "RxNorm.bin",
-      "OrangeBook.bin",
-      "RxNorm_Tradenames.bin",
-      "RxNorm_Ingredients.bin",
-      "ATC_Ingredients.bin",
-      "FDB_Ingredients.bin",
-      "Meddra.bin",
-      "DrugsAtFDA.bin"
-    ],
-    "ontologies": [
-      "DrugBank",
-      "Meddra",
-      "RxNorm",
-      "OrangeBook",
-      "ATC",
-      "NDDF",
-      "DrugsAtFDA"
-    ],
     "parsing_function": "lookupParser"
   },
   {
     "grammar": "drug.fst2",
-    "dictionaries": [
-      "DrugBank.bin",
-      "RxNorm.bin",
-      "OrangeBook.bin",
-      "RxNorm_Tradenames.bin",
-      "RxNorm_Ingredients.bin",
-      "ATC_Ingredients.bin",
-      "FDB_Ingredients.bin",
-      "DrugsAtFDA.bin"
-    ],
-    "ontologies": [
-      "DrugBank",
-      "RxNorm",
-      "OrangeBook",
-      "ATC",
-      "NDDF",
-      "DrugsAtFDA"
-    ],
     "parsing_function": "drugParser",
     "sub_graph": "True"
   },
   {
     "grammar": "prescription.fst2",
-    "dictionaries": [
-      "DrugBank.bin",
-      "RxNorm.bin",
-      "OrangeBook.bin",
-      "RxNorm_Tradenames.bin",
-      "RxNorm_Ingredients.bin",
-      "ATC_Ingredients.bin",
-      "FDB_Ingredients.bin",
-      "DrugsAtFDA.bin"
-    ],
-    "ontologies": [
-      "DrugBank",
-      "RxNorm",
-      "OrangeBook",
-      "ATC",
-      "NDDF",
-      "DrugsAtFDA"
-    ],
     "parsing_function": "prescriptionParser"
   },
   {
     "grammar": "disorder.fst2",
-    "dictionaries": [
-      "Meddra.bin"
-    ],
-    "ontologies": [
-      "Meddra"
-    ],
     "parsing_function": "disorderParser"
   },
   {
     "grammar": "chf.fst2",
-    "dictionaries": [
-      "DrugBank.bin",
-      "RxNorm.bin",
-      "OrangeBook.bin",
-      "RxNorm_Tradenames.bin",
-      "RxNorm_Ingredients.bin",
-      "ATC_Ingredients.bin",
-      "FDB_Ingredients.bin",
-      "DrugsAtFDA.bin"
-    ],
-    "ontologies": [
-      "DrugBank",
-      "RxNorm",
-      "OrangeBook",
-      "ATC",
-      "NDDF",
-      "DrugsAtFDA"
-    ],
     "parsing_function": "chfParser"
   },
   {
     "grammar": "ami.fst2",
-    "dictionaries": [
-      "DrugBank.bin",
-      "RxNorm.bin",
-      "OrangeBook.bin",
-      "RxNorm_Tradenames.bin",
-      "RxNorm_Ingredients.bin",
-      "ATC_Ingredients.bin",
-      "FDB_Ingredients.bin",
-      "DrugsAtFDA.bin"
-    ],
-    "ontologies": [
-      "DrugBank",
-      "RxNorm",
-      "OrangeBook",
-      "ATC",
-      "NDDF",
-      "DrugsAtFDA"
-    ],
     "parsing_function": "amiParser"
   },
   {
     "grammar": "pna.fst2",
-    "dictionaries": [
-      "DrugBank.bin",
-      "RxNorm.bin",
-      "OrangeBook.bin",
-      "RxNorm_Tradenames.bin",
-      "RxNorm_Ingredients.bin",
-      "ATC_Ingredients.bin",
-      "FDB_Ingredients.bin",
-      "DrugsAtFDA.bin"
-    ],
-    "ontologies": [
-      "DrugBank",
-      "RxNorm",
-      "OrangeBook",
-      "ATC",
-      "NDDF",
-      "DrugsAtFDA"
-    ],
     "parsing_function": "pnaParser"
   },
   {
     "grammar": "comorbidity.fst2",
-    "dictionaries": [
-      "DrugBank.bin",
-      "RxNorm.bin",
-      "OrangeBook.bin",
-      "RxNorm_Tradenames.bin",
-      "RxNorm_Ingredients.bin",
-      "ATC_Ingredients.bin",
-      "FDB_Ingredients.bin",
-      "DrugsAtFDA.bin"
-    ],
-    "ontologies": [
-      "DrugBank",
-      "RxNorm",
-      "OrangeBook",
-      "ATC",
-      "NDDF",
-      "DrugsAtFDA"
-    ],
     "parsing_function": "comorbidityParser"
   },
   {
     "grammar": "pt_summary.fst2",
-    "dictionaries": [
-      "DrugBank.bin",
-      "RxNorm.bin",
-      "OrangeBook.bin",
-      "RxNorm_Tradenames.bin",
-      "RxNorm_Ingredients.bin",
-      "ATC_Ingredients.bin",
-      "FDB_Ingredients.bin",
-      "DrugsAtFDA.bin"
-    ],
-    "ontologies": [
-      "DrugBank",
-      "RxNorm",
-      "OrangeBook",
-      "ATC",
-      "NDDF",
-      "DrugsAtFDA"
-    ],
     "parsing_function": "pt_summaryParser",
     "sub_graph": "True"
   },
   {
     "grammar": "master.fst2",
-    "dictionaries": [
-      "DrugBank.bin",
-      "RxNorm.bin",
-      "OrangeBook.bin",
-      "RxNorm_Tradenames.bin",
-      "RxNorm_Ingredients.bin",
-      "ATC_Ingredients.bin",
-      "FDB_Ingredients.bin",
-      "DrugsAtFDA.bin",
-      "Meddra.bin"
-    ],
-    "ontologies": [
-      "DrugBank",
-      "RxNorm",
-      "OrangeBook",
-      "ATC",
-      "NDDF",
-      "DrugsAtFDA",
-      "Meddra"
-    ],
     "parsing_function": "masterParser"
   }
 ]

@@ -7,7 +7,7 @@ import os
 import argparse
 from flask import Flask, jsonify, request, abort
 from flask_restful import Api, Resource, reqparse
-from ehrp_utils import load_alphabets, free_alphabets, extract_concepts, get_groupings_from_file
+from ehrp_utils import load_alphabets, free_alphabets, extract_concepts, get_json_from_file, RESOURCES_RELATIVE_PATH, dict_names_to_paths
 from werkzeug.datastructures import FileStorage
 from unitex import init_log_system
 from unitex.config import UnitexConfig
@@ -53,10 +53,10 @@ class Extract(Resource):
 
         # If no types specified, look for all types
         if types == None:
-            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text)
+            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, text)
         # Otherwise use the types specified
         else:
-            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text, types)
+            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, text, types)
 
         return jsonify(concepts)
 
@@ -77,7 +77,7 @@ class Lookup(Resource):
         text = args['text']
 
         # Get results
-        concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, text, ['lookup'])
+        concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, text, ['lookup'])
 
         return jsonify(concepts)
 
@@ -85,9 +85,11 @@ def main():
     '''Main method : parse arguments and start API'''
     global OPTIONS
     global ALL_GROUPINGS
+    global ALL_DICTS_AND_ONTOLOGIES
 
-    # Relative file path to user-defined json. Pleas update if project file-layout is changed.
-    GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH = os.path.join('resources', 'GrammarDictionaryParsingFunction.json')
+    # Relative file path to user-defined json. Please update if project file-layout is changed.
+    GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'GrammarDictionaryParsingFunction.json')
+    DICTS_AND_ONTOLOGIES_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'DictsAndOntologies.json')
 
     parser = argparse.ArgumentParser()
     # RESOURCE LOCATIONS
@@ -109,8 +111,12 @@ def main():
     init_log_system(OPTIONS["verbose"], OPTIONS["debug"], OPTIONS["log"])
     load_alphabets(OPTIONS)
 
-    # Get all grammar, dictionary, parsing function groupings
-    ALL_GROUPINGS = get_groupings_from_file(GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH)
+    # Get all grammar and parsing function groupings
+    ALL_GROUPINGS = get_json_from_file(GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH)
+
+    # Get all dictionary and ontology names
+    ALL_DICTS_AND_ONTOLOGIES = get_json_from_file(DICTS_AND_ONTOLOGIES_PATH)
+    ALL_DICTS_AND_ONTOLOGIES['dictionaries'] = dict_names_to_paths(ALL_DICTS_AND_ONTOLOGIES['dictionaries'])
 
     print("Starting app . . .")
     app = Flask(__name__)

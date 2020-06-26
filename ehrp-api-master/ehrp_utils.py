@@ -33,7 +33,7 @@ def free_alphabets(options):
     free_persistent_alphabet(options['resources']['alphabet-sorted'])
 
 # Called from ehrp_api.py
-def extract_concepts(options, all_groupings, text, concepts_to_get='ALL'):
+def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_get='ALL'):
     '''
     Extracts concepts from text.
     Returns dictionary of found concepts.
@@ -76,7 +76,7 @@ def extract_concepts(options, all_groupings, text, concepts_to_get='ALL'):
     tokenize_text(snt, alphabet_unsorted, options["tools"]["tokenize"])
 
     # Get concepts that match grammars
-    concepts = get_concepts_for_grammars(dirc, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings)
+    concepts = get_concepts_for_grammars(dirc, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, dicts_and_ontos)
 
     # Clean the Unitex files
     print("Cleaning up files from " + dirc)
@@ -93,7 +93,7 @@ def extract_concepts(options, all_groupings, text, concepts_to_get='ALL'):
 # alphabet_unsorted: file path to alphabet unitex should use, unsorted
 # alphabet_sorted: file path to alphabet unitex should use, sorted
 # groupings: list of dictionary objects holding info from GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH
-def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, concepts):
+def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, concepts, dicts_and_ontos):
     list_of_concepts = []
 
     # Set arguments that don't change across grammar/dictionary usage
@@ -102,17 +102,16 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
         options = options,
         text = snt,
         alphabet_unsorted = alphabet_unsorted,
-        alphabet_sorted = alphabet_sorted
+        alphabet_sorted = alphabet_sorted,
+        dictionaries = dicts_and_ontos['dictionaries'],
+        ontology_names = dicts_and_ontos['ontologies']
     )
 
     # Set concept_parser grammar, dictionaries, and parsing_functions to those in GrammarDictionaryParsingFunction.py
     for grammar_dictionary_parser in concepts:
         grammar_path = os.path.join(GRAMMAR_RELATIVE_PATH, grammar_dictionary_parser['grammar'])
-        dictionary_paths = [ os.path.join(DICTIONARY_RELATIVE_PATH, dictionary) for dictionary in grammar_dictionary_parser['dictionaries'] ]
 
         concept_parser.grammar = grammar_path
-        concept_parser.dictionaries = dictionary_paths
-        concept_parser.ontology_names = grammar_dictionary_parser['ontologies']
         concept_parser.parsing_function = grammar_dictionary_parser['parsing_function']
 
         # Make use of ConceptParser member variables that might not be set during object construction
@@ -132,7 +131,7 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
 
     return list_of_concepts
 
-def get_groupings_from_file(file_path):
+def get_json_from_file(file_path):
     ''' Loads the user-chosen groupings of grammars, dictionaries, and parsing functions as a dictionary '''
     with open(file_path) as file:
         groupings = json.load(file)
@@ -188,3 +187,7 @@ def tokenize_text(snt_file_path, alphabet, kwargs):
 def incorrect_concept_type(incorrect_type):
     # Unprocessable entity error
     abort(422)
+
+def dict_names_to_paths(dict_names):
+    ''' Changes dictionary names to dictionary paths '''
+    return [os.path.join(DICTIONARY_RELATIVE_PATH, name) for name in dict_names]

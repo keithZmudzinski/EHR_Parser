@@ -1,0 +1,24 @@
+#Unigraph
+SIZE 1188 840
+FONT Times New Roman:  10
+OFONT Arial Unicode MS:B 12
+BCOLOR 16777215
+FCOLOR 0
+ACOLOR 13487565
+SCOLOR 16711680
+CCOLOR 255
+DBOXES y
+DFRAME y
+DDATE y
+DFILE y
+DDIR n
+DRIG n
+DRST n
+FITS 100
+PORIENT L
+#
+4
+"<E>" 139 110 1 2 
+"" 329 110 0 
+"liter+liters+l+deciliter+deciliters+dl+mililiter+mililiters+milliliter+milliliters+ml+cc+microliter+microliters+ul+teaspoon+teaspoons+tsp+tablespoon+tablespoons+tbsp+ounce+ounces+oz+cup+cups+glass+glasses+pint+pints+pt+quart+quarts+qt+gallon+gallons+gal" 193 391 1 1 
+"LIQUID UNITS" 176 67 0 

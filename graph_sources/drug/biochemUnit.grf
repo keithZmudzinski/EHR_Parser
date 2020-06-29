@@ -1,0 +1,24 @@
+#Unigraph
+SIZE 1188 840
+FONT Times New Roman:  10
+OFONT Arial Unicode MS:B 12
+BCOLOR 16777215
+FCOLOR 0
+ACOLOR 13487565
+SCOLOR 16711680
+CCOLOR 255
+DBOXES y
+DFRAME y
+DDATE y
+DFILE y
+DDIR n
+DRIG n
+DRST n
+FITS 100
+PORIENT L
+#
+4
+"<E>" 97 119 1 2 
+"" 287 119 0 
+"%+bun+ffu+pfu+pnu+cfu+curie+curies+ci+millicurie+millicurie+mci+microcurie+microcuries+uci+mole+mol+milimole+milimoles+millimole+millimoles+mmol+micromole+micromoles+umol+nanomole+nanomoles+nmol+au+bau" 176 344 1 1 
+"BIOCHEMISTRY UNITS" 125 79 0 

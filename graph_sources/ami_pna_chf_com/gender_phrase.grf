@@ -1,0 +1,28 @@
+#Unigraph
+SIZE 1887 884
+FONT Times New Roman:  10
+OFONT Arial Unicode MS:B 12
+BCOLOR 16777215
+FCOLOR 0
+ACOLOR 13487565
+SCOLOR 16711680
+CCOLOR 255
+DBOXES y
+DFRAME y
+DDATE y
+DFILE y
+DDIR n
+DRIG n
+DRST n
+FITS 100
+PORIENT L
+#
+8
+"<E>" 399 237 1 7 
+"" 1047 267 0 
+"female+F+woman/FEMALE" 724 267 1 1 
+"pregnancy info" 656 440 0 
+"G<NB>P<NB>+gravida <NB>, para <NB>" 638 399 2 2 5 
+"<E>/FEMALE" 884 399 1 1 
+"male+M+man+gentleman/MALE" 719 170 1 1 
+"<E>" 636 237 3 6 4 2 

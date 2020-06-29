@@ -171,6 +171,10 @@ class ConceptParser:
 #   'name' is used for variable references, should be one word.
 #   Each concept is a dictionary of desired attributes and values.
 #   Each concept has the same set of attributes, but of course different values.
+#
+# The id_dict and onto_dict dictionaries are dictionaries that associate concepts
+#   to their IDs and the ontology that ID comes from. Each key is in all lowercase
+#   letters.
 
     # masterParser is exception to schema of returned dictionaries
     # It returns a list of dictionaries, each dictionary made by a different parsing function

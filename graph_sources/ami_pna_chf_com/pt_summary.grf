@@ -1,0 +1,86 @@
+#Unigraph
+SIZE 2500 869
+FONT Times New Roman:  10
+OFONT Arial Unicode MS:B 12
+BCOLOR 16777215
+FCOLOR 0
+ACOLOR 13487565
+SCOLOR 16711680
+CCOLOR 255
+DBOXES y
+DFRAME y
+DDATE y
+DFILE y
+DDIR n
+DRIG n
+DRST n
+FITS 100
+PORIENT L
+#
+66
+"<E>" 53 214 1 19 
+"" 2390 213 0 
+"<E>" 1340 214 2 28 29 
+"yr+<MOT><<^yea>>" 584 164 2 4 5 
+"old" 727 164 1 11 
+"-" 702 146 1 4 
+"yo+y\/o" 607 214 1 11 
+"y" 607 247 2 8 20 
+"." 639 247 1 9 
+"o" 665 247 2 10 21 
+"." 696 247 1 22 
+"<E>" 766 214 2 23 24 
+"<NB>" 380 214 1 47 
+"<E>+-" 543 214 3 3 6 7 
+"<E>" 277 214 2 57 61 
+"<E>" 179 214 2 14 16 
+"is" 213 197 1 17 
+"a+an" 243 171 1 14 
+"patient" 113 196 1 15 
+"<E>" 87 214 2 15 18 
+"<E>" 639 269 1 9 
+"<E>" 696 271 1 22 
+"<E>" 722 247 1 11 
+"<MOT>/$[0,2]$" 823 214 1 51 
+"<E>" 653 377 1 13 
+"who has complaints of" 1600 214 1 37 
+"who is being seen for" 1600 247 1 38 
+"admitted on <NB>\/<NB>\/<NB> for" 1600 283 1 39 
+"patient" 1381 197 1 29 
+"<E>" 1443 214 1 35 
+"<MOT><<^present>>" 1651 177 1 33 
+"with+w+e" 1600 118 1 36 
+"<E>+who" 1600 177 1 30 
+"with+for" 1837 177 1 41 
+"who was admitted" 1600 314 1 40 
+"<E>" 1486 214 7 25 26 27 31 32 34 42 
+"<E>" 1837 118 1 41 
+"<E>" 1837 214 1 41 
+"<E>" 1837 247 1 41 
+"<E>" 1837 283 1 41 
+"<E>" 1837 314 1 41 
+"<E>" 1969 213 2 50 63 
+"<E>" 1600 376 1 43 
+"<E>" 1837 376 1 41 
+"Patient is a 35 year-old Native American gentleman who presents with ..." 69 137 0 
+"Patient Summary line (upto presentation)" 28 49 0 
+"$age(" 349 214 1 12 
+"$age)" 441 214 1 13 
+"<E>" 932 214 2 52 55 
+"$|gender)" 1295 214 1 2 
+"<E>/$age.SET$__SeparatE__$age$,$gender$" 2045 171 1 64 
+"$|gender(" 903 214 1 48 
+"<E>/${0}$UNK" 1071 124 1 49 
+"down-weight this path over known gender" 1033 101 0 
+"TODO: becareful of this output!" 2076 149 0 
+":gender_phrase/${1}$" 1034 214 1 49 
+":gender_phrase" 1075 428 1 59 
+"<E>/${1}$" 316 214 1 46 
+"$|gender(" 1035 428 1 56 
+"$|gender)" 1234 428 1 2 
+"age is unknown, but gender is found" 409 447 0 
+"<E>/${0}$" 297 428 1 58 
+"Prefer known age and possibly unknown gender + over unknown age and known gender" 158 328 0 
+"<E>/$age.UNSET$__SeparatE__UNK,$gender$" 2045 248 1 65 
+"<E>" 2307 171 1 1 
+"<E>" 2307 248 1 1 

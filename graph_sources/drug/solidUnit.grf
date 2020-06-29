@@ -1,0 +1,24 @@
+#Unigraph
+SIZE 1188 840
+FONT Times New Roman:  10
+OFONT Arial Unicode MS:B 12
+BCOLOR 16777215
+FCOLOR 0
+ACOLOR 13487565
+SCOLOR 16711680
+CCOLOR 255
+DBOXES y
+DFRAME y
+DDATE y
+DFILE y
+DDIR n
+DRIG n
+DRST n
+FITS 100
+PORIENT L
+#
+4
+"<E>" 107 134 1 2 
+"" 297 134 0 
+"kilogram+kilograms+kg+gram+grams+g+gm+miligram+miligrams+milligram+milligrams+mg+microgram+micrograms+mcg+mgc+ugm+ug" 188 271 1 1 
+"SOLIDS UNITS" 144 80 0 

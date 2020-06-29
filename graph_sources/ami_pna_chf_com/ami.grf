@@ -1,0 +1,244 @@
+#Unigraph
+SIZE 2000 5000
+FONT Times New Roman:  10
+OFONT Arial Unicode MS:B 12
+BCOLOR 16777215
+FCOLOR 0
+ACOLOR 13487565
+SCOLOR 16711680
+CCOLOR 255
+DBOXES y
+DFRAME y
+DDATE y
+DFILE y
+DDIR n
+DRIG n
+DRST n
+FITS 100
+PORIENT L
+#
+224
+"<E>" 66 227 18 3 6 12 15 20 25 31 38 45 68 77 98 105 123 145 155 166 178 
+"" 1787 225 0 
+":ami_words" 597 135 1 202 
+"<E>" 333 135 1 2 
+"<E>" 1503 135 1 1 
+"AMI word" 423 112 0 
+"<E>" 333 72 1 7 
+":ami_codes" 597 72 1 220 
+"<E>" 1503 72 1 1 
+"410" 427 54 0 
+"AMI DiseaseID WHHS" 38 37 0 
+":ami_phrase" 598 202 1 212 
+"<E>" 333 202 1 11 
+"<E>" 1503 202 1 1 
+"AMI phrase" 426 184 0 
+"<E>" 305 4249 1 16 
+"<MOT><<^coro>>+<MOT><<^card>>" 513 4249 1 17 
+"<MOT><<^cath>>" 778 4249 1 19 
+"<E>" 1475 4249 1 1 
+"<E>/__SeparatE__AMI_CATHETER" 1110 4249 1 18 
+"<E>" 305 4377 1 21 
+"st" 470 4377 1 89 
+"<MOT><<^depr>>" 849 4377 1 24 
+"<E>" 1475 4377 1 1 
+"<E>/__SeparatE__AMI_STDPR" 1110 4377 1 23 
+"<E>" 298 4472 1 194 
+"<E>/__SeparatE__AMI_TROP_ELEV" 1110 4472 1 27 
+"<E>" 1474 4472 1 1 
+"cardiac catheter" 356 4229 0 
+"ST depression" 356 4359 0 
+"Elevated troponin" 356 4449 0 
+"<E>" 301 4614 1 32 
+"<MOT><<^trop>>" 503 4614 1 33 
+"<E>/__SeparatE__TROP" 1110 4614 1 34 
+"<E>" 1478 4614 1 1 
+":negation_words" 467 418 1 37 
+":ami_phrase" 834 418 1 199 
+"<TOKEN><<[^.:]>>/$[0,10]$" 604 418 1 36 
+"<E>" 333 418 1 35 
+"AMI negated" 372 374 0 
+"<E>" 1503 418 1 1 
+":ami_phrase" 736 570 3 201 210 219 
+":word_or_pnc/$[0,15]$" 639 570 1 41 
+"<E>" 1195 570 1 59 
+":problem_one" 473 570 1 47 
+"<E>" 333 570 1 48 
+"1. AMI" 479 545 0 
+"<E>" 593 570 1 42 
+"<E>" 416 570 3 44 49 54 
+":problem_top_three" 467 630 1 50 
+"<E>" 593 630 1 52 
+":ami_phrase" 736 630 3 210 218 219 
+":word_or_pnc/$[0,15]$" 639 630 1 51 
+"<E>" 1195 765 1 59 
+":problem_top_five" 467 688 1 55 
+"<E>" 593 688 1 57 
+":ami_phrase" 736 688 2 205 219 
+":word_or_pnc/$[0,15]$" 639 688 1 56 
+"<E>" 1195 823 1 59 
+"<E>" 1308 570 1 65 
+"2-3. AMI" 475 608 0 
+"4-5. AMI" 473 666 0 
+"Problem #1-5. AMI" 358 534 0 
+"<E>" 1195 630 1 59 
+"<E>" 1195 688 1 59 
+"<E>" 1503 570 1 1 
+"MAIN: Assessment, Impression, Chief Complaint or Active Problem" 406 918 0 
+":ami_phrase" 758 959 2 196 221 
+"<E>" 334 959 1 74 
+"<E>" 1309 959 1 76 
+"<TOKEN>/$[1,10]$" 672 1019 1 71 
+":ami_phrase" 756 1019 1 221 
+"<E>" 1221 959 1 69 
+"<E>" 1221 1019 1 69 
+":main_issue" 454 959 1 75 
+"<E>" 616 959 2 67 70 
+"<E>" 1504 959 1 1 
+"<E>" 335 1164 3 78 83 86 
+":ste_words" 502 1164 1 79 
+"<TOKEN>/$[0,5]$" 643 1164 1 80 
+":ami_phrase" 851 1164 2 206 215 
+"<E>" 1504 1164 1 1 
+"ST Elevevation keywords w and wo MI" 366 1128 0 
+":ami_phrase" 502 1202 1 84 
+"<TOKEN>/$[0,5]$" 643 1202 1 85 
+":ste_words" 733 1202 2 88 80 
+":ste_words" 502 1242 1 215 
+"<E>" 1222 1164 1 81 
+"<E>" 851 1202 2 206 215 
+"<TOKEN>/$[0,5]$" 580 4377 1 22 
+":ami_modifiers" 758 3361 1 198 
+":ami_phrase" 494 3361 1 94 
+":ami_phrase" 758 3434 1 198 
+"<E>" 456 3361 1 91 
+"<TOKEN>/$[0,100]$" 625 3361 1 90 
+"<TOKEN>/$[0,200]$" 625 3434 1 92 
+":ami_modifiers" 494 3434 1 95 
+"<E>" 466 3434 1 96 
+"<E>" 321 3361 2 93 97 
+"<E>" 1295 3361 1 100 
+"<E>" 1490 3361 1 1 
+"Modified AMI with more details (eg stents, LAD, timi, troponin)" 358 3319 0 
+"vt+vf" 488 1659 1 103 
+"storm" 535 1659 1 106 
+"VT Storm = 3 or more episodes of ventricular tachycardia" 369 1616 0 
+"<E>" 334 1659 4 102 111 112 119 
+"<TOKEN>/$[0,10]$" 638 1659 1 107 
+":ami_phrase" 771 1659 1 114 
+"vt+vf" 771 1710 1 109 
+"storm" 817 1710 1 114 
+"<TOKEN>/$[0,10]$" 637 1710 1 108 
+":ami_phrase" 488 1710 1 110 
+"vt+vf" 488 1757 1 113 
+"storm" 535 1757 1 222 
+"<E>" 916 1659 2 204 222 
+"<E>" 1308 1659 1 116 
+"<E>" 1503 1659 1 1 
+"vt+vf" 711 1825 1 118 
+"storm" 758 1825 1 200 
+":main_issue" 445 1825 1 120 
+"<TOKEN>/$[0,10]$" 612 1825 1 117 
+"lv+rv" 487 1947 1 138 
+"LV Dysfunction (questionable: RV as well?)" 368 1904 0 
+"<E>" 333 1947 4 121 129 130 203 
+"<TOKEN>/$[0,10]$" 671 1947 1 125 
+":ami_phrase" 770 1947 1 132 
+"lv+rv" 770 1998 1 127 
+"<MOT><<^dys>>" 816 1998 1 132 
+"<TOKEN>/$[0,10]$" 636 1998 1 126 
+":ami_phrase" 487 1998 1 128 
+"lv+rv" 487 2045 1 131 
+"<MOT><<^dys>>" 534 2045 1 214 
+"<E>" 961 1947 2 197 214 
+"<E>" 1307 1947 1 134 
+"<E>" 1502 1947 1 1 
+"lv+rv" 710 2113 1 136 
+"<MOT><<^dys>>" 757 2113 1 217 
+"<TOKEN>/$[0,10]$" 611 2113 1 135 
+"<MOT><<^dys>>" 536 1947 1 124 
+":ami_phrase" 457 2237 1 140 
+"<TOKEN>/$[0,25]$" 640 2237 1 141 
+"demand+demand <MOT><<^isch>>" 733 2237 1 146 
+"demand+demand <MOT><<^isch>>" 457 2303 1 143 
+"<TOKEN>/$[0,25]$" 640 2303 1 144 
+":ami_phrase" 733 2303 1 146 
+"<E>" 333 2237 3 139 142 147 
+"<E>" 937 2237 2 208 223 
+"demand <MOT><<^isch>>" 457 2373 1 223 
+"<E>" 1307 2237 1 149 
+"<E>" 1502 2237 1 1 
+"Demand Ischemia" 387 2197 0 
+"acute" 428 287 1 152 
+"<MOT>" 491 287 1 153 
+":ami_phrase" 587 287 1 207 
+"<E>" 1503 287 1 1 
+"<E>" 333 287 1 151 
+":qwave_words+:twave_words" 502 1357 1 157 
+"<TOKEN>/$[0,500]$" 643 1357 1 158 
+":ami_phrase" 851 1357 2 213 216 
+"<E>" 851 1406 2 213 216 
+":ami_phrase" 502 1406 1 161 
+"<TOKEN>/$[0,500]$" 643 1406 1 162 
+":qwave_words+:twave_words" 735 1406 2 159 158 
+":qwave_words+:twave_words" 502 1455 1 216 
+"<E>" 1222 1357 1 165 
+"<E>" 1504 1357 1 1 
+"<E>" 335 1357 3 156 160 163 
+"Q or T Wave keywords w and wo MI" 382 1322 0 
+":ami_drugs" 732 2567 1 174 
+":ami_phrase" 488 2567 1 170 
+"<TOKEN>/$[0,100]$" 613 2567 1 168 
+":ami_phrase" 732 2649 1 175 
+"<TOKEN>/$[0,100]$" 613 2649 1 171 
+":ami_drugs" 488 2649 1 172 
+"<E>" 838 2567 3 184 209 211 
+"<E>" 838 2649 3 184 209 211 
+"<E>" 435 2649 1 173 
+"<E>" 435 2567 1 169 
+"<E>" 333 2567 3 177 176 181 
+"<E>" 1301 2567 1 186 
+"AMI drug (with context)" 369 2531 0 
+"<E>" 435 2726 1 182 
+":ami_drugs" 488 2726 1 185 
+"<E>" 1137 2726 1 179 
+"<E>/__SeparatE__$drug_cat$" 999 2773 1 183 
+"<E>" 838 2726 2 184 209 
+"<E>" 1502 2567 1 1 
+"<MOT><<^trop>>" 532 4472 1 192 
+"<E>" 916 4472 1 26 
+"<MOT><<^elev>>+<MOT><<^pos>>" 532 4511 1 193 
+"<MOT><<^trop>>" 755 4511 1 188 
+"<MOT><<^elev>>+<MOT><<^pos>>" 755 4472 1 188 
+"<MOT>/$[0,2]$" 670 4472 1 191 
+"<MOT>/$[0,2]$" 670 4511 1 190 
+"<E>" 445 4472 2 187 189 
+"Toponin mention" 356 4594 0 
+"<E>/__SeparatE__AMI_MAIN_FIRST" 1011 959 1 72 
+"<E>/__SeparatE__AMI_LV_DYSFUNCTION" 1008 1947 1 133 
+"<E>/__SeparatE__AMI_MODIFIER" 998 3361 1 99 
+"<E>/__SeparatE__AMI_NEGATED" 1010 418 1 40 
+"<E>/__SeparatE__VT_STORM_MAIN" 1009 1825 1 115 
+"<E>/__SeparatE__AMI_PROBLEM_ONE" 1010 570 1 43 
+"<E>/__SeparatE__AMI_WORD" 1010 135 1 4 
+":main_issue" 476 2113 1 137 
+"<E>/__SeparatE__AMI_VT_STORM" 1011 1659 1 115 
+"<E>/__SeparatE__AMI_PROBLEM_FIVE" 1010 688 1 64 
+"<E>/__SeparatE__AMI_STE" 1012 1164 1 87 
+"<E>/__SeparatE__AMI_PHRASE_ACUTE" 1010 287 1 154 
+"<E>/__SeparatE__AMI_DEMAND" 1008 2237 1 148 
+"<E>/__SeparatE__AMI_DRUG" 999 2726 1 183 
+"<E>/__SeparatE__AMI_PROBLEM_TOP_THREE" 1010 765 1 53 
+"<E>/__SeparatE__AMI_DRUG_CONTEXT" 999 2567 1 179 
+"<E>/__SeparatE__AMI_PHRASE" 1010 202 1 13 
+"<E>/__SeparatE__AMI_Q_T_WAVE" 1012 1357 1 164 
+"<E>/__SeparatE__LV_DYSFUNCTION" 1008 2045 1 133 
+"<E>/__SeparatE__STE_WORDS" 1012 1242 1 87 
+"<E>/__SeparatE__Q_T_WAVE_WORDS" 1012 1455 1 164 
+"<E>/__SeparatE__LV_DYSFUNCTION_MAIN" 1008 2113 1 133 
+"<E>/__SeparatE__MI_PROBLEM_THREE" 1010 630 1 63 
+"<E>/__SeparatE__AMI_PROBLEM_TOP_FIVE" 1010 823 1 58 
+"<E>/__SeparatE__AMI_CODE" 1010 72 1 8 
+"<E>/__SeparatE__AMI_MAIN" 1011 1019 1 73 
+"<E>/__SeparatE__VT_STORM" 1011 1757 1 115 
+"<E>/__SeparatE__DEMAND_ISCHEMIA" 1008 2373 1 148 

@@ -22,6 +22,10 @@
         <a ng-if="prescription.umid[0] != 'C'" href="http://bioportal.bioontology.org/ontologies/{{prescription.onto}}?p=classes&conceptid={{prescription.umid}}" target="_blank">{{prescription.umid}}</a>
       </td>
 
+      <td ng-if="prescription.onto == 'ORANGEBOOK'" class="nowrap">
+        <a href="https://www.accessdata.fda.gov/scripts/cder/ob/results_product.cfm?Appl_Type={{prescription.umid[0]}}&Appl_No={{prescription.umid.slice(1)}}" target="_blank">{{prescription.umid}}</a>
+      </td>
+
       <td ng-if="prescription.onto == 'DRUGSATFDA'" class="no-wrap">
         <a href="https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo={{prescription.umid}}" target="_blank">{{prescription.umid}}</a>
       </td>

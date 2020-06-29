@@ -19,8 +19,9 @@ The API provides two main functions; `extract` and `lookup`. `extract` is used t
 1. `cd` into the ehrp-api-master directory
 2. execute `python ./ehrp-api.py`
 
-#### To make requests of the API
 ___
+#### To make requests of the API
+
   #### Lookup
   + `lookup` functionality is accessible through a `GET` request to the following URL<br>
     URL : http://localhost:8020/ehrp/lookup<br>
@@ -75,9 +76,10 @@ ___
           + 'comorbidity': Looks for other related afflictions aside from chf, ami, or pna
           + 'pt_summary': Looks for the age and gender of the patient
         + If 'types' is not specified, all types will be used.
+        + Currently, if more than three types are desired, it is faster to not specify any types and let the API process all types, than it is to specify 4+ types. This just means the user will have to extract the specific types they want from the returned JSON object.
       + Name: 'file'
         + Type: file object
-        + Description: Allows a text file to be uploaded in place of the 'text' parameter. The contents of the uploaded file is then parsed, the same way 'text' is.
+        + Description: Allows a text file to be uploaded in place of the 'text' parameter. The content of the uploaded file is then parsed, the same way 'text' is.
         + **NOTE**: Exactly one of 'text' and 'file' can be used in the same request. If both are used, or neither are used, a 422 error response will be returned.
         + Example using the python requests library:
         ```

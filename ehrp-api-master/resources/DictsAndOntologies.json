@@ -3,12 +3,12 @@
     "Meddra.bin",
     "DrugBank.bin",
     "RxNorm.bin",
-    "OrangeBook.bin",
     "RxNorm_Tradenames.bin",
     "RxNorm_Ingredients.bin",
     "ATC_Ingredients.bin",
     "FDB_Ingredients.bin",
-    "DrugsAtFDA.bin"
+    "DrugsAtFDA.bin",
+    "OrangeBook.bin"
   ],
   "ontologies": [
     "Meddra",

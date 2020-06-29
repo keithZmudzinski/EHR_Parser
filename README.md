@@ -94,7 +94,9 @@ Both GET and POST requests return JSON objects.
 
 ### Error response codes
 * 400: Malformed url; check your base url and parameter names to see if they conform to the descriptions above.
-* 422: Raised if 'types' parameter has unknown value; check the value(s) you are using for 'types', make sure it is one of the allowable types listed above.
+* 422: Two possible reasons:
+  1. 'types' parameter has unknown value; check the value(s) you are using for 'types', make sure it is one of the allowable types listed above.
+  2. In a POST request to the `extract` functionality, either both 'text' and 'file' have been specified, or neither have been specified.
 
 
 

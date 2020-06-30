@@ -88,7 +88,7 @@ def main():
     global ALL_DICTS_AND_ONTOLOGIES
 
     # Relative file path to user-defined json. Please update if project file-layout is changed.
-    GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'GrammarDictionaryParsingFunction.json')
+    GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'GrammarParsingFunction.json')
     DICTS_AND_ONTOLOGIES_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'DictsAndOntologies.json')
 
     parser = argparse.ArgumentParser()

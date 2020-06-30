@@ -1,5 +1,9 @@
 [
   {
+    "grammar": "master.fst2",
+    "parsing_function": "masterParser"
+  },
+  {
     "grammar": "lookup.fst2",
     "parsing_function": "lookupParser"
   },
@@ -36,9 +40,5 @@
     "grammar": "pt_summary.fst2",
     "parsing_function": "pt_summaryParser",
     "sub_graph": "True"
-  },
-  {
-    "grammar": "master.fst2",
-    "parsing_function": "masterParser"
   }
 ]

@@ -18,7 +18,6 @@ class ConceptParser:
     # grammar: path of the grammar to apply to text
     # dictionaries: list of paths to dictionaries to apply to text
     # parsing_function: input as name of parsing function to use, changed to function pointer to function of same name
-    # parsing_function_map: dictionary used to transform parsing_function from string to function pointer
     # ontology_names: strictly the names of the ontologies being used, no file extensions or paths attached
     # index: file path of the index created by ConceptParser.locate_grammar()
 
@@ -28,25 +27,11 @@ class ConceptParser:
 
         self.index = ''
 
-        # Used in self.setup() to map strings of parsing function names to function pointers
-        self.parsing_function_map = {
-            'drugParser': self.drugParser,
-            'disorderParser': self.disorderParser,
-            'prescriptionParser': self.prescriptionParser,
-            'chfParser': self.chfParser,
-            'amiParser': self.amiParser,
-            'pnaParser': self.pnaParser,
-            'comorbidityParser': self.comorbidityParser,
-            'pt_summaryParser': self.pt_summaryParser,
-            'lookupParser': self.lookupParser,
-            'masterParser': self.masterParser,
-        }
-
     def setup(self):
         ''' Initalize attributes that may not be created during __init__ '''
         try:
             # Change function name string to function pointer
-            self.parsing_function = self.parsing_function_map[ self.parsing_function ]
+            self.parsing_function = ConceptParser.__dict__[self.parsing_function]
         except AttributeError:
             sys.stderr.write('ConceptParser.setup requires ConceptParser.parsing_function attribute to be set')
 
@@ -84,7 +69,7 @@ class ConceptParser:
         contexts = self.get_text(contexts_file_path)
 
         # Use parsing function specific to this grammar-dictionary/dictionaries combo
-        parsed_concepts = self.parsing_function(contexts, id_dict, onto_dict)
+        parsed_concepts = self.parsing_function(self, contexts, id_dict, onto_dict)
 
         # Ensure grammars used afterwards only use assigned dictionaries
         rm(simple_words)
@@ -198,8 +183,8 @@ class ConceptParser:
 
         # Apply appropriate parsing function to list of contexts
         for parsing_function_str, context_list in used_concepts.items():
-            parsing_function = self.parsing_function_map[parsing_function_str]
-            concepts = parsing_function(context_list, id_dict, onto_dict)
+            parsing_function = ConceptParser.__dict__[parsing_function_str]
+            concepts = parsing_function(self, context_list, id_dict, onto_dict)
             parsed_concepts.append(concepts)
 
         return parsed_concepts

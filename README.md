@@ -4,6 +4,7 @@ This API provides a service to extract medical information from electronic healt
 This repository provides code for both the API itself, and an example interface that makes use of the API.
 + The `ehrp_api_master` directory contains the API
 + The `ehrp_ui_master` directory contains the interface
++ The `graph_sources` directory contains the source information for the language graphs used in the api, in Unitex format.
 
 ## API
 ### Requirements

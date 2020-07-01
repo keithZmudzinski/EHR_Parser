@@ -88,11 +88,13 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     return concepts
 
 # function: get_concepts_for_grammars; Returns a list of dictionary objects of parsed concepts from text
+# directory: virtual file system directory
 # options: yaml object with preset options for different unitex functions
 # snt: the file path to the pre-processed text
 # alphabet_unsorted: file path to alphabet unitex should use, unsorted
 # alphabet_sorted: file path to alphabet unitex should use, sorted
-# groupings: list of dictionary objects holding info from GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH
+# chosen_groupings: The groupings from GrammarParsingFunction.json that will be applied to the input text
+# dicts_and_ontos: Dictionary object holding the names of dictionary files used, and names of ontologies used in those dictionaries
 def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, concepts, dicts_and_ontos):
     list_of_concepts = []
 
@@ -154,6 +156,7 @@ def get_concepts_from_groupings(all_groupings, concepts_to_get):
                 concepts.append(grouping)
         return concepts
 
+    # If specific concepts are desired
     for concept in concepts_to_get:
         # Match desired concepts with associated grouping
         for grouping in all_groupings:
@@ -161,7 +164,7 @@ def get_concepts_from_groupings(all_groupings, concepts_to_get):
             if grouping['grammar'] == concept + '.fst2':
                 concepts.append(grouping)
                 break
-        # If concept not found, must be incorrect
+        # If concept not found, must be incorrectly specified, so abort
         else:
             incorrect_concept_type(concept)
     return concepts

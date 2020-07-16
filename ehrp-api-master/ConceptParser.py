@@ -154,8 +154,8 @@ class ConceptParser:
 # Dictionary has one 'name' attribute and an 'instances' attribute that holds a
 #   list of found concepts.
 #   'name' is used for variable references, should be one word.
-#   Each concept is a dictionary of desired attributes and values.
-#   Each concept has the same set of attributes, but of course different values.
+#   Each instance in instances is a dictionary of desired attributes and values.
+#   Each instance has the same set of attributes, but of course different values.
 #
 # The id_dict and onto_dict dictionaries are dictionaries that associate concepts
 #   to their IDs and the ontology that ID comes from. Each key is in all lowercase
@@ -193,6 +193,7 @@ class ConceptParser:
     #     name: lookup,
     #     instances: [
     #         {
+    #             term: '',
     #             umid: '',
     #             onto: '',
     #         }

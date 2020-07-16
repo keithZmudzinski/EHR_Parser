@@ -18,7 +18,7 @@ The API provides two main functions; `extract` and `lookup`. `extract` is used t
 
 #### To start the API
 1. `cd` into the ehrp-api-master directory
-2. execute `python ./ehrp-api.py`
+2. execute `python3 ./ehrp_api.py`
 
 ___
 #### To make requests of the API

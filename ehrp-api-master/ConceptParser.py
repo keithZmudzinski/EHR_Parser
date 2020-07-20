@@ -1,9 +1,10 @@
 import os
+from time import time
 import sys
 from unitex.io import UnitexFile, rm, exists
 from DictionaryParser import DictionaryParser
 from unitex.tools import UnitexConstants, locate, dico, concord
-from unitex.io import rm
+from unitex.io import rm, ls, cp
 
 class ConceptParser:
     ''' Given text, grammar, dictionaries, and a parsing function, will extract
@@ -38,11 +39,19 @@ class ConceptParser:
     def parse(self):
         ''' Apply given dictionaries, grammar, and parsing function to text. Return dictionary of found concepts. '''
 
-        # Apply dictionaries
-        #   Creates two files of interest
-        #   dlf: dictionay of simple words in text
-        #   dlc: dictionay of compound words in text
-        self.apply_dictionaries()
+        # Place already created dictionaries into vfs
+        if large_query_detected:
+            new_dlf_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlf"))
+            new_dlc_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlc"))
+            start = time()
+            cp('resources/test_dictionaries/dlf', new_dlf_path)
+            print('Time taken to cp dlf:', time()-start)
+            start = time()
+            cp('resources/test_dictionaries/dlc', new_dlc_path)
+            print('Time taken to cp dlc:', time()-start)
+
+            simple_words = new_dlf_path
+            compound_words = new_dlf_path
 
         # Create an index (File with locations of strings matching grammar)
         self.index = self.locate_grammar()
@@ -90,16 +99,6 @@ class ConceptParser:
         #    }
         return parsed_concepts
 
-    def apply_dictionaries(self):
-        ''' Creates .dlf and .dlc files holding words in both dictionaries and text. '''
-        if self.dictionaries is not None:
-            dictionaries_applied_succesfully = dico(self.dictionaries, self.text, self.alphabet_unsorted, **self.options['tools']['dico'])
-
-            if dictionaries_applied_succesfully is False:
-                sys.stderr.write("[ERROR] Dictionaries application failed!\n")
-                sys.exit(1)
-        else:
-            sys.stderr.write("[ERROR] No dictionaries specified.\n")
 
     def locate_grammar(self):
         ''' Return index file path, holding locations of matching instances of grammar in text. '''

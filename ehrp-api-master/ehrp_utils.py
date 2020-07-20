@@ -33,7 +33,7 @@ def free_alphabets(options):
     free_persistent_alphabet(options['resources']['alphabet-sorted'])
 
 # Called from ehrp_api.py
-def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_get='ALL'):
+def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_get='ALL', applied_dictionaries=None):
     '''
     Extracts concepts from text.
     Returns dictionary of found concepts.
@@ -75,8 +75,15 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     # Tokenize the text
     tokenize_text(snt, alphabet_unsorted, options["tools"]["tokenize"])
 
+    # Apply dictionaries
+    if applied_dictionaries == None:
+        single_words, multiple_words = apply_dictionaries()
+    else:
+        single_words = applied_dictionaries['single_words']
+        multiple_words = applied_dictionaries['multiple_words']
+
     # Get concepts that match grammars
-    concepts = get_concepts_for_grammars(dirc, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, dicts_and_ontos)
+    concepts = get_concepts_for_grammars(dirc, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, dicts_and_ontos, single_words, multiple_words)
 
     # Clean the Unitex files
     print("Cleaning up files from " + dirc)
@@ -95,7 +102,9 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
 # alphabet_sorted: file path to alphabet unitex should use, sorted
 # chosen_groupings: The groupings from GrammarParsingFunction.json that will be applied to the input text
 # dicts_and_ontos: Dictionary object holding the names of dictionary files used, and names of ontologies used in those dictionaries
-def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, concepts, dicts_and_ontos):
+# single_words: file path of the dlf file produced from dico
+# multiple_words: file path of the dlc file produced from dico
+def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, concepts, dicts_and_ontos, single_words, multiple_words):
     list_of_concepts = []
 
     # Set arguments that don't change across grammar/dictionary usage
@@ -106,7 +115,9 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
         alphabet_unsorted = alphabet_unsorted,
         alphabet_sorted = alphabet_sorted,
         dictionaries = dicts_and_ontos['dictionaries'],
-        ontology_names = dicts_and_ontos['ontologies']
+        ontology_names = dicts_and_ontos['ontologies'],
+        single_words = single_words,
+        multipe_words = multiple_words
     )
 
     # Set concept_parser grammar, dictionaries, and parsing_functions to those in GrammarDictionaryParsingFunction.py
@@ -132,6 +143,17 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
             list_of_concepts.extend(concepts)
 
     return list_of_concepts
+
+def apply_dictionaries(dictionaries, text, alphabet_unsorted, options):
+        ''' Creates .dlf and .dlc files holding words in both dictionaries and text. '''
+        if dictionaries is not None:
+            dictionaries_applied_succesfully = dico(dictionaries, text, alphabet_unsorted, **options['tools']['dico'])
+
+            if dictionaries_applied_succesfully is False:
+                sys.stderr.write("[ERROR] Dictionaries application failed!\n")
+                sys.exit(1)
+        else:
+            sys.stderr.write("[ERROR] No dictionaries specified.\n")
 
 def get_json_from_file(file_path):
     ''' Loads the user-chosen groupings of grammars, dictionaries, and parsing functions as a dictionary '''
@@ -197,3 +219,32 @@ def incorrect_concept_type(incorrect_type):
 def dict_names_to_paths(dict_names):
     ''' Changes dictionary names to dictionary paths '''
     return [os.path.join(DICTIONARY_RELATIVE_PATH, name) for name in dict_names]
+
+def pre_process_text(combined_text, options):
+    ''' Used to speedup processing multiple EHRs '''
+
+    # Combine text into one string for faster processing
+    combined_text = combine_text(text)
+
+    # Create folder to hold temporary files
+    temp_folder_path = create(folder)
+
+    # Save combined text in temp folder
+    combined_text_path, file_name = save(temp_folder_path, combined_text)
+
+    # Creates a <file_name>.snt file
+    normalize_text(combined_text_path, options)
+
+    # Create file path for the resultant .snt file from normalize_text
+    snt = os.path.join(temp_folder_path, "%s.snt" % file_name)
+    snt = "%s%s" % (UnitexConstants.VFS_PREFIX, snt)
+
+    tokenize_text(snt, alphabet_unsorted, options)
+
+    apply_dictionaries(dictionaries, combined_text_path, alphabet, options)
+
+    new_dlf_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(temp_folder_path, "dlf"))
+    new_dlc_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(temp_folder_path, "dlc"))
+
+    # Need to delete all files in folder after done processing text
+    return new_dlf_path, new_dlc_path, temp_folder_path

@@ -88,7 +88,7 @@ ___
           'types': ['drug', 'pt_summary', 'ami']
         }
         file = open('medical_text_path', 'rb')
-        response = requests.post('http://localhost:8021/ehrp/extract', data=args, files={'file': file))
+        response = requests.post('http://localhost:8021/ehrp/extract', data=args, files={'file': file})
         ```
 
 Both GET and POST requests return JSON objects.

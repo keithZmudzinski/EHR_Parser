@@ -40,5 +40,9 @@
     "grammar": "pt_summary.fst2",
     "parsing_function": "pt_summaryParser",
     "sub_graph": "True"
+  },
+  {
+    "grammar": "simple_lookup.fst2",
+    "parsing_function": "simpleParser"
   }
 ]

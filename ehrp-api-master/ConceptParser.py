@@ -478,3 +478,15 @@ class ConceptParser:
             }))
 
         return concepts
+
+    # A temporary function just to mimic processing contexts.
+    # Will be removed.
+    def simpleParser(self, contexts, id_dict, onto_dict):
+        concepts = self.make_concepts_object('simple')
+
+        for context in contexts:
+            concepts['instances'].append({
+                'everything': context
+            })
+
+        return concepts

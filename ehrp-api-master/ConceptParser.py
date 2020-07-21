@@ -39,19 +39,7 @@ class ConceptParser:
     def parse(self):
         ''' Apply given dictionaries, grammar, and parsing function to text. Return dictionary of found concepts. '''
 
-        # Place already created dictionaries into vfs
-        if large_query_detected:
-            new_dlf_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlf"))
-            new_dlc_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlc"))
-            start = time()
-            cp('resources/test_dictionaries/dlf', new_dlf_path)
-            print('Time taken to cp dlf:', time()-start)
-            start = time()
-            cp('resources/test_dictionaries/dlc', new_dlc_path)
-            print('Time taken to cp dlc:', time()-start)
-
-            simple_words = new_dlf_path
-            compound_words = new_dlf_path
+        
 
         # Create an index (File with locations of strings matching grammar)
         self.index = self.locate_grammar()

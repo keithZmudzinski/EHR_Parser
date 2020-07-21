@@ -51,26 +51,12 @@ class Extract(Resource):
         if file:
             text = file.read()
 
-            # If file contains multiple EHRs, separate into list
-            if delimiter:
-                text = text.split(delimiter)
-
-        # Default action is to not preprocess text
-        applied_dictionaries = None
-        # If we've been given multiple pieces of text to process, preprocess
-        if len(text) > 1:
-           dlf_file, dlc_file, temp_folder = preprocess_text()
-           applied_dictionaries = {
-               'single_words': dlf_file,
-               'multiple_words': dlc_file
-           }
-
         # If no types specified, look for all types
         if types == None:
-            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, text, applied_dictionaries)
+            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, text)
         # Otherwise use the types specified
         else:
-            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, text, types, applied_dictionaries)
+            concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, text, types)
 
         return jsonify(concepts)
 

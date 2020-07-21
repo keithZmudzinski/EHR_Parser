@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 from ConceptParser import ConceptParser
 from unitex.io import ls, rm, exists, UnitexFile
-from unitex.tools import UnitexConstants, normalize, tokenize
+from unitex.tools import UnitexConstants, normalize, tokenize, dico
 from unitex.resources import free_persistent_alphabet, load_persistent_alphabet
 
 # Constants reflecting project file layout, please update if you change where files are stored.
@@ -33,7 +33,7 @@ def free_alphabets(options):
     free_persistent_alphabet(options['resources']['alphabet-sorted'])
 
 # Called from ehrp_api.py
-def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_get='ALL', applied_dictionaries=None):
+def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_get='ALL'):
     '''
     Extracts concepts from text.
     Returns dictionary of found concepts.
@@ -76,10 +76,10 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     tokenize_text(snt, alphabet_unsorted, options["tools"]["tokenize"])
 
     # Apply dictionaries
-    apply_dictionaries()
+    apply_dictionaries(dicts_and_ontos['dictionaries'], snt, alphabet_unsorted, options)
 
     # Get concepts that match grammars
-    concepts = get_concepts_for_grammars(dirc, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, dicts_and_ontos, single_words, multiple_words)
+    concepts = get_concepts_for_grammars(dirc, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, dicts_and_ontos['ontologies'])
 
     # Clean the Unitex files
     print("Cleaning up files from " + dirc)
@@ -97,10 +97,8 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
 # alphabet_unsorted: file path to alphabet unitex should use, unsorted
 # alphabet_sorted: file path to alphabet unitex should use, sorted
 # chosen_groupings: The groupings from GrammarParsingFunction.json that will be applied to the input text
-# dicts_and_ontos: Dictionary object holding the names of dictionary files used, and names of ontologies used in those dictionaries
-# single_words: file path of the dlf file produced from dico
-# multiple_words: file path of the dlc file produced from dico
-def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, concepts, dicts_and_ontos, single_words, multiple_words):
+# ontologies: the names of the ontologies being used, allows dictionary file names to differ from the ontology they are using
+def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, ontologies):
     list_of_concepts = []
 
     # Set arguments that don't change across grammar/dictionary usage
@@ -110,14 +108,11 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
         text = snt,
         alphabet_unsorted = alphabet_unsorted,
         alphabet_sorted = alphabet_sorted,
-        dictionaries = dicts_and_ontos['dictionaries'],
-        ontology_names = dicts_and_ontos['ontologies'],
-        single_words = single_words,
-        multipe_words = multiple_words
+        ontology_names = ontologies
     )
 
     # Set concept_parser grammar, dictionaries, and parsing_functions to those in GrammarDictionaryParsingFunction.py
-    for grammar_dictionary_parser in concepts:
+    for grammar_dictionary_parser in chosen_groupings:
         grammar_path = os.path.join(GRAMMAR_RELATIVE_PATH, grammar_dictionary_parser['grammar'])
 
         concept_parser.grammar = grammar_path
@@ -216,34 +211,34 @@ def dict_names_to_paths(dict_names):
     ''' Changes dictionary names to dictionary paths '''
     return [os.path.join(DICTIONARY_RELATIVE_PATH, name) for name in dict_names]
 
-def pre_process_text(combined_text, options):
-    ''' Used to speedup processing multiple EHRs '''
-
-    # Combine text into one string for faster processing
-    combined_text = combine_text(text)
-
-    # Create folder to hold temporary files
-    temp_folder_path = create(folder)
-
-    # Save combined text in temp folder
-    combined_text_path, file_name = save(temp_folder_path, combined_text)
-
-    # Creates a <file_name>.snt file
-    normalize_text(combined_text_path, options)
-
-    # Create file path for the resultant .snt file from normalize_text
-    snt = os.path.join(temp_folder_path, "%s.snt" % file_name)
-    snt = "%s%s" % (UnitexConstants.VFS_PREFIX, snt)
-
-    tokenize_text(snt, alphabet_unsorted, options)
-
-    apply_dictionaries(dictionaries, combined_text_path, alphabet, options)
-
-    new_dlf_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(temp_folder_path, "dlf"))
-    new_dlc_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(temp_folder_path, "dlc"))
-
-    # Need to delete all files in folder after done processing text
-    return new_dlf_path, new_dlc_path, temp_folder_path
+# def pre_process_text(combined_text, options):
+#     ''' Used to speedup processing multiple EHRs '''
+#
+#     # Combine text into one string for faster processing
+#     combined_text = combine_text(text)
+#
+#     # Create folder to hold temporary files
+#     temp_folder_path = create(folder)
+#
+#     # Save combined text in temp folder
+#     combined_text_path, file_name = save(temp_folder_path, combined_text)
+#
+#     # Creates a <file_name>.snt file
+#     normalize_text(combined_text_path, options)
+#
+#     # Create file path for the resultant .snt file from normalize_text
+#     snt = os.path.join(temp_folder_path, "%s.snt" % file_name)
+#     snt = "%s%s" % (UnitexConstants.VFS_PREFIX, snt)
+#
+#     tokenize_text(snt, alphabet_unsorted, options)
+#
+#     apply_dictionaries(dictionaries, combined_text_path, alphabet, options)
+#
+#     new_dlf_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(temp_folder_path, "dlf"))
+#     new_dlc_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(temp_folder_path, "dlc"))
+#
+#     # Need to delete all files in folder after done processing text
+#     return new_dlf_path, new_dlc_path, temp_folder_path
 
 # # FOR BATCH PROCESSING
 #     # Place already created dictionaries into vfs

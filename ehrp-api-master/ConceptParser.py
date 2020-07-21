@@ -39,8 +39,6 @@ class ConceptParser:
     def parse(self):
         ''' Apply given dictionaries, grammar, and parsing function to text. Return dictionary of found concepts. '''
 
-        
-
         # Create an index (File with locations of strings matching grammar)
         self.index = self.locate_grammar()
 
@@ -49,12 +47,12 @@ class ConceptParser:
 
         # Get words that are both in text and dictionary
         # dlf file holds dictionary of simple words that are in dictionaries
-        simple_words = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlf"))
+        single_words = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlf"))
         # dlc file holds dictionary of compound words that are in dictionaries
-        compound_words = "%s%s"%(UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlc"))
+        multiple_words = "%s%s"%(UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlc"))
 
         # Parse all entities that matched in any dictionary
-        dictionary_parser = DictionaryParser(self.get_text(simple_words), self.get_text(compound_words), self.ontology_names)
+        dictionary_parser = DictionaryParser(self.get_text(single_words), self.get_text(multiple_words), self.ontology_names)
         dictionary_parser.parse_dictionaries()
 
         # Assign dictionaries
@@ -67,10 +65,6 @@ class ConceptParser:
 
         # Use parsing function specific to this grammar-dictionary/dictionaries combo
         parsed_concepts = self.parsing_function(self, contexts, id_dict, onto_dict)
-
-        # Ensure grammars used afterwards only use assigned dictionaries
-        rm(simple_words)
-        rm(compound_words)
 
         # NOTE: parsed_concepts has specific format:
         #   {

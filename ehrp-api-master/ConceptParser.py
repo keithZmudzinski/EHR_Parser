@@ -38,9 +38,14 @@ class ConceptParser:
 
     def parse(self):
         ''' Apply given dictionaries, grammar, and parsing function to text. Return dictionary of found concepts. '''
+        for thing in ls(self.directory):
+            print(thing)
 
         # Create an index (File with locations of strings matching grammar)
+        # print(self.directory)
+        # print(self.text)
         self.index = self.locate_grammar()
+        # print(self.index)
 
         # Build concordance (File with actual strings matching grammar)
         self.build_concordance()
@@ -66,6 +71,10 @@ class ConceptParser:
         # Use parsing function specific to this grammar-dictionary/dictionaries combo
         parsed_concepts = self.parsing_function(self, contexts, id_dict, onto_dict)
 
+        # Remove index and concord files that are specific to this EHR
+        rm("%s%s"%(UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "concord.ind")))
+        rm(contexts_file_path)
+
         # NOTE: parsed_concepts has specific format:
         #   {
         #        name: '<name>',
@@ -89,10 +98,11 @@ class ConceptParser:
         grammar_applied_successfully = locate(self.grammar, self.text, self.alphabet_unsorted, **self.options['tools']['locate'])
 
         # Locate created concord.ind file
-        index = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "concord.ind"))
+        index = os.path.join(self.directory, "concord.ind")
 
         # If application failed or couldn't find associated file
-        if grammar_applied_successfully is False or exists(index) is None:
+        # if grammar_applied_successfully is False or exists(index) is None:
+        if grammar_applied_successfully is False:
             sys.stderr.write("[ERROR] Locate failed!\n")
 
         return index

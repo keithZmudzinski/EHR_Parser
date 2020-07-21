@@ -41,54 +41,65 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
 
     print("Extracting concepts from text . . .")
 
-    # Load chosen dict and grammar groupings from all_groupings
-    chosen_groupings = get_concepts_from_groupings(all_groupings, concepts_to_get)
-
-    # Create Unitex file to hold input text
-    unifile = UnitexFile()
-    text_file_name = random_filename()
-
-    # Apply virtual file system prefix
-    text_file_path = "%s%s" % (UnitexConstants.VFS_PREFIX, text_file_name + ".txt")
-
-    # Write input text to unitex text file
-    unifile.open(text_file_path, mode='w')
-    unifile.write(str(text))
-    unifile.close()
-
-    # Get directory file path
-    directory, _ = os.path.split(text_file_path)
-
-    # Set snt file path (snt files are .txt files that have been processed by Unitex)
-    snt = os.path.join(directory, "%s.snt" % text_file_name)
-    snt = "%s%s" % (UnitexConstants.VFS_PREFIX, snt)
-    # Place snt file into snt directory
-    dirc = os.path.join(directory, "%s_snt" % text_file_name)
-
     # Get Alphabets
     alphabet_unsorted = options["resources"]["alphabet"]
     alphabet_sorted = options["resources"]["alphabet-sorted"]
 
-    # Normalize the text
-    normalize_text(text_file_path, options["tools"]["normalize"])
+    # Put all texts together for preprocessing
+    combined_text = '\n\n'.join(text)
 
-    # Tokenize the text
-    tokenize_text(snt, alphabet_unsorted, options["tools"]["tokenize"])
+    # Create folder in virtual file system
+    folder_name = random_filename()
+    folder_name = "%s%s" % (UnitexConstants.VFS_PREFIX, folder_name)
+
+    # Create combined text file path
+    combined_text_path = os.path.join(folder_name, "combined_text.txt")
+
+    # Save combined text in file in VFS
+    unitex_file = UnitexFile()
+    unitex_file.open(combined_text_path, mode='w')
+    unitex_file.write(combined_text)
+    unitex_file.close()
+
+    # Normalize the combined text
+    normalize_text(combined_text_path, options["tools"]["normalize"])
+
+    # Get file path of normalized text
+    combined_processed_text_path = os.path.join(folder_name, "combined_text.snt")
+
+    # Tokenize the text (alters combined_processed_text in place)
+    tokenize_text(combined_processed_text_path, alphabet_unsorted, options["tools"]["tokenize"])
 
     # Apply dictionaries
-    apply_dictionaries(dicts_and_ontos['dictionaries'], snt, alphabet_unsorted, options)
+    apply_dictionaries(dicts_and_ontos['dictionaries'], combined_processed_text_path, alphabet_unsorted, options)
+
+    # Create a text file in the VFS for each health record
+    health_record_paths = []
+    for record_number, health_record in enumerate(text):
+        health_record_path = os.path.join(folder_name, "text_%d.txt" % record_number)
+        health_record_paths.append(health_record_path)
+        unitex_file.open(health_record_path, mode='w')
+        unitex_file.write(health_record)
+        unitex_file.close()
+
+    # Load chosen dict and grammar groupings from all_groupings
+    chosen_groupings = get_concepts_from_groupings(all_groupings, concepts_to_get)
 
     # Get concepts that match grammars
-    concepts = get_concepts_for_grammars(dirc, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, dicts_and_ontos['ontologies'])
+    concepts_per_ehrp = []
+    for health_record_path in health_record_paths:
+        concepts = get_concepts_for_grammars(folder_name, options, health_record_path,
+                                            alphabet_unsorted, alphabet_sorted,
+                                            chosen_groupings, dicts_and_ontos['ontologies']
+                                            )
+        concepts_per_ehrp.append(concepts)
 
     # Clean the Unitex files
     print("Cleaning up files from " + dirc)
     for v_file in ls("%s%s" % (UnitexConstants.VFS_PREFIX, dirc)):
         rm(v_file)
-    rm(snt)
-    rm(text_file_path)
 
-    return concepts
+    return concepts_per_ehrp
 
 # function: get_concepts_for_grammars; Returns a list of dictionary objects of parsed concepts from text
 # directory: virtual file system directory

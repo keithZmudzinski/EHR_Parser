@@ -18,7 +18,7 @@ class Extract(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         # Define allowable arguments
-        self.reqparse.add_argument('text', required=False, default=None,
+        self.reqparse.add_argument('text', required=False, default=None, action='append',
                                location=['values', 'json'], help="text for extracting entities and concept ids")
         self.reqparse.add_argument('types', type=str, required=False, default=None, action='append',
                                location=['values', 'json'], help="type of concept to extract")
@@ -47,6 +47,7 @@ class Extract(Resource):
             print('[ERROR] Either both text and file are being used, or neither are')
             abort(422)
 
+        # TODO: Allow for one file containing multiple EHRs
         # If file is set, text isn't, and so we update text with the contents of file
         if file:
             text = file.read()

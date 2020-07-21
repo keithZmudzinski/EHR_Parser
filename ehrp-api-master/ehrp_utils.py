@@ -76,11 +76,7 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     tokenize_text(snt, alphabet_unsorted, options["tools"]["tokenize"])
 
     # Apply dictionaries
-    if applied_dictionaries == None:
-        single_words, multiple_words = apply_dictionaries()
-    else:
-        single_words = applied_dictionaries['single_words']
-        multiple_words = applied_dictionaries['multiple_words']
+    apply_dictionaries()
 
     # Get concepts that match grammars
     concepts = get_concepts_for_grammars(dirc, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, dicts_and_ontos, single_words, multiple_words)

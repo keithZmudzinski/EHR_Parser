@@ -11,7 +11,7 @@ import string
 import json
 from pathlib import Path
 from ConceptParser import ConceptParser
-from unitex.io import ls, rm, exists, UnitexFile
+from unitex.io import ls, rm, exists, UnitexFile, mv
 from unitex.tools import UnitexConstants, normalize, tokenize, dico
 from unitex.resources import free_persistent_alphabet, load_persistent_alphabet
 
@@ -49,11 +49,8 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     combined_text = '\n\n'.join(text)
 
     # Create folder in virtual file system
-    folder_name = random_filename()
-    folder_name = "%s%s" % (UnitexConstants.VFS_PREFIX, folder_name)
-
-    # Create combined text file path
-    combined_text_path = os.path.join(folder_name, "combined_text.txt")
+    combined_text_filename = to_VFS(random_filename())
+    combined_text_path = combined_text_filename + ".txt"
 
     # Save combined text in file in VFS
     unitex_file = UnitexFile()
@@ -65,7 +62,7 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     normalize_text(combined_text_path, options["tools"]["normalize"])
 
     # Get file path of normalized text
-    combined_processed_text_path = os.path.join(folder_name, "combined_text.snt")
+    combined_processed_text_path = combined_text_filename + ".snt"
 
     # Tokenize the text (alters combined_processed_text in place)
     tokenize_text(combined_processed_text_path, alphabet_unsorted, options["tools"]["tokenize"])
@@ -76,27 +73,57 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     # Create a text file in the VFS for each health record
     health_record_paths = []
     for record_number, health_record in enumerate(text):
-        health_record_path = os.path.join(folder_name, "text_%d.txt" % record_number)
-        health_record_paths.append(health_record_path)
+        # Create file name that will hold content
+        health_record_file_name = to_VFS("text_%d" % record_number)
+        # Place file into VFS
+        health_record_path = health_record_file_name + ".txt"
+
+        # Save content in Unitex file
         unitex_file.open(health_record_path, mode='w')
         unitex_file.write(health_record)
         unitex_file.close()
+
+        # Pre-process this file to allow for later processing
+        normalize_text(health_record_path, options["tools"]["normalize"])
+        health_record_processed_text_path = health_record_file_name + ".snt"
+        # Save processed file path for later processing
+        health_record_paths.append(health_record_processed_text_path)
+        tokenize_text(health_record_processed_text_path, alphabet_unsorted, options["tools"]["tokenize"])
 
     # Load chosen dict and grammar groupings from all_groupings
     chosen_groupings = get_concepts_from_groupings(all_groupings, concepts_to_get)
 
     # Get concepts that match grammars
     concepts_per_ehrp = []
-    for health_record_path in health_record_paths:
-        concepts = get_concepts_for_grammars(folder_name, options, health_record_path,
+    prev_dic_files_locations = {
+        "dlf": os.path.join(combined_text_filename + "_snt", "dlf"),
+        "dlc": os.path.join(combined_text_filename + "_snt", "dlc")
+    }
+    for record_number, health_record_path in enumerate(health_record_paths):
+        # Get the folder in which all files for this health record are stored
+        health_record_folder = to_VFS("text_%d_snt" % record_number)
+        # Need to place dictionary files into this folder
+        new_dlf_path = os.path.join(health_record_folder, "dlf")
+        new_dlc_path = os.path.join(health_record_folder, "dlc")
+
+        # Place the dictionary files into this folder
+        mv(prev_dic_files_locations["dlf"], new_dlf_path)
+        mv(prev_dic_files_locations["dlc"], new_dlc_path)
+
+        # Update location of dictionay files
+        prev_dic_files_locations["dlf"] = new_dlf_path
+        prev_dic_files_locations["dlc"] = new_dlc_path
+
+        # Apply graphs to text and get found concepts
+        concepts = get_concepts_for_grammars(health_record_folder, options, health_record_path,
                                             alphabet_unsorted, alphabet_sorted,
                                             chosen_groupings, dicts_and_ontos['ontologies']
                                             )
         concepts_per_ehrp.append(concepts)
 
     # Clean the Unitex files
-    print("Cleaning up files from " + dirc)
-    for v_file in ls("%s%s" % (UnitexConstants.VFS_PREFIX, dirc)):
+    print("Cleaning up files")
+    for v_file in ls("%s" % UnitexConstants.VFS_PREFIX):
         rm(v_file)
 
     return concepts_per_ehrp
@@ -222,34 +249,8 @@ def dict_names_to_paths(dict_names):
     ''' Changes dictionary names to dictionary paths '''
     return [os.path.join(DICTIONARY_RELATIVE_PATH, name) for name in dict_names]
 
-# def pre_process_text(combined_text, options):
-#     ''' Used to speedup processing multiple EHRs '''
-#
-#     # Combine text into one string for faster processing
-#     combined_text = combine_text(text)
-#
-#     # Create folder to hold temporary files
-#     temp_folder_path = create(folder)
-#
-#     # Save combined text in temp folder
-#     combined_text_path, file_name = save(temp_folder_path, combined_text)
-#
-#     # Creates a <file_name>.snt file
-#     normalize_text(combined_text_path, options)
-#
-#     # Create file path for the resultant .snt file from normalize_text
-#     snt = os.path.join(temp_folder_path, "%s.snt" % file_name)
-#     snt = "%s%s" % (UnitexConstants.VFS_PREFIX, snt)
-#
-#     tokenize_text(snt, alphabet_unsorted, options)
-#
-#     apply_dictionaries(dictionaries, combined_text_path, alphabet, options)
-#
-#     new_dlf_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(temp_folder_path, "dlf"))
-#     new_dlc_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(temp_folder_path, "dlc"))
-#
-#     # Need to delete all files in folder after done processing text
-#     return new_dlf_path, new_dlc_path, temp_folder_path
+def to_VFS(input):
+    return "%s%s" % (UnitexConstants.VFS_PREFIX, input)
 
 # # FOR BATCH PROCESSING
 #     # Place already created dictionaries into vfs

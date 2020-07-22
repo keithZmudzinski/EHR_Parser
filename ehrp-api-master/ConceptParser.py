@@ -38,23 +38,18 @@ class ConceptParser:
 
     def parse(self):
         ''' Apply given dictionaries, grammar, and parsing function to text. Return dictionary of found concepts. '''
-        for thing in ls(self.directory):
-            print(thing)
 
         # Create an index (File with locations of strings matching grammar)
-        # print(self.directory)
-        # print(self.text)
         self.index = self.locate_grammar()
-        # print(self.index)
 
         # Build concordance (File with actual strings matching grammar)
         self.build_concordance()
 
         # Get words that are both in text and dictionary
         # dlf file holds dictionary of simple words that are in dictionaries
-        single_words = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlf"))
+        single_words = os.path.join(self.directory, "dlf")
         # dlc file holds dictionary of compound words that are in dictionaries
-        multiple_words = "%s%s"%(UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlc"))
+        multiple_words = os.path.join(self.directory, "dlc")
 
         # Parse all entities that matched in any dictionary
         dictionary_parser = DictionaryParser(self.get_text(single_words), self.get_text(multiple_words), self.ontology_names)
@@ -65,15 +60,19 @@ class ConceptParser:
         onto_dict = dictionary_parser.onto_dict
 
         # Get contexts
-        contexts_file_path = "%s%s"%(UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "concord.txt"))
+        contexts_file_path = os.path.join(self.directory, "concord.txt")
         contexts = self.get_text(contexts_file_path)
 
         # Use parsing function specific to this grammar-dictionary/dictionaries combo
         parsed_concepts = self.parsing_function(self, contexts, id_dict, onto_dict)
 
-        # Remove index and concord files that are specific to this EHR
-        rm("%s%s"%(UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "concord.ind")))
-        rm(contexts_file_path)
+        # Cleanup un-needed files to save space
+        for file in ls(self.directory):
+            # Get file name separate from directory name
+            _, file_name = os.path.split(file)
+            # Need to keep dictionary files for use with other EHRPs
+            if file_name != 'dlc' and file_name != 'dlf':
+                rm(file)
 
         # NOTE: parsed_concepts has specific format:
         #   {

@@ -20,6 +20,11 @@ RESOURCES_RELATIVE_PATH = 'resources'
 GRAMMAR_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Grammars')
 DICTIONARY_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Dictionaries')
 
+# Constants obtained by empirical tests
+# TODO: FIND ACTUAL NUMBERS
+SMALL_BATCH = 10
+MEDIUM_BATCH = 100
+
 # Called from ehrp_api.py
 def load_alphabets(options):
     ''' Place alphabets in persistent space for re-use. '''
@@ -41,155 +46,59 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
 
     print("Extracting concepts from text . . .")
 
+    # Load chosen dict and grammar groupings from all_groupings
+    chosen_groupings = get_concepts_from_groupings(all_groupings, concepts_to_get)
+
     # Get Alphabets
     alphabet_unsorted = options["resources"]["alphabet"]
     alphabet_sorted = options["resources"]["alphabet-sorted"]
 
-    # Put all texts together for preprocessing
-    combined_text = '\n\n'.join(text)
+    # Get list of dictionary files and ontology names to be used
+    dictionaries = dicts_and_ontos['dictionaries']
+    ontologies = dicts_and_ontos['ontologies']
 
-    # Create folder in virtual file system
-    combined_text_filename = to_VFS(random_filename())
-    combined_text_path = combined_text_filename + ".txt"
+    # Get how many texts we need to process
+    num_texts_to_process = len(text)
 
-    # Save combined text in file in VFS
-    unitex_file = UnitexFile()
-    unitex_file.open(combined_text_path, mode='w')
-    unitex_file.write(combined_text)
-    unitex_file.close()
+    # List to store extracted concepts per EHR
+    concepts_per_ehr = []
 
-    # Normalize the combined text
-    normalize_text(combined_text_path, options["tools"]["normalize"])
+    # Choose most efficient option for processing texts, based off empirical tests
+    # Option 1: Process each text sequentially, nothing special is done here
+    if num_texts_to_process <= SMALL_BATCH:
+        # Create a text file in the VFS for each health record
+        health_record_paths = pre_process_texts(text, alphabet_unsorted, options)
 
-    # Get file path of normalized text
-    combined_processed_text_path = combined_text_filename + ".snt"
-
-    # Tokenize the text (alters combined_processed_text in place)
-    tokenize_text(combined_processed_text_path, alphabet_unsorted, options["tools"]["tokenize"])
-
-    # Apply dictionaries
-    apply_dictionaries(dicts_and_ontos['dictionaries'], combined_processed_text_path, alphabet_unsorted, options)
-
-    # Create a text file in the VFS for each health record
-    health_record_paths = []
-    for record_number, health_record in enumerate(text):
-        # Create file name that will hold content
-        health_record_file_name = to_VFS("text_%d" % record_number)
-        # Place file into VFS
-        health_record_path = health_record_file_name + ".txt"
-
-        # Save content in Unitex file
-        unitex_file.open(health_record_path, mode='w')
-        unitex_file.write(health_record)
-        unitex_file.close()
-
-        # Pre-process this file to allow for later processing
-        normalize_text(health_record_path, options["tools"]["normalize"])
-        health_record_processed_text_path = health_record_file_name + ".snt"
-        # Save processed file path for later processing
-        health_record_paths.append(health_record_processed_text_path)
-        tokenize_text(health_record_processed_text_path, alphabet_unsorted, options["tools"]["tokenize"])
-
-    # Load chosen dict and grammar groupings from all_groupings
-    chosen_groupings = get_concepts_from_groupings(all_groupings, concepts_to_get)
-
-    # Get concepts that match grammars
-    concepts_per_ehrp = []
-    prev_dic_files_locations = {
-        "dlf": os.path.join(combined_text_filename + "_snt", "dlf"),
-        "dlc": os.path.join(combined_text_filename + "_snt", "dlc")
-    }
-    for record_number, health_record_path in enumerate(health_record_paths):
-        # Get the folder in which all files for this health record are stored
-        health_record_folder = to_VFS("text_%d_snt" % record_number)
-        # Need to place dictionary files into this folder
-        new_dlf_path = os.path.join(health_record_folder, "dlf")
-        new_dlc_path = os.path.join(health_record_folder, "dlc")
-
-        # Place the dictionary files into this folder
-        mv(prev_dic_files_locations["dlf"], new_dlf_path)
-        mv(prev_dic_files_locations["dlc"], new_dlc_path)
-
-        # Update location of dictionay files
-        prev_dic_files_locations["dlf"] = new_dlf_path
-        prev_dic_files_locations["dlc"] = new_dlc_path
-
-        # Apply graphs to text and get found concepts
-        concepts = get_concepts_for_grammars(health_record_folder, options, health_record_path,
+        # Process each created text file
+        for record_number, health_record_path in enumerate(health_record_paths):
+            # Create dlf and dlc files per text
+            apply_dictionaries(dictionaries, health_record_path, alphabet_unsorted, options)
+            # The folder in which all relevant tiles to the text are stored
+            health_record_folder = to_VFS("text_%d_snt" % record_number)
+            # Apply graphs to text and get found concepts
+            concepts = get_concepts_for_grammars(health_record_folder, options, health_record_path,
                                             alphabet_unsorted, alphabet_sorted,
-                                            chosen_groupings, dicts_and_ontos['ontologies']
+                                            chosen_groupings, ontologies, 'SMALL_BATCH'
                                             )
-        concepts_per_ehrp.append(concepts)
+            concepts_per_ehr.append(concepts)
 
-    # Clean the Unitex files
+    # Option 2: Apply dictionaries to combined texts, and share resultant files between each text
+    elif num_texts_to_process <= MEDIUM_BATCH:
+        # Get the concepts from each text
+        concepts_per_ehr = medium_batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options)
+    # Option 3: For large batches, combine texts and process all together, then separate out results
+    else:
+        pass
+
+    # Clean up the created Unitex files
     print("Cleaning up files")
     for v_file in ls("%s" % UnitexConstants.VFS_PREFIX):
         rm(v_file)
 
-    return concepts_per_ehrp
+    return concepts_per_ehr
 
-# function: get_concepts_for_grammars; Returns a list of dictionary objects of parsed concepts from text
-# directory: virtual file system directory
-# options: yaml object with preset options for different unitex functions
-# snt: the file path to the pre-processed text
-# alphabet_unsorted: file path to alphabet unitex should use, unsorted
-# alphabet_sorted: file path to alphabet unitex should use, sorted
-# chosen_groupings: The groupings from GrammarParsingFunction.json that will be applied to the input text
-# ontologies: the names of the ontologies being used, allows dictionary file names to differ from the ontology they are using
-def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, ontologies):
-    list_of_concepts = []
-
-    # Set arguments that don't change across grammar/dictionary usage
-    concept_parser = ConceptParser(
-        directory = directory,
-        options = options,
-        text = snt,
-        alphabet_unsorted = alphabet_unsorted,
-        alphabet_sorted = alphabet_sorted,
-        ontology_names = ontologies
-    )
-
-    # Set concept_parser grammar, dictionaries, and parsing_functions to those in GrammarDictionaryParsingFunction.py
-    for grammar_dictionary_parser in chosen_groupings:
-        grammar_path = os.path.join(GRAMMAR_RELATIVE_PATH, grammar_dictionary_parser['grammar'])
-
-        concept_parser.grammar = grammar_path
-        concept_parser.parsing_function = grammar_dictionary_parser['parsing_function']
-
-        # Make use of ConceptParser member variables that might not be set during object construction
-        # Maps parsing_function string to function reference
-        concept_parser.setup()
-
-        # Process snt using concept_parser.grammar, concept_parser.dictionaries, and concept_parser.parsing_function
-        concepts = concept_parser.parse()
-
-        try:
-            # Append only if at least one concept found.
-            if len(concepts['instances']):
-                list_of_concepts.append(concepts)
-        # This happens if we are parsing the master graph
-        except TypeError:
-            list_of_concepts.extend(concepts)
-
-    return list_of_concepts
-
-def apply_dictionaries(dictionaries, text, alphabet_unsorted, options):
-        ''' Creates .dlf and .dlc files holding words in both dictionaries and text. '''
-        if dictionaries is not None:
-            dictionaries_applied_succesfully = dico(dictionaries, text, alphabet_unsorted, **options['tools']['dico'])
-
-            if dictionaries_applied_succesfully is False:
-                sys.stderr.write("[ERROR] Dictionaries application failed!\n")
-                sys.exit(1)
-        else:
-            sys.stderr.write("[ERROR] No dictionaries specified.\n")
-
-def get_json_from_file(file_path):
-    ''' Loads the user-chosen groupings of grammars, dictionaries, and parsing functions as a dictionary '''
-    with open(file_path) as file:
-        groupings = json.load(file)
-    return groupings
-
+# Function: get_concepts_from_groupings; Return only those grammar/function pairs specified in the query
+# all_groupings: List of dictionary groupings of grammar/function pairs
 def get_concepts_from_groupings(all_groupings, concepts_to_get):
     ''' Returns list of concepts to get as specified by user '''
     concepts = []
@@ -220,6 +129,175 @@ def get_concepts_from_groupings(all_groupings, concepts_to_get):
             incorrect_concept_type(concept)
     return concepts
 
+# Function: pre_process_texts: Normalize and tokenize each given text
+# texts: list of strings to be processed
+def pre_process_texts(texts, alphabet_unsorted, options):
+    health_record_paths = []
+    for record_number, health_record in enumerate(texts):
+        # Create file name that will hold content
+        health_record_file_name = to_VFS("text_%d" % record_number)
+
+        # Place file into VFS
+        health_record_path = health_record_file_name + ".txt"
+
+        # Save content in Unitex file
+        save_to_unitex_file(health_record_path, health_record)
+
+        # Pre-process this file to allow for later processing
+        normalize_text(health_record_path, options["tools"]["normalize"])
+        health_record_processed_text_path = health_record_file_name + ".snt"
+        # Save processed file path for later processing
+        health_record_paths.append(health_record_processed_text_path)
+        tokenize_text(health_record_processed_text_path, alphabet_unsorted, options["tools"]["tokenize"])
+
+    # List of paths for each file needing to be further processed
+    return health_record_paths
+
+# Function: apply_dictionaries; Applies dictionaries to text, finding the overlap between them
+# dictionaries: List of file paths to the dictionaries to be used
+# text: File path to the text to be processed
+# alphabet_unsorted: File path to the alphabet to be used, unsorted
+# options: Dictionary of options for use with unitex functions
+def apply_dictionaries(dictionaries, text, alphabet_unsorted, options):
+        ''' Creates .dlf and .dlc files holding words in both dictionaries and text. '''
+        if dictionaries is not None:
+            dictionaries_applied_succesfully = dico(dictionaries, text, alphabet_unsorted, **options['tools']['dico'])
+
+            if dictionaries_applied_succesfully is False:
+                sys.stderr.write("[ERROR] Dictionaries application failed!\n")
+                sys.exit(1)
+        else:
+            sys.stderr.write("[ERROR] No dictionaries specified.\n")
+
+# Function: to_VFS; Prepend the Unitex VFS prefix to given file path
+def to_VFS(file_path):
+    return "%s%s" % (UnitexConstants.VFS_PREFIX, file_path)
+
+# function: get_concepts_for_grammars; Returns a list of dictionary objects of parsed concepts from text
+# directory: virtual file system directory
+# options: yaml object with preset options for different unitex functions
+# snt: the file path to the pre-processed text
+# alphabet_unsorted: file path to alphabet unitex should use, unsorted
+# alphabet_sorted: file path to alphabet unitex should use, sorted
+# chosen_groupings: The groupings from GrammarParsingFunction.json that will be applied to the input text
+# ontologies: the names of the ontologies being used, allows dictionary file names to differ from the ontology they are using
+# batch_type: string denoting the size of the query being processed
+def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, ontologies, batch_type):
+    list_of_concepts = []
+
+    # Set arguments that don't change across grammar/dictionary usage
+    concept_parser = ConceptParser(
+        directory = directory,
+        options = options,
+        text = snt,
+        alphabet_unsorted = alphabet_unsorted,
+        alphabet_sorted = alphabet_sorted,
+        ontology_names = ontologies,
+        batch_type = batch_type
+    )
+
+    # Set concept_parser grammar, dictionaries, and parsing_functions to those in GrammarDictionaryParsingFunction.py
+    for grammar_dictionary_parser in chosen_groupings:
+        grammar_path = os.path.join(GRAMMAR_RELATIVE_PATH, grammar_dictionary_parser['grammar'])
+
+        concept_parser.grammar = grammar_path
+        concept_parser.parsing_function = grammar_dictionary_parser['parsing_function']
+
+        # Make use of ConceptParser member variables that might not be set during object construction
+        # Maps parsing_function string to function reference
+        concept_parser.setup()
+
+        # Process snt using concept_parser.grammar, concept_parser.dictionaries, and concept_parser.parsing_function
+        concepts = concept_parser.parse()
+
+        try:
+            # Append only if at least one concept found.
+            if len(concepts['instances']):
+                list_of_concepts.append(concepts)
+        # This happens if we are parsing the master graph
+        except TypeError:
+            list_of_concepts.extend(concepts)
+
+    return list_of_concepts
+
+# Function: medium_batch_processing; Processes each text provided, and returns a list of concepts extracted from each one
+# text: list of strings to be processed, each string is one health record
+# alphabet_unsorted: file path to the alphabet to be used, unsorted
+# alphabet_sorted: file path to the alphabet to be used, sorted
+# dictionaries: list of file paths to dictionaries to be used
+# ontologies: list of ontology names in use
+# chosen_groupings: the list of grammars and associated parsing functions to be applied to each text
+# options: dictionary of options for various unitex funtions
+def medium_batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options):
+    # Put all texts together for preprocessing
+    combined_text = '\n\n'.join(text)
+
+    # Create folder in virtual file system
+    combined_text_filename = to_VFS(random_filename())
+    combined_text_path = combined_text_filename + ".txt"
+
+    # Save combined text in file in VFS
+    save_to_unitex_file(combined_text_path, combined_text)
+
+    # Normalize the combined text, creates a 'combined_text_filename.snt' file
+    normalize_text(combined_text_path, options["tools"]["normalize"])
+
+    # Get file path of normalized text
+    combined_processed_text_path = combined_text_filename + ".snt"
+
+    # Tokenize the text (alters combined_processed_text in place)
+    tokenize_text(combined_processed_text_path, alphabet_unsorted, options["tools"]["tokenize"])
+
+    # Apply dictionaries
+    apply_dictionaries(dictionaries, combined_processed_text_path, alphabet_unsorted, options)
+
+    # Create a text file in the VFS for each health record
+    health_record_paths = pre_process_texts(text, alphabet_unsorted, options)
+
+    # Get concepts that match grammars
+    concepts_per_ehrp = []
+    prev_dic_files_locations = {
+        "dlf": os.path.join(combined_text_filename + "_snt", "dlf"),
+        "dlc": os.path.join(combined_text_filename + "_snt", "dlc")
+    }
+    for record_number, health_record_path in enumerate(health_record_paths):
+        # Get the folder in which all files for this health record are stored
+        health_record_folder = to_VFS("text_%d_snt" % record_number)
+        # Need to place dictionary files into this folder
+        new_dlf_path = os.path.join(health_record_folder, "dlf")
+        new_dlc_path = os.path.join(health_record_folder, "dlc")
+
+        # Place the dictionary files into this folder
+        mv(prev_dic_files_locations["dlf"], new_dlf_path)
+        mv(prev_dic_files_locations["dlc"], new_dlc_path)
+
+        # Update location of dictionay files
+        prev_dic_files_locations["dlf"] = new_dlf_path
+        prev_dic_files_locations["dlc"] = new_dlc_path
+
+        # Apply graphs to text and get found concepts
+        concepts = get_concepts_for_grammars(health_record_folder, options, health_record_path,
+                                            alphabet_unsorted, alphabet_sorted,
+                                            chosen_groupings, ontologies, 'MEDIUM_BATCH'
+                                            )
+        concepts_per_ehrp.append(concepts)
+    return concepts_per_ehrp
+
+# Function: save_to_unitex_file; Creates a unitex file at given location with given content
+# path: file path inside the unitex VFS
+# content: string to be written to file
+def save_to_unitex_file(path, content):
+    unitex_file = UnitexFile()
+    unitex_file.open(path, mode='w')
+    unitex_file.write(content)
+    unitex_file.close()
+
+def get_json_from_file(file_path):
+    ''' Loads the user-chosen groupings of grammars, dictionaries, and parsing functions as a dictionary '''
+    with open(file_path) as file:
+        groupings = json.load(file)
+    return groupings
+
 def random_filename(size=8, chars=string.ascii_uppercase + string.digits):
     '''Returns a random string'''
     return ''.join(random.choice(chars) for _ in range(size))
@@ -249,8 +327,6 @@ def dict_names_to_paths(dict_names):
     ''' Changes dictionary names to dictionary paths '''
     return [os.path.join(DICTIONARY_RELATIVE_PATH, name) for name in dict_names]
 
-def to_VFS(input):
-    return "%s%s" % (UnitexConstants.VFS_PREFIX, input)
 
 # # FOR BATCH PROCESSING
 #     # Place already created dictionaries into vfs

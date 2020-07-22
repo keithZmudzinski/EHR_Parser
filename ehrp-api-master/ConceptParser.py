@@ -20,6 +20,7 @@ class ConceptParser:
     # dictionaries: list of paths to dictionaries to apply to text
     # parsing_function: input as name of parsing function to use, changed to function pointer to function of same name
     # ontology_names: strictly the names of the ontologies being used, no file extensions or paths attached
+    # batch_type: string denoting the size of query being processed, controls which files are cleaned up
     # index: file path of the index created by ConceptParser.locate_grammar()
 
     def __init__(self, **kwargs):
@@ -38,7 +39,6 @@ class ConceptParser:
 
     def parse(self):
         ''' Apply given dictionaries, grammar, and parsing function to text. Return dictionary of found concepts. '''
-
         # Create an index (File with locations of strings matching grammar)
         self.index = self.locate_grammar()
 
@@ -71,7 +71,8 @@ class ConceptParser:
             # Get file name separate from directory name
             _, file_name = os.path.split(file)
             # Need to keep dictionary files for use with other EHRPs
-            if file_name != 'dlc' and file_name != 'dlf':
+            # Delete all files if not a medium batch. If a medium batch, don't delete dlf or dlf files
+            if self.batch_type != 'MEDIUM_BATCH' or (self.batch_type == 'MEDIUM_BATCH' and not(file_name == 'dlc' or file_name == 'dlf')):
                 rm(file)
 
         # NOTE: parsed_concepts has specific format:

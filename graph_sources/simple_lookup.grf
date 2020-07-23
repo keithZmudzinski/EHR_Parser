@@ -1,5 +1,5 @@
 #Unigraph
-SIZE 1530 840
+SIZE 1887 884
 FONT Times New Roman:  10
 OFONT Arial Unicode MS:B 12
 BCOLOR 16777215
@@ -17,8 +17,10 @@ DRST n
 FITS 100
 PORIENT L
 #
-4
-"<E>" 70 200 2 2 3 
-"" 516 237 0 
-"<DISORDER>" 202 215 1 1 
-"<DRUG>" 209 294 1 1 
+6
+"<E>" 69 221 3 2 3 4 
+"" 505 221 0 
+"<DISORDER>" 199 146 1 1 
+"<DRUG>" 213 221 1 1 
+"__EHR_API_DELIMITER__" 177 303 1 1 
+"Used to deliminate between documents+in large queries" 174 345 0 

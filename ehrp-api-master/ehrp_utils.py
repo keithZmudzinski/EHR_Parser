@@ -11,7 +11,7 @@ import string
 import json
 from pathlib import Path
 from ConceptParser import ConceptParser
-from unitex.io import ls, rm, exists, UnitexFile, mv
+from unitex.io import ls, rm, cp, exists, UnitexFile, mv
 from unitex.tools import UnitexConstants, normalize, tokenize, dico
 from unitex.resources import free_persistent_alphabet, load_persistent_alphabet
 
@@ -22,8 +22,8 @@ DICTIONARY_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Dictionaries')
 
 # Constants obtained by empirical tests
 # TODO: FIND ACTUAL NUMBERS
-SMALL_BATCH = 10
-MEDIUM_BATCH = 100
+SMALL_BATCH = 0
+MEDIUM_BATCH = 0
 
 # Called from ehrp_api.py
 def load_alphabets(options):
@@ -63,7 +63,7 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     # List to store extracted concepts per EHR
     concepts_per_ehr = []
 
-    # Choose most efficient option for processing texts, based off empirical tests
+    # Choose most efficient option for processing texts
     # Option 1: Process each text sequentially, nothing special is done here
     if num_texts_to_process <= SMALL_BATCH:
         # Create a text file in the VFS for each health record
@@ -80,16 +80,56 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
                                             alphabet_unsorted, alphabet_sorted,
                                             chosen_groupings, ontologies, 'SMALL_BATCH'
                                             )
+            # print(concepts)
+            # print('\n\n')
             concepts_per_ehr.append(concepts)
 
     # Option 2: Apply dictionaries to combined texts, and share resultant files between each text
     elif num_texts_to_process <= MEDIUM_BATCH:
         # Get the concepts from each text
         concepts_per_ehr = medium_batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options)
+
     # Option 3: For large batches, combine texts and process all together, then separate out results
     else:
-        pass
+        # Put all texts together for preprocessing
+        combined_text = '__EHR_API_DELIMITER__'.join(text)
+        combined_text_filename = to_VFS(random_filename())
+        combined_text_path = combined_text_filename + '.txt'
 
+        # Place combined text into Unitex file
+        save_to_unitex_file(combined_text_path, combined_text)
+
+        # Normalize the combined texts
+        normalize_text(combined_text_path, options["tools"]["normalize"])
+
+        # Get file path of normalized text
+        combined_processed_text_path = combined_text_filename + ".snt"
+
+        # Tokenize the text (alters combined_processed_text in place)
+        tokenize_text(combined_processed_text_path, alphabet_unsorted, options["tools"]["tokenize"])
+
+        # Get paths of dlf and dlc files inside designated folder
+        dlf_relative_path = os.path.join('Internal_api_use', 'dlf')
+        dlc_relative_path = os.path.join('Internal_api_use', 'dlc')
+
+        # Get paths of dlf and dlc files inside the Dictionaries folder
+        dlf_path = os.path.join(DICTIONARY_RELATIVE_PATH, dlf_relative_path)
+        dlc_path = os.path.join(DICTIONARY_RELATIVE_PATH, dlc_relative_path)
+
+        # Make folder name that holds all relevant files
+        folder_name = combined_text_filename + '_snt'
+        # Make destination path for dlf and dlc files
+        dlf_destination_path = os.path.join(folder_name, 'dlf')
+        dlc_destination_path = os.path.join(folder_name, 'dlc')
+
+        # Copy these pre-build dictionaries into VFS
+        cp(dlf_path, dlf_destination_path)
+        cp(dlc_path, dlc_destination_path)
+
+        concepts_per_ehr = get_concepts_for_grammars(folder_name, options, combined_processed_text_path,
+                                        alphabet_unsorted, alphabet_sorted,
+                                        chosen_groupings, ontologies, 'LARGE_BATCH'
+                                        )
     # Clean up the created Unitex files
     print("Cleaning up files")
     for v_file in ls("%s" % UnitexConstants.VFS_PREFIX):

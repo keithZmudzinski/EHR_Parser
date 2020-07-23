@@ -39,6 +39,7 @@ class ConceptParser:
 
     def parse(self):
         ''' Apply given dictionaries, grammar, and parsing function to text. Return dictionary of found concepts. '''
+
         # Create an index (File with locations of strings matching grammar)
         self.index = self.locate_grammar()
 
@@ -63,15 +64,27 @@ class ConceptParser:
         contexts_file_path = os.path.join(self.directory, "concord.txt")
         contexts = self.get_text(contexts_file_path)
 
-        # Use parsing function specific to this grammar-dictionary/dictionaries combo
-        parsed_concepts = self.parsing_function(self, contexts, id_dict, onto_dict)
+        # If a large batch, we have been given all texts combined toegether
+        # We need to separate them and process them individually.
+        parsed_concepts = []
+        if self.batch_type == 'LARGE_BATCH':
+            separated_contexts = self.separate_contexts(contexts)
+            print(len(separated_contexts))
+            for separate_context in separated_contexts:
+                single_parsed_concept = self.parsing_function(self, separate_context, id_dict, onto_dict)
+                parsed_concepts.append([single_parsed_concept])
+
+        # If not a large batch, it is instead either small or medium
+        else:
+            # Use parsing function specific to this grammar
+            parsed_concepts = self.parsing_function(self, contexts, id_dict, onto_dict)
 
         # Cleanup un-needed files to save space
         for file in ls(self.directory):
             # Get file name separate from directory name
             _, file_name = os.path.split(file)
             # Need to keep dictionary files for use with other EHRPs
-            # Delete all files if not a medium batch. If a medium batch, don't delete dlf or dlf files
+            # Delete all files if not a medium batch. If a medium batch, don't delete dlc or dlf files
             if self.batch_type != 'MEDIUM_BATCH' or (self.batch_type == 'MEDIUM_BATCH' and not(file_name == 'dlc' or file_name == 'dlf')):
                 rm(file)
 
@@ -127,6 +140,36 @@ class ConceptParser:
 
     def make_concepts_object(self, name):
         return {'name': name, 'instances': []}
+
+    def separate_contexts(self, contexts):
+        ''' Separate contexts by EHR '''
+        separated_contexts = []
+        contexts_for_single_ehr = []
+        # Make list of lists of grouped contexts by EHR
+        for context in contexts:
+            # If context is the delimiter, then save contexts so far seen
+            #   and reset contexts_for_single_ehr to hold contexts for next ehr
+            print(context)
+            parts = context.split('\t')
+            if '__EHR_API_DELIMITER__' in parts[1]:
+                separated_contexts.append(contexts_for_single_ehr)
+                contexts_for_single_ehr = []
+
+            # If context is not the delimiter, group it with other contexts seen so far
+            contexts_for_single_ehr.append(context)
+
+        # Append the last set of contexts
+        separated_contexts.append(contexts_for_single_ehr)
+
+        # Remove remnants of delimiter in left or right contexts
+        cleaned_separated_contexts = self.remove_delimiter(separated_contexts)
+
+        return cleaned_separated_contexts
+
+    def remove_delimiter(self, dirty_contexts):
+        for context_number, contexts = enumerate(dirty_contexts):
+
+
 
 # -------------- DEFINE PARSING FUNCTIONS BELOW ----------------
 # Each parsing function must return concepts like so:

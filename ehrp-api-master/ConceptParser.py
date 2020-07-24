@@ -3,7 +3,6 @@ import sys
 from unitex.io import UnitexFile, rm, exists
 from DictionaryParser import DictionaryParser
 from unitex.tools import UnitexConstants, locate, dico, concord
-from unitex.io import rm
 
 class ConceptParser:
     ''' Given text, grammar, dictionaries, and a parsing function, will extract

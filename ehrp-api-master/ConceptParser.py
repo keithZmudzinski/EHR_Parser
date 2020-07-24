@@ -167,7 +167,27 @@ class ConceptParser:
         return cleaned_separated_contexts
 
     def remove_delimiter(self, dirty_contexts):
-        for context_number, contexts = enumerate(dirty_contexts):
+        delimiter_string = '__EHR_API_DELIMITER__'
+        # Iterate through each ERH
+        for EHR_number, EHR = enumerate(dirty_contexts):
+            # Even numbered EHRs come before the delimiter
+            if EHR_number % 2 == 0:
+                # We traverse backwards through EHR because ending contexts are near the delimiter
+                for context in reversed(EHR):
+                    right_context = context.split('\t')[2]
+                    # If whole delimiter is in right_context, remove it
+                    try:
+                        delimiter_start = right_context.index(delimiter_string)
+                        delimiter_end = delimiter_start + len(delimiter_string)
+                        # Remove the delimiter string
+                        right_context = right_context[:delimiter_start] + right_context[delimiter_end:]
+                    # Whole delimiter string not found in right_context,
+                    #   now we check if portion of delimiter is at the end
+                    except ValueError:
+
+
+
+
 
 
 

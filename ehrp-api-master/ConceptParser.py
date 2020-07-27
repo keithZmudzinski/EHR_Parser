@@ -46,6 +46,20 @@ class ConceptParser:
         # Build concordance (File with actual strings matching grammar)
         self.build_concordance()
 
+        for thing in ls(UnitexConstants.VFS_PREFIX):
+            print(thing)
+        print('\n\n')
+
+        cod_text_path = os.path.join(self.directory, "text.cod")
+
+        unfile = UnitexFile()
+        unfile.open(cod_text_path, mode='r')
+        unfile_txt = unfile.read()
+        print(len(unfile_txt))
+        unfile.close()
+        unfile_bytes = unfile_txt.decode()
+        print(unfile_bytes)
+
         # Get words that are both in text and dictionary
         # dlf file holds dictionary of simple words that are in dictionaries
         single_words = os.path.join(self.directory, "dlf")
@@ -68,8 +82,10 @@ class ConceptParser:
         # We need to separate them and process them individually.
         parsed_concepts = []
         if self.batch_type == 'LARGE_BATCH':
-            separated_contexts = self.separate_contexts(contexts)
-            print(len(separated_contexts))
+            index_of_contexts_path = os.path.join(self.directory, "concord.ind")
+            index_of_contexts = self.get_text(index_of_contexts_path)
+            separated_contexts = self.separate_contexts(contexts, index_of_contexts)
+
             for separate_context in separated_contexts:
                 single_parsed_concept = self.parsing_function(self, separate_context, id_dict, onto_dict)
                 parsed_concepts.append([single_parsed_concept])
@@ -141,35 +157,101 @@ class ConceptParser:
     def make_concepts_object(self, name):
         return {'name': name, 'instances': []}
 
-    def separate_contexts(self, contexts):
+    def separate_contexts(self, contexts, indices):
         ''' Separate contexts by EHR '''
         separated_contexts = []
-        contexts_for_single_ehr = []
-        # Make list of lists of grouped contexts by EHR
-        for context in contexts:
-            # If context is the delimiter, then save contexts so far seen
-            #   and reset contexts_for_single_ehr to hold contexts for next ehr
-            print(context)
-            parts = context.split('\t')
-            if '__EHR_API_DELIMITER__' in parts[1]:
-                separated_contexts.append(contexts_for_single_ehr)
-                contexts_for_single_ehr = []
+        previous_ehr_end = 0
 
-            # If context is not the delimiter, group it with other contexts seen so far
-            contexts_for_single_ehr.append(context)
+        # Remove metadata at beginning of list
+        indices = indices[1:]
 
-        # Append the last set of contexts
-        separated_contexts.append(contexts_for_single_ehr)
+        # Go through indices of found contexts,
+        # When we find a delimiter, clean the surrounding contexts
+        for index_number, unitex_index in enumerate(indices):
+            # Now we need to clean the contexts so far
+            if '__EHR_API_DELIMITER__' in unitex_index:
+                # Get the start and end index of the delimiter
+                delimiter_unitex_index_parts = unitex_index.split('\t')
+                print('The line of the delimiter string')
+                print(delimiter_unitex_index_parts)
+                print('\n')
 
-        # Remove remnants of delimiter in left or right contexts
-        cleaned_separated_contexts = self.remove_delimiter(separated_contexts)
+                print('The index of the line before the delimiter')
+                print(indices[index_number-1])
+                print('\n')
 
-        return cleaned_separated_contexts
+                print('The length of the right context of line before delimiter')
+                print(len(contexts[index_number-1].split('\t')[2]))
+                print('\n')
+
+                print('The right context of line before delimiter')
+                print(contexts[index_number-1].split('\t')[2])
+                print('\n')
+                print('\n')
+
+                delimiter_unitex_start_index = delimiter_unitex_index_parts[0]
+                delimiter_unitex_end_index = delimiter_unitex_index_parts[1]
+
+                # Keep looking at contexts before the delimiter,
+                #  stop when we found an already clean context
+                context_before_delimiter_index = index_number - 1
+                context_offset = 1
+                while(cleaned_context(contexts, index, contex_before_delimiter_index, 'LEFT')):
+                    context_offset -= 1
+                    context_before_delimiter_index = index_number - context_offset
+
+                # Now need to clean contexts after delimiter
+                context_after_delimiter_index = index_number + 1
+                context_offset = 1
+                while(cleaned_context(contexts, index, context_after_delimiter_index, 'RIGHT')):
+                    context_offset += 1
+                    context_before_delimiter_index = index_number + context_offset
+
+                # Save the cleaned contexts before  the delimiter as an EHR
+                separated_contexts.append(contexts[previous_ehr_end:index_number])
+
+                # We add one so that we skip the deliminating context
+                previous_ehr_end = index_number + 1
+
+        return separated_contexts
+
+    def cleaned_context(contexts, delimiter_index, starting_index, direction):
+        left_context, term, right_context = arr[index].split('\t')
+        context = left_context
+        # We are moving to the left, and need to look at the right_context
+        if direction == 'LEFT':
+            context = right_context
+
+
+
+
+
+
+        # # Make list of lists of grouped contexts by EHR
+        # for context in contexts:
+        #     # If context is the delimiter, then save contexts so far seen
+        #     #   and reset contexts_for_single_ehr to hold contexts for next ehr
+        #     print(context)
+        #     parts = context.split('\t')
+        #     if '__EHR_API_DELIMITER__' in parts[1]:
+        #         separated_contexts.append(contexts_for_single_ehr)
+        #         contexts_for_single_ehr = []
+        #
+        #     # If context is not the delimiter, group it with other contexts seen so far
+        #     contexts_for_single_ehr.append(context)
+        #
+        # # Append the last set of contexts
+        # separated_contexts.append(contexts_for_single_ehr)
+        #
+        # # Remove remnants of delimiter in left or right contexts
+        # cleaned_separated_contexts = self.remove_delimiter(separated_contexts)
+        #
+        # return cleaned_separated_contexts
 
     def remove_delimiter(self, dirty_contexts):
         delimiter_string = '__EHR_API_DELIMITER__'
         # Iterate through each ERH
-        for EHR_number, EHR = enumerate(dirty_contexts):
+        for EHR_number, EHR in enumerate(dirty_contexts):
             # Even numbered EHRs come before the delimiter
             if EHR_number % 2 == 0:
                 # We traverse backwards through EHR because ending contexts are near the delimiter
@@ -184,6 +266,8 @@ class ConceptParser:
                     # Whole delimiter string not found in right_context,
                     #   now we check if portion of delimiter is at the end
                     except ValueError:
+                        print('Got to end of code')
+                        sys.exit(1)
 
 
 

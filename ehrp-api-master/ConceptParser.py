@@ -226,7 +226,7 @@ class ConceptParser:
 
 
     # {
-    #     name: drugs,
+    #     name: drug,
     #     instances: [
     #         {
     #             label: '',

@@ -23,6 +23,8 @@ class ConceptParser:
     # ontology_names: strictly the names of the ontologies being used, no file extensions or paths attached
     # batch_type: string denoting the size of query being processed, controls which files are cleaned up
     # index: file path of the index created by ConceptParser.locate_grammar()
+    # tokens_in_text: list of unique tokens found in the text
+    # indices_of_tokens_in_text: list of indices of tokens in the lext, in the order of text itself
 
     def __init__(self, **kwargs):
         # Update object member variable with passed in arguments.
@@ -47,56 +49,6 @@ class ConceptParser:
         # Build concordance (File with actual strings matching grammar)
         self.build_concordance()
 
-        for thing in ls(UnitexConstants.VFS_PREFIX):
-            print(thing)
-        print('\n\n')
-
-        # Get file paths for metadata files
-        tokens_txt_path = os.path.join(self.directory, "tokens.txt")
-        cod_text_path = os.path.join(self.directory, "text.cod")
-
-        # Get the list of possible tokens
-        tokens = self.get_text(tokens_txt_path)[1:]
-
-        # Save tokens for manual inspection
-        to_write = ''
-        for index, token in enumerate(tokens):
-            to_write += '%d, %s\n' % (index, token)
-        output_tokens = open('output_tokens.txt', 'w')
-        output_tokens.write(to_write)
-        output_tokens.close()
-
-        # Save binary file to disk so we can open it
-        cp(cod_text_path, 'test.cod')
-        # Open and read binary file
-        cod_file = open('test.cod', 'rb')
-        lines = cod_file.read()
-        cod_file.close()
-
-        # Convert bytes to integers and then strings
-        indices = struct.unpack("i" * (len(lines) // 4), lines)
-        indices_strings = '\n'.join([str(index) for index in indices])
-
-        # Save indices for manual inspection
-        output_indices = open('output_indices.txt', 'w')
-        output_indices.write(indices_strings)
-        output_indices.close()
-
-        # Make substitutions and save for manual inspection
-        converted = ''.join([str(tokens[index]) for index in indices])
-        output_converted = open('output_converted.txt', 'w')
-        output_converted.write(converted)
-        output_converted.close()
-
-
-        # unfile = UnitexFile()
-        # unfile.open(cod_text_path, mode='r')
-        # unfile_txt = unfile.read()
-        # print(len(unfile_txt))
-        # unfile.close()
-        # unfile_bytes = unfile_txt.decode()
-        # print(unfile_bytes)
-
         # Get words that are both in text and dictionary
         # dlf file holds dictionary of simple words that are in dictionaries
         single_words = os.path.join(self.directory, "dlf")
@@ -112,16 +64,26 @@ class ConceptParser:
         onto_dict = dictionary_parser.onto_dict
 
         # Get contexts
-        contexts_file_path = os.path.join(self.directory, "concord.txt")
-        contexts = self.get_text(contexts_file_path)
+        contexts_text_path = os.path.join(self.directory, "concord.txt")
+        contexts_text = self.get_text(contexts_text_path)
 
         # If a large batch, we have been given all texts combined toegether
         # We need to separate them and process them individually.
         parsed_concepts = []
         if self.batch_type == 'LARGE_BATCH':
-            index_of_contexts_path = os.path.join(self.directory, "concord.ind")
-            index_of_contexts = self.get_text(index_of_contexts_path)
-            separated_contexts = self.separate_contexts(contexts, index_of_contexts)
+            # Get the tokens that comprise the text
+            tokens_in_text_path = os.path.join(self.directory, "tokens.txt")
+            self.tokens_in_text = self.get_text(tokens_in_text_path)[1:]
+
+            # Get indices of tokens that comprise the text
+            self.indices_of_tokens_in_text = self.get_indices()
+
+            # Get the indices of contexts in the text
+            contexts_indices_path = os.path.join(self.directory, "concord.ind")
+            contexts_indices = self.get_text(index_of_contexts_path)
+
+            # Separate contexts of EHRs into separate lists
+            separated_contexts = self.separate_contexts(contexts_text, contexts_indices)
 
             for separate_context in separated_contexts:
                 single_parsed_concept = self.parsing_function(self, separate_context, id_dict, onto_dict)
@@ -191,11 +153,31 @@ class ConceptParser:
         unfile.close()
         return unfile_txt.splitlines()
 
+    def get_indices(self):
+        ''' Return the list of indices of tokens that comprise the text '''
+        # Get file path for binary file 'text.cod'
+        indices_of_tokens_in_text_path = os.path.join(self.directory, "text.cod")
+
+        # Save binary file to local filesystem
+        cp(cod_text_path, 'test.cod')
+
+        # Open and read binary file
+        cod_file = open('test.cod', 'rb')
+        lines = cod_file.read()
+
+        # Convert bytes to integers and then strings
+        indices_tuple = struct.unpack("i" * (len(lines) // 4), lines)
+
+        # Convert tuple to list
+        indices_list = list(indices)
+
+        return indices_list
+
     def make_concepts_object(self, name):
         return {'name': name, 'instances': []}
 
-    def separate_contexts(self, contexts, indices):
-        ''' Separate contexts by EHR '''
+    def separate_contexts(self, contexts_text, contexts_indices):
+        ''' Separate contexts into seprate lists per EHR '''
         separated_contexts = []
         previous_ehr_end = 0
 
@@ -209,23 +191,6 @@ class ConceptParser:
             if '__EHR_API_DELIMITER__' in unitex_index:
                 # Get the start and end index of the delimiter
                 delimiter_unitex_index_parts = unitex_index.split('\t')
-                print('The line of the delimiter string')
-                print(delimiter_unitex_index_parts)
-                print('\n')
-
-                print('The index of the line before the delimiter')
-                print(indices[index_number-1])
-                print('\n')
-
-                print('The length of the right context of line before delimiter')
-                print(len(contexts[index_number-1].split('\t')[2]))
-                print('\n')
-
-                print('The right context of line before delimiter')
-                print(contexts[index_number-1].split('\t')[2])
-                print('\n')
-                print('\n')
-
                 delimiter_unitex_start_index = delimiter_unitex_index_parts[0]
                 delimiter_unitex_end_index = delimiter_unitex_index_parts[1]
 

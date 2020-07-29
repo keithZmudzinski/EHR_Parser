@@ -1,6 +1,7 @@
 import os
 from time import time
 import sys
+import struct
 from unitex.io import UnitexFile, rm, exists
 from DictionaryParser import DictionaryParser
 from unitex.tools import UnitexConstants, locate, dico, concord
@@ -50,15 +51,51 @@ class ConceptParser:
             print(thing)
         print('\n\n')
 
+        # Get file paths for metadata files
+        tokens_txt_path = os.path.join(self.directory, "tokens.txt")
         cod_text_path = os.path.join(self.directory, "text.cod")
 
-        unfile = UnitexFile()
-        unfile.open(cod_text_path, mode='r')
-        unfile_txt = unfile.read()
-        print(len(unfile_txt))
-        unfile.close()
-        unfile_bytes = unfile_txt.decode()
-        print(unfile_bytes)
+        # Get the list of possible tokens
+        tokens = self.get_text(tokens_txt_path)[1:]
+
+        # Save tokens for manual inspection
+        to_write = ''
+        for index, token in enumerate(tokens):
+            to_write += '%d, %s\n' % (index, token)
+        output_tokens = open('output_tokens.txt', 'w')
+        output_tokens.write(to_write)
+        output_tokens.close()
+
+        # Save binary file to disk so we can open it
+        cp(cod_text_path, 'test.cod')
+        # Open and read binary file
+        cod_file = open('test.cod', 'rb')
+        lines = cod_file.read()
+        cod_file.close()
+
+        # Convert bytes to integers and then strings
+        indices = struct.unpack("i" * (len(lines) // 4), lines)
+        indices_strings = '\n'.join([str(index) for index in indices])
+
+        # Save indices for manual inspection
+        output_indices = open('output_indices.txt', 'w')
+        output_indices.write(indices_strings)
+        output_indices.close()
+
+        # Make substitutions and save for manual inspection
+        converted = ''.join([str(tokens[index]) for index in indices])
+        output_converted = open('output_converted.txt', 'w')
+        output_converted.write(converted)
+        output_converted.close()
+
+
+        # unfile = UnitexFile()
+        # unfile.open(cod_text_path, mode='r')
+        # unfile_txt = unfile.read()
+        # print(len(unfile_txt))
+        # unfile.close()
+        # unfile_bytes = unfile_txt.decode()
+        # print(unfile_bytes)
 
         # Get words that are both in text and dictionary
         # dlf file holds dictionary of simple words that are in dictionaries

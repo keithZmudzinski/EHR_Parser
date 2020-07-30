@@ -190,10 +190,10 @@ class ConceptParser:
             # Now we need to clean the contexts so far
             if '__EHR_API_DELIMITER__' in unitex_index:
                 # Make sure contexts before delimiter don't include the delimiter text
-                self.clean_contexts_before_delimiter(contexts_text, index_number, unitex_index)
+                self.clean_contexts_before_delimiter(contexts_indices, contexts_text, index_number, unitex_index)
 
                 # Make sure contexts after delimiter don't include the delimiter text
-                self.clean_contexts_after_delimiter(contexts_text, index_number, unitex_index)
+                self.clean_contexts_after_delimiter(contexts_indices, contexts_text, index_number, unitex_index)
 
                 # Save the cleaned contexts before the delimiter as an EHR
                 separated_contexts.append(contexts[previous_ehr_end:index_number])
@@ -205,7 +205,7 @@ class ConceptParser:
         separated_contexts.append(contexts[index_number+1:])
         return separated_contexts
 
-    def clean_contexts_before_delimiter(self, contexts_text, index_of_delimiter, delimiter_token_start_and_end):
+    def clean_contexts_before_delimiter(self, contexts_indices, contexts_text, index_of_delimiter, delimiter_token_start_and_end):
         ''' Remove any trace of delimiter text in contexts before the delimiter '''
 
         # Get the token number of where the delimiter starts
@@ -216,7 +216,7 @@ class ConceptParser:
         context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'END') + 1
 
         # Keep checking and cleaning contexts until we find one that was already clean
-        while(context_was_cleaned(contexts_text, index_of_context_to_check, delimiter_token_start, context_to_check_token, 'LEFT')):
+        while(self.context_was_cleaned(contexts_text, index_of_context_to_check, delimiter_token_start, context_to_check_token, 'LEFT')):
             index_of_context_to_check -= 1
             context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'END') + 1
 
@@ -233,7 +233,7 @@ class ConceptParser:
         context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'START') - 1
 
         # Keep checking and cleaning contexts until we find one that was already clean
-        while(context_was_cleaned(contexts_text, index_of_context_to_check, delimiter_token_start, context_to_check_token, 'RIGHT')):
+        while(self.context_was_cleaned(contexts_text, index_of_context_to_check, delimiter_token_start, context_to_check_token, 'RIGHT')):
             index_of_context_to_check += 1
             context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'START') + 1
 
@@ -241,8 +241,8 @@ class ConceptParser:
 
     def get_token_number(self, token_string, desired_part):
         ''' Extracts the start or stop token from a given line of the concord.ind file '''
-        start_token, stop_token, _ = token_string.split('\t')
-        token = start_token if desired_part == 'START' else stop_token
+        parts = token_string.split(' ')
+        token = parts[0] if desired_part == 'START' else parts[1]
         token_num, char_offset, _ = token.split('.')
         return int(token_num)
 
@@ -252,15 +252,15 @@ class ConceptParser:
         left_context_to_check, term, right_context_to_check = contexts_text[index_of_context_to_check].split('\t')
 
         # Assume we are moving to the right, and need to look at the left context
-        context = left_context
+        context = left_context_to_check
         offset = -1
         # If we are moving to the left, we need to look at the right context
         if direction == 'LEFT':
-            context = right_context
+            context = right_context_to_check
             offset = 1
 
         # Set up variables necessay to loop through tokens
-        length_of_context = len(contet)
+        length_of_context = len(context)
         sum_of_chars_per_token = 0
         # Start the tokens at beginning/end of context to check
         next_token_index = context_to_check_token

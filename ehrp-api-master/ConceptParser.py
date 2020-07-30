@@ -179,35 +179,53 @@ class ConceptParser:
     def separate_contexts(self, contexts_text, contexts_indices):
         ''' Separate contexts into seprate lists per EHR '''
         separated_contexts = []
-        previous_ehr_end = 0
 
         # Remove metadata at beginning of list
-        indices = indices[1:]
+        contexts_indices = contexts_indices[1:]
 
         # Go through indices of found contexts,
         # When we find a delimiter, clean the surrounding contexts
-        for index_number, unitex_index in enumerate(indices):
+        for index_number, unitex_index in enumerate(contexts_indices):
             # Now we need to clean the contexts so far
             if '__EHR_API_DELIMITER__' in unitex_index:
                 # Get the start and end index of the delimiter
-                delimiter_unitex_index_parts = unitex_index.split('\t')
-                delimiter_unitex_start_index = delimiter_unitex_index_parts[0]
-                delimiter_unitex_end_index = delimiter_unitex_index_parts[1]
+                delimiter_unitex_start_index = get_token_number(unitex_index, 'START')
+                delimiter_unitex_end_index = get_token_number(unitex_index, 'END')
+
+                # Setup offsets
+                context_before_delimiter_index = index_number - 1
+                context_offset = 1
+
+                # Get the right context of the term found just before the delimiter
+                to_check_right_context = contexts_text[context_before_delimiter_index].split('\t')[2]
+
+                # Get the starting token number of the right context just before the delimiter
+                to_check_start_token = get_token_number(contex_indices[context_before_delimiter_index], 'START')
 
                 # Keep looking at contexts before the delimiter,
                 #  stop when we found an already clean context
-                context_before_delimiter_index = index_number - 1
-                context_offset = 1
-                while(cleaned_context(contexts, index, contex_before_delimiter_index, 'LEFT')):
+                while(cleaned_context(contexts_text, context_after_delimiter_index, delimiter_unitex_start_index, to_check_right_context, to_check_start_token, 'LEFT')):
                     context_offset -= 1
                     context_before_delimiter_index = index_number - context_offset
+                    to_check_right_context =  contexts_text[context_before_delimiter_index].split('\t')[2]
+                    to_check_start_token = get_token_number(context_indices[context_before_delimiter_index], 'START')
 
                 # Now need to clean contexts after delimiter
                 context_after_delimiter_index = index_number + 1
                 context_offset = 1
-                while(cleaned_context(contexts, index, context_after_delimiter_index, 'RIGHT')):
+
+                # Get the left context of the term found just after the delimiter
+                to_check_left_context = contexts_text[context_after_delimiter_index].split('\t')[2]
+
+                # Get the starting token number of the left context just after the delimiter
+                to_check_start_token = get_token_number(contex_indices[context_before_delimiter_index], 'START')
+
+                # Keep looking at contexts after the delimiter
+                while(cleaned_context(contexts_text, context_after_delimiter_index, delimiter_unitex_end_index, to_check_left_context, to_check_end_token, 'RIGHT')):
                     context_offset += 1
-                    context_before_delimiter_index = index_number + context_offset
+                    context_after_delimiter_index = index_number + context_offset
+                    to_check_left_context =  contexts_text[context_after_delimiter_index].split('\t')[2]
+                    to_check_end_token = get_token_number(context_indices[context_after_delimiter_index], 'END')
 
                 # Save the cleaned contexts before  the delimiter as an EHR
                 separated_contexts.append(contexts[previous_ehr_end:index_number])
@@ -217,12 +235,17 @@ class ConceptParser:
 
         return separated_contexts
 
-    def cleaned_context(contexts, delimiter_index, starting_index, direction):
-        left_context, term, right_context = arr[index].split('\t')
+    def cleaned_context(contexts_text, delimiter_unitex_start_index, context_to_check, direction):
+        left_context, term, right_context = dirty_contexts[to_check_index].split('\t')
+        # Assume we are moving to the right, and need to look at the left context
         context = left_context
-        # We are moving to the left, and need to look at the right_context
+        # If we are moving to the left, we need to look at the right context
         if direction == 'LEFT':
             context = right_context
+
+        #
+
+
 
 
 

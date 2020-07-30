@@ -80,7 +80,7 @@ class ConceptParser:
 
             # Get the indices of contexts in the text
             contexts_indices_path = os.path.join(self.directory, "concord.ind")
-            contexts_indices = self.get_text(index_of_contexts_path)
+            contexts_indices = self.get_text(contexts_indices_path )
 
             # Separate contexts of EHRs into separate lists
             separated_contexts = self.separate_contexts(contexts_text, contexts_indices)
@@ -159,7 +159,7 @@ class ConceptParser:
         indices_of_tokens_in_text_path = os.path.join(self.directory, "text.cod")
 
         # Save binary file to local filesystem
-        cp(cod_text_path, 'test.cod')
+        cp(indices_of_tokens_in_text_path, 'test.cod')
 
         # Open and read binary file
         cod_file = open('test.cod', 'rb')
@@ -169,7 +169,7 @@ class ConceptParser:
         indices_tuple = struct.unpack("i" * (len(lines) // 4), lines)
 
         # Convert tuple to list
-        indices_list = list(indices)
+        indices_list = list(indices_tuple)
 
         return indices_list
 
@@ -209,7 +209,7 @@ class ConceptParser:
         ''' Remove any trace of delimiter text in contexts before the delimiter '''
 
         # Get the token number of where the delimiter starts
-        delimiter_token_start = self.get_token_number(delimiter_token_start_and_stop, 'START')
+        delimiter_token_start = self.get_token_number(delimiter_token_start_and_end, 'START')
         # Get the index of the context we're checking
         index_of_context_to_check = index_of_delimiter - 1
         # Get the token number of where the right context starts
@@ -226,7 +226,7 @@ class ConceptParser:
         ''' Remove any trace of delimiter text in contexts after the delimiter '''
 
         # Get the token number of where the delimiter starts
-        delimiter_token_start = self.get_token_number(delimiter_token_start_and_stop, 'START')
+        delimiter_token_start = self.get_token_number(delimiter_token_start_and_end, 'START')
         # Get the index of the context we're checking
         index_of_context_to_check = index_of_delimiter + 1
         # Get the token number of where the left context starts

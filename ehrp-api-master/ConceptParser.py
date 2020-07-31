@@ -92,7 +92,7 @@ class ConceptParser:
         # If not a large batch, it is instead either small or medium
         else:
             # Use parsing function specific to this grammar
-            parsed_concepts = self.parsing_function(self, contexts, id_dict, onto_dict)
+            parsed_concepts = self.parsing_function(self, contexts_text, id_dict, onto_dict)
 
         # Cleanup un-needed files to save space
         for file in ls(self.directory):

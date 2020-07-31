@@ -189,6 +189,9 @@ class ConceptParser:
         for index_number, unitex_index in enumerate(contexts_indices):
             # Now we need to clean the contexts so far
             if '__EHR_API_DELIMITER__' in unitex_index:
+                # Keep track of the line separating the EHRs
+                most_recent_delimiter = index_number
+
                 # Make sure contexts before delimiter don't include the delimiter text
                 self.clean_contexts_before_delimiter(contexts_indices, contexts_text, index_number, unitex_index)
 
@@ -196,13 +199,13 @@ class ConceptParser:
                 self.clean_contexts_after_delimiter(contexts_indices, contexts_text, index_number, unitex_index)
 
                 # Save the cleaned contexts before the delimiter as an EHR
-                separated_contexts.append(contexts[previous_ehr_end:index_number])
+                separated_contexts.append(contexts_text[previous_ehr_end:index_number])
 
                 # We add one so that we skip the deliminating context
                 previous_ehr_end = index_number + 1
 
         # Add on last EHR
-        separated_contexts.append(contexts[index_number+1:])
+        separated_contexts.append(contexts_text[most_recent_delimiter+1:])
         return separated_contexts
 
     def clean_contexts_before_delimiter(self, contexts_indices, contexts_text, index_of_delimiter, delimiter_token_start_and_end):
@@ -222,7 +225,7 @@ class ConceptParser:
 
         return
 
-    def clean_contexts_after_delimiter(self, contexts_text, index_of_delimiter, delimiter_token_start_and_end):
+    def clean_contexts_after_delimiter(self, contexts_indices, contexts_text, index_of_delimiter, delimiter_token_start_and_end):
         ''' Remove any trace of delimiter text in contexts after the delimiter '''
 
         # Get the token number of where the delimiter starts
@@ -279,15 +282,15 @@ class ConceptParser:
 
             # Otherwise, just get next token in the sequence
             # Get the index of which token comes next
-            token_index = self.indices_of_tokens_in_text[next_token_index]
+            curr_token_index = self.indices_of_tokens_in_text[next_token_index]
             # Get that next token
-            next_token = self.tokens_in_text[next_token_index]
+            curr_token = self.tokens_in_text[curr_token_index]
 
             # Sum up the length of the token
-            sum_of_chars_per_token += len(next_token)
-            # Track the number of tokens we've seen so far
+            sum_of_chars_per_token += len(curr_token)
 
-            next_token_index = token_index + offset
+            # Now use the next token in the context
+            next_token_index = next_token_index + offset
         # Runs when we do not break the loop
         else:
             # False indicates we did not have to clean the context

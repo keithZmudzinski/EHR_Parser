@@ -274,10 +274,12 @@ class ConceptParser:
             if next_token_index == delimiter_token:
                 if direction == 'LEFT':
                     # Take everything up until the start of the delimiter
-                    context = context[:sum_of_chars_per_token+1]
+                    context = context[:sum_of_chars_per_token]
+                    context = '\t'.join([left_context_to_check, term, context])
                 else:
                     # Take everything starting after the delimiter
                     context = context[length_of_context-sum_of_chars_per_token:]
+                    context = '\t'.join([context, term, right_context_to_check])
                 break
 
             # Otherwise, just get next token in the sequence

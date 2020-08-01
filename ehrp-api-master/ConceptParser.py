@@ -7,6 +7,12 @@ from DictionaryParser import DictionaryParser
 from unitex.tools import UnitexConstants, locate, dico, concord
 from unitex.io import rm, ls, cp
 
+# Constants reflecting project file layout, please update if you change where files are stored.
+RESOURCES_FILE_PATH = 'resources'
+TEMPORARY_FOLDER_PATH = os.path.join(RESOURCES_FILE_PATH, 'Temporary')
+# Path to binary file used in batch processing of EHRs
+TEMPORARY_FILE_PATH = os.path.join(TEMPORARY_FOLDER_PATH, 'temp.cod')
+
 class ConceptParser:
     ''' Given text, grammar, dictionaries, and a parsing function, will extract
         concepts from text, and return concepts in a dictionary object '''
@@ -159,11 +165,14 @@ class ConceptParser:
         indices_of_tokens_in_text_path = os.path.join(self.directory, "text.cod")
 
         # Save binary file to local filesystem
-        cp(indices_of_tokens_in_text_path, 'test.cod')
+        cp(indices_of_tokens_in_text_path, TEMPORARY_FILE_PATH)
 
         # Open and read binary file
-        cod_file = open('test.cod', 'rb')
+        cod_file = open(TEMPORARY_FILE_PATH, 'rb')
         lines = cod_file.read()
+
+        # We don't delete the temporary file, we just let it get
+        #   over-written by following queries
 
         # Convert bytes to integers
         indices_tuple = struct.unpack("i" * (len(lines) // 4), lines)

@@ -103,7 +103,7 @@ ENV/
 # Project specific
 *.csv
 index
-data
 data-prep/
+speed-test/
+temp.cod
 query_test.py
-speed_test.py

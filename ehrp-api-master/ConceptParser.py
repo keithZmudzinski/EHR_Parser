@@ -224,13 +224,21 @@ class ConceptParser:
         delimiter_token_start = self.get_token_number(delimiter_token_start_and_end, 'START')
         # Get the index of the context we're checking
         index_of_context_to_check = index_of_delimiter - 1
+
+        # Check if at beginning of list
+        if index_of_context_to_check < 0:
+            return
+
         # Get the token number of where the right context starts
         context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'END') + 1
 
         # Keep checking and cleaning contexts until we find one that was already clean
         while(self.context_was_cleaned(contexts_text, index_of_context_to_check, delimiter_token_start, context_to_check_token, 'LEFT')):
             index_of_context_to_check -= 1
-            context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'END') + 1
+            try:
+                context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'END') + 1
+            except IndexError:
+                break
 
         return
 
@@ -242,12 +250,19 @@ class ConceptParser:
         # Get the index of the context we're checking
         index_of_context_to_check = index_of_delimiter + 1
         # Get the token number of where the left context starts
-        context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'START') - 1
+        try:
+            context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'START') - 1
+        # Error occurs if at end of the list
+        except IndexError:
+            return
 
         # Keep checking and cleaning contexts until we find one that was already clean
         while(self.context_was_cleaned(contexts_text, index_of_context_to_check, delimiter_token_start, context_to_check_token, 'RIGHT')):
             index_of_context_to_check += 1
-            context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'START') + 1
+            try:
+                context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'START') + 1
+            except IndexError:
+                break
 
         return
 

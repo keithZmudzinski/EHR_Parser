@@ -51,7 +51,12 @@ class Extract(Resource):
         # If file is set, text isn't, and so we update text with the contents of file
         if file:
             # Assume file has one EHR per line
-            text = file.readlines()
+            text = [str(line) for line in file]
+            # text = file.readlines()
+            #
+            # text = [str(EHR) for EHR in text]
+            # print(len(text))
+            # print(text[0])
 
         # If no types specified, look for all types
         if types == None:

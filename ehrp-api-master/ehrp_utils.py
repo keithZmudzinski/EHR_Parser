@@ -335,6 +335,9 @@ def save_to_unitex_file(path, content):
 
 def remove_files(directory, exceptions):
     ''' Used to remove files in a given VFS folder '''
+    # Join directory name with file names specified in exceptions
+    exceptions = [os.path.join(directory, file_name) for file_name in exceptions]
+
     for file in ls(directory):
         is_exception = file in exceptions
         # Don't delete files specified in exceptions list

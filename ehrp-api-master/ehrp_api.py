@@ -50,7 +50,8 @@ class Extract(Resource):
         # TODO: Allow for one file containing multiple EHRs
         # If file is set, text isn't, and so we update text with the contents of file
         if file:
-            text = file.read()
+            # Assume file has one EHR per line
+            text = file.readlines()
 
         # If no types specified, look for all types
         if types == None:

@@ -9,7 +9,6 @@ import sys
 import random
 import string
 import json
-from pathlib import Path
 from ConceptParser import ConceptParser
 from unitex.io import ls, rm, cp, exists, UnitexFile, mv
 from unitex.tools import UnitexConstants, normalize, tokenize, dico
@@ -65,7 +64,6 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
 
     # Option 1: Apply dictionaries to combined texts, and share resultant files between each text
     if num_texts_to_process <= BATCH_CUTOFF:
-        print('yessir')
         # Get the concepts from each text
         concepts_per_ehr = small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options)
 

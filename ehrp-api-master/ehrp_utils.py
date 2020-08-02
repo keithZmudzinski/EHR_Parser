@@ -71,6 +71,10 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     else:
         concepts_per_ehr = batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options)
 
+    # If only given one EHR, change singleton list to single object
+    if num_texts_to_process == 1:
+        concepts_per_ehr = concepts_per_ehr[0]
+
     # Clean up the created Unitex files
     print("Cleaning up files")
     for v_file in ls("%s" % UnitexConstants.VFS_PREFIX):

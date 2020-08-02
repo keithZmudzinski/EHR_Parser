@@ -88,12 +88,12 @@ def get_concepts_from_groupings(all_groupings, concepts_to_get):
     # This is faster than making many individual queries.
     if concepts_to_get == 'ALL':
         for grouping in all_groupings:
-            is_sub_graph = grouping.get('sub_graph', False)
-            # Only accept sub_graphs with 'True' as value,
-            #  in case programmer places 'False' as value.
-            if is_sub_graph == 'True':
-                concepts.append(grouping)
-            elif grouping['grammar'] == 'master.fst2':
+            # is_sub_graph = grouping.get('sub_graph', False)
+            # # Only accept sub_graphs with 'True' as value,
+            # #  in case programmer places 'False' as value.
+            # if is_sub_graph == 'True':
+            #     concepts.append(grouping)
+            if grouping['grammar'] == 'simple_master.fst2':
                 concepts.append(grouping)
         return concepts
 

@@ -76,6 +76,9 @@ class Lookup(Resource):
         # Get argument
         args = self.reqparse.parse_args()
         text = args['text']
+        
+        # Make into a singleton list, as expected by 'extract_concepts'
+        text = [text]
 
         # Get results
         concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, text, ['lookup'])

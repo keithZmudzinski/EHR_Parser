@@ -4,49 +4,15 @@
     "parsing_function": "masterParser"
   },
   {
-    "grammar": "simple_master.fst2",
-    "parsing_function": "masterParser"
-  },
-  {
     "grammar": "lookup.fst2",
     "parsing_function": "lookupParser"
   },
   {
     "grammar": "drug.fst2",
-    "parsing_function": "drugParser",
-    "sub_graph": "True"
-  },
-  {
-    "grammar": "prescription.fst2",
-    "parsing_function": "prescriptionParser"
+    "parsing_function": "drugParser"
   },
   {
     "grammar": "disorder.fst2",
     "parsing_function": "disorderParser"
-  },
-  {
-    "grammar": "chf.fst2",
-    "parsing_function": "chfParser"
-  },
-  {
-    "grammar": "ami.fst2",
-    "parsing_function": "amiParser"
-  },
-  {
-    "grammar": "pna.fst2",
-    "parsing_function": "pnaParser"
-  },
-  {
-    "grammar": "comorbidity.fst2",
-    "parsing_function": "comorbidityParser"
-  },
-  {
-    "grammar": "pt_summary.fst2",
-    "parsing_function": "pt_summaryParser",
-    "sub_graph": "True"
-  },
-  {
-    "grammar": "simple_lookup.fst2",
-    "parsing_function": "simpleParser"
   }
 ]

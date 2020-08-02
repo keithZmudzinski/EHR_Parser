@@ -95,7 +95,7 @@ class ConceptParser:
                 single_parsed_concept = self.parsing_function(self, separate_context, id_dict, onto_dict)
                 parsed_concepts.append([single_parsed_concept])
 
-        # If not a large batch, it is instead either small or medium
+        # If not a large batch, it is instead a small batch, and we don't need to separate EHRs
         else:
             # Use parsing function specific to this grammar
             parsed_concepts = self.parsing_function(self, contexts_text, id_dict, onto_dict)
@@ -104,9 +104,9 @@ class ConceptParser:
         for file in ls(self.directory):
             # Get file name separate from directory name
             _, file_name = os.path.split(file)
-            # Need to keep dictionary files for use with other EHRPs
-            # Delete all files if not a medium batch. If a medium batch, don't delete dlc or dlf files
-            if self.batch_type != 'MEDIUM_BATCH' or (self.batch_type == 'MEDIUM_BATCH' and not(file_name == 'dlc' or file_name == 'dlf')):
+            # Delete all files if a large batch query. Small batches are handled
+            #    in 'small_processing' in 'ehrp_utils.py'
+            if self.batch_type == 'LARGE_BATCH':
                 rm(file)
 
         # NOTE: parsed_concepts has specific format:
@@ -127,7 +127,6 @@ class ConceptParser:
 
     def locate_grammar(self):
         ''' Return index file path, holding locations of matching instances of grammar in text. '''
-
         # Locate patterns that match grammar
         grammar_applied_successfully = locate(self.grammar, self.text, self.alphabet_unsorted, **self.options['tools']['locate'])
 
@@ -665,17 +664,5 @@ class ConceptParser:
                 'gender': gender,
                 'context': context
             }))
-
-        return concepts
-
-    # A temporary function just to mimic processing contexts.
-    # Will be removed.
-    def simpleParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('simple')
-
-        for context in contexts:
-            concepts['instances'].append({
-                'everything': context
-            })
 
         return concepts

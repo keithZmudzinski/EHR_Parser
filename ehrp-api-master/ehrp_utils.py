@@ -97,7 +97,7 @@ def get_concepts_from_groupings(all_groupings, concepts_to_get):
             # #  in case programmer places 'False' as value.
             # if is_sub_graph == 'True':
             #     concepts.append(grouping)
-            if grouping['grammar'] == 'simple_master.fst2':
+            if grouping['grammar'] == 'master.fst2':
                 concepts.append(grouping)
         return concepts
 
@@ -266,6 +266,10 @@ def small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ont
                                             alphabet_unsorted, alphabet_sorted,
                                             chosen_groupings, ontologies, 'MEDIUM_BATCH'
                                             )
+
+        # Remove unnecessary files to save space
+        remove_files(health_record_folder, exceptions=['dlf', 'dlc'])
+
         concepts_per_ehrp.append(concepts)
     return concepts_per_ehrp
 
@@ -328,6 +332,14 @@ def save_to_unitex_file(path, content):
     unitex_file.open(path, mode='w')
     unitex_file.write(content)
     unitex_file.close()
+
+def remove_files(directory, exceptions):
+    ''' Used to remove files in a given VFS folder '''
+    for file in ls(directory):
+        is_exception = file in exceptions
+        # Don't delete files specified in exceptions list
+        if not(is_exception):
+            rm(file)
 
 def get_json_from_file(file_path):
     ''' Loads the user-chosen groupings of grammars, dictionaries, and parsing functions as a dictionary '''

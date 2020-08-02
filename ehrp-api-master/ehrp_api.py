@@ -47,16 +47,10 @@ class Extract(Resource):
             print('[ERROR] Either both text and file are being used, or neither are')
             abort(422)
 
-        # TODO: Allow for one file containing multiple EHRs
         # If file is set, text isn't, and so we update text with the contents of file
         if file:
             # Assume file has one EHR per line
             text = [str(line) for line in file]
-            # text = file.readlines()
-            #
-            # text = [str(EHR) for EHR in text]
-            # print(len(text))
-            # print(text[0])
 
         # If no types specified, look for all types
         if types == None:

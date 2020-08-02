@@ -21,9 +21,7 @@ GRAMMAR_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Grammars')
 DICTIONARY_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Dictionaries')
 
 # Constants obtained by empirical tests
-# TODO: FIND ACTUAL NUMBERS
-SMALL_BATCH = 0
-MEDIUM_BATCH = 0
+BATCH_CUTOFF = 145
 
 # Called from ehrp_api.py
 def load_alphabets(options):
@@ -64,72 +62,17 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     concepts_per_ehr = []
 
     # Choose most efficient option for processing texts
-    # Option 1: Process each text sequentially, nothing special is done here
-    if num_texts_to_process <= SMALL_BATCH:
-        # Create a text file in the VFS for each health record
-        health_record_paths = pre_process_texts(text, alphabet_unsorted, options)
 
-        # Process each created text file
-        for record_number, health_record_path in enumerate(health_record_paths):
-            # Create dlf and dlc files per text
-            apply_dictionaries(dictionaries, health_record_path, alphabet_unsorted, options)
-            # The folder in which all relevant tiles to the text are stored
-            health_record_folder = to_VFS("text_%d_snt" % record_number)
-            # Apply graphs to text and get found concepts
-            concepts = get_concepts_for_grammars(health_record_folder, options, health_record_path,
-                                            alphabet_unsorted, alphabet_sorted,
-                                            chosen_groupings, ontologies, 'SMALL_BATCH'
-                                            )
-            # print(concepts)
-            # print('\n\n')
-            concepts_per_ehr.append(concepts)
-
-    # Option 2: Apply dictionaries to combined texts, and share resultant files between each text
-    elif num_texts_to_process <= MEDIUM_BATCH:
+    # Option 1: Apply dictionaries to combined texts, and share resultant files between each text
+    if num_texts_to_process <= BATCH_CUTOFF:
+        print('yessir')
         # Get the concepts from each text
-        concepts_per_ehr = medium_batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options)
+        concepts_per_ehr = small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options)
 
-    # Option 3: For large batches, combine texts and process all together, then separate out results
+    # Option 2: For large batches, combine texts and process all together, then separate out results
     else:
-        # Put all texts together for preprocessing
-        combined_text = '__EHR_API_DELIMITER__'.join(text)
-        combined_text_filename = to_VFS(random_filename())
-        combined_text_path = combined_text_filename + '.txt'
+        concepts_per_ehr = batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options)
 
-        # Place combined text into Unitex file
-        save_to_unitex_file(combined_text_path, combined_text)
-
-        # Normalize the combined texts
-        normalize_text(combined_text_path, options["tools"]["normalize"])
-
-        # Get file path of normalized text
-        combined_processed_text_path = combined_text_filename + ".snt"
-
-        # Tokenize the text (alters combined_processed_text in place)
-        tokenize_text(combined_processed_text_path, alphabet_unsorted, options["tools"]["tokenize"])
-
-        # Get paths of dlf and dlc files inside designated folder
-        dlf_relative_path = os.path.join('Internal_api_use', 'dlf')
-        dlc_relative_path = os.path.join('Internal_api_use', 'dlc')
-
-        # Get paths of dlf and dlc files inside the Dictionaries folder
-        dlf_path = os.path.join(DICTIONARY_RELATIVE_PATH, dlf_relative_path)
-        dlc_path = os.path.join(DICTIONARY_RELATIVE_PATH, dlc_relative_path)
-
-        # Make folder name that holds all relevant files
-        folder_name = combined_text_filename + '_snt'
-        # Make destination path for dlf and dlc files
-        dlf_destination_path = os.path.join(folder_name, 'dlf')
-        dlc_destination_path = os.path.join(folder_name, 'dlc')
-
-        # Copy these pre-build dictionaries into VFS
-        cp(dlf_path, dlf_destination_path)
-        cp(dlc_path, dlc_destination_path)
-
-        concepts_per_ehr = get_concepts_for_grammars(folder_name, options, combined_processed_text_path,
-                                        alphabet_unsorted, alphabet_sorted,
-                                        chosen_groupings, ontologies, 'LARGE_BATCH'
-                                        )
     # Clean up the created Unitex files
     print("Cleaning up files")
     for v_file in ls("%s" % UnitexConstants.VFS_PREFIX):
@@ -199,15 +142,15 @@ def pre_process_texts(texts, alphabet_unsorted, options):
 # alphabet_unsorted: File path to the alphabet to be used, unsorted
 # options: Dictionary of options for use with unitex functions
 def apply_dictionaries(dictionaries, text, alphabet_unsorted, options):
-        ''' Creates .dlf and .dlc files holding words in both dictionaries and text. '''
-        if dictionaries is not None:
-            dictionaries_applied_succesfully = dico(dictionaries, text, alphabet_unsorted, **options['tools']['dico'])
+    ''' Creates .dlf and .dlc files holding words in both dictionaries and text. '''
+    if dictionaries is not None:
+        dictionaries_applied_succesfully = dico(dictionaries, text, alphabet_unsorted, **options['tools']['dico'])
 
-            if dictionaries_applied_succesfully is False:
-                sys.stderr.write("[ERROR] Dictionaries application failed!\n")
-                sys.exit(1)
-        else:
-            sys.stderr.write("[ERROR] No dictionaries specified.\n")
+        if dictionaries_applied_succesfully is False:
+            sys.stderr.write("[ERROR] Dictionaries application failed!\n")
+            sys.exit(1)
+    else:
+        sys.stderr.write("[ERROR] No dictionaries specified.\n")
 
 # Function: to_VFS; Prepend the Unitex VFS prefix to given file path
 def to_VFS(file_path):
@@ -260,7 +203,7 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
 
     return list_of_concepts
 
-# Function: medium_batch_processing; Processes each text provided, and returns a list of concepts extracted from each one
+# Function: small_processing; Processes each text provided, and returns a list of concepts extracted from each one
 # text: list of strings to be processed, each string is one health record
 # alphabet_unsorted: file path to the alphabet to be used, unsorted
 # alphabet_sorted: file path to the alphabet to be used, sorted
@@ -268,7 +211,8 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
 # ontologies: list of ontology names in use
 # chosen_groupings: the list of grammars and associated parsing functions to be applied to each text
 # options: dictionary of options for various unitex funtions
-def medium_batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options):
+def small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options):
+    ''' Handles queres with small number of documents. '''
     # Put all texts together for preprocessing
     combined_text = '\n\n'.join(text)
 
@@ -323,6 +267,57 @@ def medium_batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionari
         concepts_per_ehrp.append(concepts)
     return concepts_per_ehrp
 
+# Function: batch_processing; Processes each text provided, and returns a list of concepts extracted from each one
+# text: list of strings to be processed, each string is one health record
+# alphabet_unsorted: file path to the alphabet to be used, unsorted
+# alphabet_sorted: file path to the alphabet to be used, sorted
+# dictionaries: list of file paths to dictionaries to be used
+# ontologies: list of ontology names in use
+# chosen_groupings: the list of grammars and associated parsing functions to be applied to each text
+# options: dictionary of options for various unitex funtions
+def batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options):
+    ''' Handles queries with large number of documents. '''
+    # Put all texts together for preprocessing
+    combined_text = '__EHR_API_DELIMITER__'.join(text)
+    combined_text_filename = to_VFS(random_filename())
+    combined_text_path = combined_text_filename + '.txt'
+
+    # Place combined text into Unitex file
+    save_to_unitex_file(combined_text_path, combined_text)
+
+    # Normalize the combined texts
+    normalize_text(combined_text_path, options["tools"]["normalize"])
+
+    # Get file path of normalized text
+    combined_processed_text_path = combined_text_filename + ".snt"
+
+    # Tokenize the text (alters combined_processed_text in place)
+    tokenize_text(combined_processed_text_path, alphabet_unsorted, options["tools"]["tokenize"])
+
+    # Get paths of dlf and dlc files inside designated folder
+    dlf_relative_path = os.path.join('Internal_api_use', 'dlf')
+    dlc_relative_path = os.path.join('Internal_api_use', 'dlc')
+
+    # Get paths of dlf and dlc files inside the Dictionaries folder
+    dlf_path = os.path.join(DICTIONARY_RELATIVE_PATH, dlf_relative_path)
+    dlc_path = os.path.join(DICTIONARY_RELATIVE_PATH, dlc_relative_path)
+
+    # Make folder name that holds all relevant files
+    folder_name = combined_text_filename + '_snt'
+    # Make destination path for dlf and dlc files
+    dlf_destination_path = os.path.join(folder_name, 'dlf')
+    dlc_destination_path = os.path.join(folder_name, 'dlc')
+
+    # Copy these pre-build dictionaries into VFS
+    cp(dlf_path, dlf_destination_path)
+    cp(dlc_path, dlc_destination_path)
+
+    concepts_per_ehr = get_concepts_for_grammars(folder_name, options, combined_processed_text_path,
+                                                alphabet_unsorted, alphabet_sorted,
+                                                chosen_groupings, ontologies, 'LARGE_BATCH'
+                                            )
+    return concepts_per_ehr
+
 # Function: save_to_unitex_file; Creates a unitex file at given location with given content
 # path: file path inside the unitex VFS
 # content: string to be written to file
@@ -366,19 +361,3 @@ def incorrect_concept_type(incorrect_type):
 def dict_names_to_paths(dict_names):
     ''' Changes dictionary names to dictionary paths '''
     return [os.path.join(DICTIONARY_RELATIVE_PATH, name) for name in dict_names]
-
-
-# # FOR BATCH PROCESSING
-#     # Place already created dictionaries into vfs
-#         if large_query_detected:
-#             new_dlf_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlf"))
-#             new_dlc_path = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlc"))
-#             start = time()
-#             cp('resources/test_dictionaries/dlf', new_dlf_path)
-#             print('Time taken to cp dlf:', time()-start)
-#             start = time()
-#             cp('resources/test_dictionaries/dlc', new_dlc_path)
-#             print('Time taken to cp dlc:', time()-start)
-#
-#             simple_words = new_dlf_path
-#             compound_words = new_dlf_path

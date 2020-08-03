@@ -62,7 +62,7 @@ ___
         + Example using the python requests library:<br>
         ```
         args = {
-          'text': medical_text_string,
+          'text': [medical_text_string1, medical_text_string2],
           'types': 'drug'
         }
         response = requests.post('http://localhost:8021/ehrp/extract', data=args)

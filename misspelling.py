@@ -1,5 +1,4 @@
 import requests
-import pprint
 import sys
 from urllib.error import HTTPError
 import json
@@ -10,10 +9,7 @@ import os
 import re
 import pandas as pd
 import numpy as np
-from string_grouper import match_strings, match_most_similar, group_similar_strings, StringGrouper
-from sklearn.feature_extraction.text import TfidfVectorizer
-from scipy.sparse import csr_matrix
-import sparse_dot_topn.sparse_dot_topn as ct
+from string_grouper import match_most_similar
 
 base_url = 'http://localhost:8020/ehrp/'
 extract_url = 'extract'

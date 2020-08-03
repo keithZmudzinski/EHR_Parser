@@ -100,9 +100,11 @@ ENV/
 # mypy
 .mypy_cache/
 
-# Project specific
-*.csv
-index
+# Keith local files
 data
 data-prep/
 query_test.py
+speed-test/
+
+# Project Specific
+resources/Temporary/temp.cod

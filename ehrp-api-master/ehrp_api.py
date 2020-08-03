@@ -92,7 +92,7 @@ def main():
     global ALL_DICTS_AND_ONTOLOGIES
 
     # Relative file path to user-defined json. Please update if project file-layout is changed.
-    GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'GrammarParsingFunction.json')
+    GRAMMAR_PARSING_GROUPS_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'GrammarParsingFunction.json')
     DICTS_AND_ONTOLOGIES_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'DictsAndOntologies.json')
 
     parser = argparse.ArgumentParser()
@@ -116,7 +116,7 @@ def main():
     load_alphabets(OPTIONS)
 
     # Get all grammar and parsing function groupings
-    ALL_GROUPINGS = get_json_from_file(GRAMMAR_DICTIONARY_PARSING_GROUPS_PATH)
+    ALL_GROUPINGS = get_json_from_file(GRAMMAR_PARSING_GROUPS_PATH)
 
     # Get all dictionary and ontology names
     ALL_DICTS_AND_ONTOLOGIES = get_json_from_file(DICTS_AND_ONTOLOGIES_PATH)

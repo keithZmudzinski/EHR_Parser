@@ -82,6 +82,7 @@ ___
         args = {
           'types': ['drug', 'pt_summary', 'ami']
         }
+        
         text_file = open('medical_text_path', 'rb')
         response = requests.post('http://localhost:8021/ehrp/extract', data=args, files={'file': text_file))
         ```

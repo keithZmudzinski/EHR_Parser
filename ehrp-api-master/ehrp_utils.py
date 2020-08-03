@@ -249,7 +249,7 @@ def small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ont
     for record_number, health_record_path in enumerate(health_record_paths):
         # Get the folder in which all files for this health record are stored
         health_record_folder = to_VFS("text_%d_snt" % record_number)
-        # Need to place dictionary files into this folder
+        # Need to place dictionary files into this folder, set up paths to do so
         new_dlf_path = os.path.join(health_record_folder, "dlf")
         new_dlc_path = os.path.join(health_record_folder, "dlc")
 

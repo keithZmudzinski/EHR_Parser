@@ -80,7 +80,7 @@ def ngrams(string, n=3):
     ngrams = zip(*[string[i:] for i in range(n)])
     return [''.join(ngram) for ngram in ngrams]
 
-def catch_misspellings(corpus, sorted_labels, ratio):
+def catch_misspellings_cosine(corpus, sorted_labels, ratio):
     f_time = time.time()
     corpus_clean = build_potential_corpus(corpus, sorted_labels)
     with open(corpus_clean, 'r') as infile:
@@ -97,6 +97,31 @@ def catch_misspellings(corpus, sorted_labels, ratio):
     df = df.query("labels != misspellings")
     df.to_csv('test_matches_drug.csv')
     print('Time taken to find misspellings:', time.time()-f_time)
+
+#  pip install python-Levenshtein
+# catches misspellings in the dictionary, not in the text!
+def catch_misspellings_levenshtein(sorted_labels, ratio):
+    label_groups = list() # groups of names with distance > 80
+    for label in sorted_labels:
+        for group in label_groups:
+            if all(fuzz.ratio(label, w) > ratio for w in group):
+                group.append(label)
+                break
+        else:
+            label_groups.append([label, ])
+    
+    n_groups = 0
+    with open(name_file('catch_misspellings.txt'), 'w') as outfile:
+        for label_group in label_groups:
+            if(len(label_group) > 1):
+                n_groups+=1
+                for label in label_group:
+                    outfile.write(label + ", ")
+                outfile.write("\n")
+
+    print("Number of groups in misspellings file: ", n_groups)
+    
+    return label_groups
 
 def extract(corpus, types=[]):
     args = {}
@@ -147,7 +172,8 @@ def main():
         resp_json = preprocess_json(resp.json())
 
         sorted_labels = create_sorted_labels(resp_json)
-        groups = catch_misspellings(corpus, sorted_labels, 90)
+        catch_misspellings_cosine(corpus, sorted_labels, 90)
+        #catch_misspellings_levenshtein(sorted_labels, 90)
 
     else:
         print('Incorrect service, use "extract"')

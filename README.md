@@ -8,10 +8,10 @@ This repository provides code for both the API itself, and an example interface 
 
 ## API
 ### Requirements
-+ [python-unitex](https://github.com/patwat/python-unitex)
-+ Flask
-+ flask-restful
 + python 3
++ [python-unitex](https://github.com/patwat/python-unitex)
++ [Flask](https://flask.palletsprojects.com/en/1.1.x/installation/#install-flask) (`pip install flask`)
++ [flask-restful](https://flask-restful.readthedocs.io/en/latest/installation.html) (`pip install flask-restful`)
 
 ### Usage
 The API provides two main functions; `extract` and `lookup`. `extract` is used to pull and return medical information from a user-provided piece of text. `lookup` is used to return medical information about a user-provided search term.
@@ -53,42 +53,37 @@ ___
     ##### Parameters
     + Optional:
       + Name: 'text'
-        + Type: string
-        + Description: This should be the text you want to process.
+        + Type: string or list of strings
+        + Description: This should be the text(s) you want to process. Multiple texts can be specified, all using 'text' as a parameter name.
         + **NOTE**: Exactly one of 'text' and 'file' can be used in the same request. If both are used, or neither are used, a 422 error response will be returned.
       + Name: 'types'
-        + Type: string
-        + Description: This parameter specifies which types of medical data you want to be extracted from the text. Multiple types can be specified, all using 'types' as a parameter name.
+        + Type: string, or list of strings
+        + Description: This parameter specifies which type(s) of medical data you want to be extracted from the text. Multiple types can be specified, all using 'types' as a parameter name.
         + Example using the python requests library:<br>
         ```
         args = {
           'text': medical_text_string,
-          'types': ['drug', 'pt_summary', 'ami']
+          'types': 'drug'
         }
         response = requests.post('http://localhost:8021/ehrp/extract', data=args)
         ```
         + Possible values for 'types':  
           + 'drug': Looks for drug names
-          + 'prescription': Looks for drug names in conjunction with a dosage, e.g. '350 mg of Tylenol taken as needed'
           + 'disorder': Looks for disorder names
-          + 'chf': Looks for terms related to congestive heart failure
-          + 'ami': Looks for terms related to acute myocardial infarction
-          + 'pna': Looks for terms related to pneumonia
-          + 'comorbidity': Looks for other related afflictions aside from chf, ami, or pna
-          + 'pt_summary': Looks for the age and gender of the patient
         + If 'types' is not specified, all types will be used.
-        + Currently, if more than three types are desired, it is faster to not specify any types and let the API process all types, than it is to specify 4+ types. This just means the user will have to extract the specific types they want from the returned JSON object.
+        + If multiple types are desired, it is faster to not specify any, and just extract the desired information from the returned results
       + Name: 'file'
         + Type: file object
-        + Description: Allows a text file to be uploaded in place of the 'text' parameter. The content of the uploaded file is then parsed, the same way 'text' is.
+        + Description: Allows a text file to be uploaded in place of the 'text' parameter.
+        + **NOTE**: The file is expected to have one EHR per line.
         + **NOTE**: Exactly one of 'text' and 'file' can be used in the same request. If both are used, or neither are used, a 422 error response will be returned.
         + Example using the python requests library:
         ```
         args = {
           'types': ['drug', 'pt_summary', 'ami']
         }
-        file = open('medical_text_path', 'rb')
-        response = requests.post('http://localhost:8021/ehrp/extract', data=args, files={'file': file))
+        text_file = open('medical_text_path', 'rb')
+        response = requests.post('http://localhost:8021/ehrp/extract', data=args, files={'file': text_file))
         ```
 
 Both GET and POST requests return JSON objects.

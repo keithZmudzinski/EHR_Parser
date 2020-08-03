@@ -1,11 +1,9 @@
 import os
-from time import time
 import sys
 import struct
-from unitex.io import UnitexFile, rm, exists
+from unitex.io import UnitexFile, rm, exists, ls, cp
 from DictionaryParser import DictionaryParser
-from unitex.tools import UnitexConstants, locate, dico, concord
-from unitex.io import rm, ls, cp
+from unitex.tools import locate, dico, concord
 
 # Constants reflecting project file layout, please update if you change where files are stored.
 RESOURCES_FILE_PATH = 'resources'
@@ -316,12 +314,16 @@ class ConceptParser:
 
             # Now use the next token in the context
             next_token_index = next_token_index + offset
-        # Runs when we do not break the loop
+
+        # Runs when we do not break the loop, meaning context did not overlap
+        #   with delimiter
         else:
             # False indicates we did not have to clean the context
             return False
 
+        # Update context with cleaned context
         contexts_text[index_of_context_to_check] = context
+
         # True indicates that yes, we did clean the context
         return True
 
@@ -477,192 +479,5 @@ class ConceptParser:
                     })
                 except KeyError as kerror:
                     continue
-
-        return concepts
-
-    # {
-    #     name: prescription,
-    #     instances: [
-    #         {
-    #             drug: '',
-    #             dosage: '',
-    #             umid: '',
-    #             onto: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def prescriptionParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('prescription')
-
-        for context in contexts:
-            parts = context.split('\t')
-            dosage = parts[1]
-            dosage_and_full_context = dosage.split('|')[0]
-            pre_dosage = dosage.split('|')[1]
-            post_dosage = dosage.split('|')[2]
-
-            # Skip if has no pre or post dosage
-            if not(pre_dosage or post_dosage):
-                continue
-
-            # The dosage and drug for which the prescription was made
-            full_dosage, drug = dosage_and_full_context.split('__SeparatE__')
-
-            # Full context surrounding prescription
-            context = parts[0] + full_dosage + parts[2]
-
-            try:
-                drug_id = id_dict[drug.lower()]
-                used_ontology = onto_dict[drug.lower()]
-            except KeyError as kerror:
-                drug_id = 'NA'
-                used_ontology = 'NA'
-
-            concepts['instances'].append({
-                'drug': drug,
-                'dosage': full_dosage,
-                'umid': drug_id,
-                'onto': used_ontology,
-                'context': context
-            })
-
-        return concepts
-
-     # {
-    #     name: chf,
-    #     instances: [
-    #         {
-    #             type: '',
-    #             trigger: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def chfParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('chf')
-
-        for i, context in enumerate(contexts):
-            parts = context.split('\t')
-            trigger = parts[1]
-            trigger, key = trigger.split('__SeparatE__')
-            context = parts[0] + trigger + parts[2]
-
-            concepts['instances'].append({
-                'type': key,
-                'trigger': trigger,
-                'context': context
-            })
-
-        return concepts
-
-       # {
-    #     name: ami,
-    #     instances: [
-    #         {
-    #             type: '',
-    #             trigger: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def amiParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('ami')
-
-        for i, context in enumerate(contexts):
-            parts = context.split('\t')
-            trigger = parts[1]
-            trigger, key = trigger.split('__SeparatE__')
-            context = parts[0] + trigger + parts[2]
-
-            concepts['instances'].append({
-                'type': key,
-                'trigger': trigger,
-                'context': context
-            })
-
-        return concepts
-
-    # {
-    #     name: pna,
-    #     instances: [
-    #         {
-    #             type: '',
-    #             trigger: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def pnaParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('pna')
-
-        for context in contexts:
-            parts = context.split('\t')
-            trigger = parts[1]
-            trigger, type = trigger.split('__SeparatE__')
-            context = parts[0] + trigger + parts[2]
-
-            concepts['instances'].append(({
-                'type': type,
-                'trigger': trigger,
-                'context': context
-            }))
-
-        return concepts
-
-    # {
-    #     name: comorbidity,
-    #     instances: [
-    #         {
-    #             type: '',
-    #             trigger: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def comorbidityParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('comorbidity')
-
-        for context in contexts:
-            parts = context.split('\t')
-            trigger = parts[1]
-            trigger, type = trigger.split('__SeparatE__')
-            context = parts[0] + trigger + parts[2]
-
-            concepts['instances'].append(({
-                'type': type,
-                'trigger': trigger,
-                'context': context
-            }))
-
-        return concepts
-
-    # {
-    #     name: pt_summary,
-    #     instances: [
-    #         {
-    #             trigger: '',
-    #             age: '',
-    #             gender: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def pt_summaryParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('pt_summary')
-
-        for context in contexts:
-            parts = context.split('\t')
-            trigger = parts[1]
-            trigger, info = trigger.split('__SeparatE__')
-            age, gender = info.split(',')
-            context = parts[0] + trigger + parts[2]
-
-            concepts['instances'].append(({
-                'trigger': trigger,
-                'age': age,
-                'gender': gender,
-                'context': context
-            }))
 
         return concepts

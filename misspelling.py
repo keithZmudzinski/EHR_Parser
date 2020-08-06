@@ -59,7 +59,7 @@ def build_potential_corpus(corpus, sorted_labels):
     
     return file_name
 
-def get_matches(corpus, sorted_labels, ratio):
+def get_matches(corpus, sorted_labels, add_context=True, ratio=0.8, context_size=100):
     f_time = time.time()
     corpus_clean = build_potential_corpus(corpus, sorted_labels)
     with open(corpus_clean, 'r') as infile:
@@ -71,10 +71,9 @@ def get_matches(corpus, sorted_labels, ratio):
     
     matches_df = get_cosim_matches(labels, Stext, ratio)
     #for now
+    if (add_context == True):
+        matches_df = add_context(matches_df, text_string, context_size)
     matches_df.to_csv(name_file('cosim_match.csv', '.csv'))
-
-    matches_df = add_context(matches_df, text_string)
-    
 
     print('Time taken to get matches:', time.time()-f_time)
 
@@ -93,10 +92,19 @@ def get_cosim_matches(labels, text, ratio):
 
     return matches_df
 
-def get_context(word, text):
-    print(word + text[0:20])
+# TODO: Improve text chunks to consider left side + WORD + right side instead of randomn
+# cuts out n-length character chunks from s
 
-def add_context(matches_df, text):
+def get_context(word, text_chunks):
+    contexts = [context + '.' for context in text_chunks if word in context]
+    return contexts
+
+def add_context(matches_df, text, chunk_n):
+    f_time = time.time()
+    text_chunks = chunks(text, chunk_n)
+    print(text_chunks)
+    matches_df['context'] = matches_df['text'].apply(get_context, args=[text_chunks])
+    print('\tTime taken to get contexts:', time.time()-f_time)
     return matches_df
 
 # Using pip install python-Levenshtein
@@ -144,6 +152,23 @@ def split_n_grams_s(text, N):
 
     grams_s =  pd.Series(gram_list)
     return grams_s
+
+# TODO Next: Implement skipgram into comparison vector
+def get_skipgram(label, seq='odd'):
+    if(seq == 'odd'):
+        print("Odd skipgram not implemented")
+    elif(seq == 'even'):
+        print("Even skipgram not implemented")
+    elif(seq == 'ddo'):
+        print("Odd-backwards skipgram not implemented")
+    elif(seq == 'neve'):
+        print("Even-backwards skipgram not implemented")
+
+def chunks(s, n):
+    text_chunks = []
+    for start in range(0, len(s), n):
+        text_chunks.append(s[start:start+n])
+    return text_chunks
 
 def remove_file(filePath):
     if os.path.exists(filePath):
@@ -304,7 +329,7 @@ def main():
         resp_json = preprocess_json(resp.json())
 
         sorted_labels = create_sorted_labels(resp_json, False)
-        get_matches(corpus, sorted_labels, 0.8)
+        get_matches(corpus, sorted_labels, False, 0.8, 80)
         # get_cosim_matches_faster(corpus, sorted_labels, 0.8)
         #get_levsh_matches(sorted_labels, 90)
 

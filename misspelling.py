@@ -59,7 +59,7 @@ def build_potential_corpus(corpus, sorted_labels):
     
     return file_name
 
-def get_matches(corpus, sorted_labels, add_context=True, ratio=0.8, context_size=100):
+def get_matches(corpus, sorted_labels, ratio=0.8, context_size=100, context=True, group_labels=True):
     f_time = time.time()
     corpus_clean = build_potential_corpus(corpus, sorted_labels)
     with open(corpus_clean, 'r') as infile:
@@ -69,27 +69,29 @@ def get_matches(corpus, sorted_labels, add_context=True, ratio=0.8, context_size
     labels = get_labels_df(sorted_labels)
     labels = pd.Series(labels['label'])
     
-    matches_df = get_cosim_matches(labels, Stext, ratio)
+    matches_df = get_cosim_matches(labels, Stext, ratio, group_labels)
     #for now
-    if (add_context == True):
+    if (context == True):
         matches_df = add_context(matches_df, text_string, context_size)
     matches_df.to_csv(name_file('cosim_match.csv', '.csv'))
 
-    print('Time taken to get matches:', time.time()-f_time)
+    print('Total time taken to get_matches:', time.time()-f_time)
 
 # USING sudo pip install string-grouper
-def get_cosim_matches(labels, text, ratio):
+def get_cosim_matches(labels, text, ratio, group_labels):
     print("\tMatches Using Cosine Similarity")
     m_time = time.time()
     matches_df = match_strings(labels, text, min_similarity=ratio)
     print('\tTime taken to cosim match all strings:', time.time()-m_time)
    # matches_df.to_csv('test_matches_ungroupped.csv')
+    if(group_labels == True):
+        m_time = time.time()
+        matches_df = matches_df.groupby(matches_df.columns.tolist()).size().reset_index().rename(columns={0:'freq','left_side':'label','right_side':'text','similarity':'cosim'})
+        matches_df = matches_df.sort_values(by='cosim', ascending=False).reset_index().drop(columns=['index'])
+        print('\tTime taken to group same matches:', time.time()-m_time)
+    else:
+        matches_df = matches_df.rename(columns={'left_side':'label','right_side':'text','similarity':'cosim'}).sort_values(by=['label','cosim'], ascending=False).reset_index().drop(columns=['index'])
     
-    m_time = time.time()
-    matches_df = matches_df.groupby(matches_df.columns.tolist()).size().reset_index().rename(columns={0:'freq','left_side':'label','right_side':'text','similarity':'cosim'})
-    matches_df = matches_df.sort_values(by='cosim', ascending=False).reset_index().drop(columns=['index'])
-    print('\tTime taken to group same matches:', time.time()-m_time)
-
     return matches_df
 
 # TODO: Improve text chunks to consider left side + WORD + right side instead of randomn
@@ -102,7 +104,6 @@ def get_context(word, text_chunks):
 def add_context(matches_df, text, chunk_n):
     f_time = time.time()
     text_chunks = chunks(text, chunk_n)
-    print(text_chunks)
     matches_df['context'] = matches_df['text'].apply(get_context, args=[text_chunks])
     print('\tTime taken to get contexts:', time.time()-f_time)
     return matches_df
@@ -164,6 +165,7 @@ def get_skipgram(label, seq='odd'):
     elif(seq == 'neve'):
         print("Even-backwards skipgram not implemented")
 
+#TODO: **difficult** figure out which chunk to add? same chunks keep appearing in file when True, False
 def chunks(s, n):
     text_chunks = []
     for start in range(0, len(s), n):
@@ -329,7 +331,7 @@ def main():
         resp_json = preprocess_json(resp.json())
 
         sorted_labels = create_sorted_labels(resp_json, False)
-        get_matches(corpus, sorted_labels, False, 0.8, 80)
+        get_matches(corpus, sorted_labels, 0.8, 80, False , True)
         # get_cosim_matches_faster(corpus, sorted_labels, 0.8)
         #get_levsh_matches(sorted_labels, 90)
 

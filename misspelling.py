@@ -9,7 +9,7 @@ import os
 import re
 import pandas as pd
 import numpy as np
-from string_grouper import match_most_similar
+from string_grouper import match_most_similar, match_strings
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import csr_matrix
 import sparse_dot_topn.sparse_dot_topn as ct
@@ -21,33 +21,24 @@ file = 'pitt.txt'
 group_types = ""
 text = "test"
 
-def remove_file(filePath):
-    if os.path.exists(filePath):
-        print("Removing: \"", filePath, "\"")
-        os.remove(filePath)
-        return 1
-    else:
-        print("File: \"", filePath, "\" was not removed because it doesn't exist")
-    return 0
-
-def preprocess_json(json):
-    resp_json = json
-    return resp_json
-
-def name_file(filePath, end='.txt'):
-    filePath = filePath[:-4] + '_' + group_types + end
-    print(filePath)
-    return filePath
-
-def create_sorted_labels(resp_json):
+# TODO: Implement pass through of create_sorted_labels from file or from concordance.py
+# TODO: Speed up get_label_length
+def create_sorted_labels(resp_json, file_bool):
     f_time = time.time()
     sorted_labels = []
-    with open(name_file('key_words_sorted.txt'), 'w') as outfile:
+    if (file_bool is True):
+        with open(name_file('key_words_sorted.txt'), 'w') as outfile:
+            labels = Counter(k['label'].lower() for k in resp_json[0]['instances'] if k.get('label'))
+            for label, count in labels.most_common():
+                num_spaces = label.count(' ')
+                f_label = label + "," + str(num_spaces + 1) + "," + str(len(label) - num_spaces) + "," + str(count) + "\n"
+                outfile.write(f_label)
+                sorted_labels.append(label)
+    else:
         labels = Counter(k['label'].lower() for k in resp_json[0]['instances'] if k.get('label'))
         for label, count in labels.most_common():
-            f_label = label + "," + str(count) + "\n"
-            outfile.write(f_label)
             sorted_labels.append(label)
+    
     print('Time taken to get sorted labels:', time.time()-f_time)
     return sorted_labels
 
@@ -68,10 +59,80 @@ def build_potential_corpus(corpus, sorted_labels):
     
     return file_name
 
+def get_matches(corpus, sorted_labels, ratio):
+    f_time = time.time()
+    corpus_clean = build_potential_corpus(corpus, sorted_labels)
+    with open(corpus_clean, 'r') as infile:
+        text_string = infile.read()
+
+    Stext =  split_n_grams_s(text_string, 1)
+    labels = get_labels_df(sorted_labels)
+    labels = pd.Series(labels['label'])
+    
+    matches_df = get_cosim_matches(labels, Stext, ratio)
+    #for now
+    matches_df.to_csv(name_file('cosim_match.csv', '.csv'))
+
+    matches_df = add_context(matches_df, text_string)
+    
+
+    print('Time taken to get matches:', time.time()-f_time)
+
+# USING sudo pip install string-grouper
+def get_cosim_matches(labels, text, ratio):
+    print("\tMatches Using Cosine Similarity")
+    m_time = time.time()
+    matches_df = match_strings(labels, text, min_similarity=ratio)
+    print('\tTime taken to cosim match all strings:', time.time()-m_time)
+   # matches_df.to_csv('test_matches_ungroupped.csv')
+    
+    m_time = time.time()
+    matches_df = matches_df.groupby(matches_df.columns.tolist()).size().reset_index().rename(columns={0:'freq','left_side':'label','right_side':'text','similarity':'cosim'})
+    matches_df = matches_df.sort_values(by='cosim', ascending=False).reset_index().drop(columns=['index'])
+    print('\tTime taken to group same matches:', time.time()-m_time)
+
+    return matches_df
+
+def get_context(word, text):
+    print(word + text[0:20])
+
+def add_context(matches_df, text):
+    return matches_df
+
+# Using pip install python-Levenshtein
+# catches misspellings in the dictionary, not in the text!
+def get_levsh_matches(sorted_labels, ratio):
+    label_groups = list() # groups of names with distance > 80
+    for label in sorted_labels:
+        for group in label_groups:
+            if all(fuzz.ratio(label, w) > ratio for w in group):
+                group.append(label)
+                break
+        else:
+            label_groups.append([label, ])
+    
+    n_groups = 0
+    with open(name_file('catch_misspellings.txt'), 'w') as outfile:
+        for label_group in label_groups:
+            if(len(label_group) > 1):
+                n_groups+=1
+                for label in label_group:
+                    outfile.write(label + ", ")
+                outfile.write("\n")
+
+    print("Number of groups in misspellings file: ", n_groups)
+    
+    return label_groups
+
+# Utility for curent working code
 def get_label_length_df(sorted_labels):
     labels_df =  pd.DataFrame(sorted_labels, columns =['label'])
     labels_df['len'] = labels_df['label'].apply(lambda x: len(re.split(r'[\s\-]', x)))
     return (labels_df, labels_df['len'].max())
+
+def get_labels_df(sorted_labels):
+    labels_df =  pd.DataFrame(sorted_labels, columns =['label'])
+    return labels_df
 
 def split_n_grams_s(text, N):
     text = text.split()
@@ -83,7 +144,27 @@ def split_n_grams_s(text, N):
 
     grams_s =  pd.Series(gram_list)
     return grams_s
-## cosine_faster
+
+def remove_file(filePath):
+    if os.path.exists(filePath):
+        print("Removing: \"", filePath, "\"")
+        os.remove(filePath)
+        return 1
+    else:
+        print("File: \"", filePath, "\" was not removed because it doesn't exist")
+    return 0
+
+def name_file(filePath, end='.txt'):
+    filePath = filePath[:-4] + '_' + group_types + end
+    print(filePath)
+    return filePath
+
+def preprocess_json(json):
+    resp_json = json
+    return resp_json
+
+#--------WIP---------------
+# TODO: Implement coside faster by dissecting string-grouper class
 def ngrams(string, n=3):
     string = re.sub(r'[,-./]|\sBD',r'', string)
     ngrams = zip(*[string[i:] for i in range(n)])
@@ -144,77 +225,8 @@ def get_matches_df(sparse_matrix, name_vector, top=100):
     return pd.DataFrame({'left_side': left_side,
                           'right_side': right_side,
                            'similairity': similairity})
-        
 
-
-def catch_misspellings_cosine(corpus, sorted_labels, ratio):
-    f_time = time.time()
-    corpus_clean = build_potential_corpus(corpus, sorted_labels)
-    with open(corpus_clean, 'r') as infile:
-        text = infile.read()
-    (labels, max_label_len) = get_label_length_df(sorted_labels)
-    text = split_n_grams_s(text, max_label_len)
-    labels = pd.Series(labels['label'])
-
-    matches = match_most_similar(text, labels, regex='[,./]|\s', min_similarity=ratio)
-
-    df = pd.DataFrame({'labels': labels, 'misspellings': matches})
-    df = df.query("labels != misspellings") 
-    df.to_csv('text_matches_drug.csv')
-
-   # df_matches = pd.DataFrame(columns=['labels', 'misspelling'])
-    # for i in range(2, max_label_len+2):
-    #     text_ngrams =  split_n_grams_s(text, i)
-    #     print(text_ngrams)
-    #     q = "len == " + str(i - 1)
-    #     print(q)
-    #     label_ngrams = labels.query(q)
-    #     print(label_ngrams.head())
-    #     slabel_ngrams = pd.Series(label_ngrams['label'])
-    #     match_ngrams = match_most_similar(text_ngrams, slabel_ngrams, regex='[,./]|\s', min_similarity=ratio)
-    #     df_ngrams = pd.DataFrame({'labels': slabel_ngrams, 'misspelling': match_ngrams})
-    #     df_ngrams = df_ngrams.query("labels != misspelling")
-    #     f = 'test_matches_drug_' + str(i) + '.csv'
-    #     df_ngrams.to_csv(f)
-    
-    
-    
-    
-    # USING sudo pip install string-grouper
-    # labels = pd.Series(labels['label'])
-    # Create all matches:
-    # matches = match_most_similar(text, labels)
-    # Display the results:
-    # df = pd.DataFrame({'labels': labels, 'misspellings': matches})
-    # df = df.query("labels != misspellings")
-    print('Time taken to find misspellings:', time.time()-f_time)
-
-#  pip install python-Levenshtein
-# catches misspellings in the dictionary, not in the text!
-def catch_misspellings_levenshtein(sorted_labels, ratio):
-    label_groups = list() # groups of names with distance > 80
-    for label in sorted_labels:
-        for group in label_groups:
-            if all(fuzz.ratio(label, w) > ratio for w in group):
-                group.append(label)
-                break
-        else:
-            label_groups.append([label, ])
-    
-    n_groups = 0
-    with open(name_file('catch_misspellings.txt'), 'w') as outfile:
-        for label_group in label_groups:
-            if(len(label_group) > 1):
-                n_groups+=1
-                for label in label_group:
-                    outfile.write(label + ", ")
-                outfile.write("\n")
-
-    print("Number of groups in misspellings file: ", n_groups)
-    
-    return label_groups
-
-def catch_misspellings_cosine_faster(corpus, sorted_labels, ratio):
+def get_cosim_matches_faster(corpus, sorted_labels, ratio):
     f_time = time.time()
     corpus_clean = build_potential_corpus(corpus, sorted_labels)
     with open(corpus_clean, 'r') as infile:
@@ -242,19 +254,6 @@ def catch_misspellings_cosine_faster(corpus, sorted_labels, ratio):
     matches_df = get_matches_df(matches, labels, top=100000)
     matches_df = matches_df[matches_df['similairity'] < 0.99999] # Remove all exact matches
     print(matches_df.sample(20))
-
-
-    # # USING sudo pip install string-grouper
-    # labels = pd.Series(labels['label'])
-    # # Create all matches:
-    # matches = match_most_similar(text, labels)
-    # # Display the results:
-    # df = pd.DataFrame({'labels': labels, 'misspellings': matches})
-    
-    
-    # df = df.query("labels != misspellings")
-    # df.to_csv('test_matches_drug.csv')
-    # print('Time taken to find misspellings:', time.time()-f_time)
 
 def extract(corpus, types=[]):
     args = {}
@@ -290,7 +289,7 @@ def main():
 
     # Extract
     if service == 'extract':
-        # Either text or pitt.txt
+
         corpus = args[1]
         print("CORPUS: ", corpus)
         types = []
@@ -304,10 +303,12 @@ def main():
         
         resp_json = preprocess_json(resp.json())
 
-        sorted_labels = create_sorted_labels(resp_json)
-        catch_misspellings_cosine(corpus, sorted_labels, 0.8)
-        remove_file('no_key_word_drug.txt')
-        #catch_misspellings_levenshtein(sorted_labels, 90)
+        sorted_labels = create_sorted_labels(resp_json, False)
+        get_matches(corpus, sorted_labels, 0.8)
+        # get_cosim_matches_faster(corpus, sorted_labels, 0.8)
+        #get_levsh_matches(sorted_labels, 90)
+
+        remove_file(name_file('no_key_word.txt'))
 
     else:
         print('Incorrect service, use "extract"')

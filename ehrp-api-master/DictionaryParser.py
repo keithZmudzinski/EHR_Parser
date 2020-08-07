@@ -1,3 +1,5 @@
+import re
+
 ''' Creates two dict objects:
         one maps concept names to concept ids,
         one maps concept names to ontology they come from
@@ -20,7 +22,7 @@ class DictionaryParser():
     def parse_dictionaries(self):
         for entity in self.entities:
             # This is expected format, need to make dictionary comply with expected format
-            parts = entity.split(',')
+            parts = re.split(r'(?<!\\),', entity)
             label = parts[0]
             cid = parts[-1].split('.')[0]
 

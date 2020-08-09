@@ -18,7 +18,7 @@ class Extract(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         # Define allowable arguments
-        self.reqparse.add_argument('text', required=False, default=None,
+        self.reqparse.add_argument('text', required=False, default=None, action='append',
                                location=['values', 'json'], help="text for extracting entities and concept ids")
         self.reqparse.add_argument('types', type=str, required=False, default=None, action='append',
                                location=['values', 'json'], help="type of concept to extract")
@@ -49,7 +49,8 @@ class Extract(Resource):
 
         # If file is set, text isn't, and so we update text with the contents of file
         if file:
-            text = file.read()
+            # Assume file has one EHR per line
+            text = [str(line) for line in file]
 
         # If no types specified, look for all types
         if types == None:
@@ -75,6 +76,9 @@ class Lookup(Resource):
         # Get argument
         args = self.reqparse.parse_args()
         text = args['text']
+        
+        # Make into a singleton list, as expected by 'extract_concepts'
+        text = [text]
 
         # Get results
         concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, text, ['lookup'])

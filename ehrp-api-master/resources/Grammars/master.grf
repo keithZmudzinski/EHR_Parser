@@ -17,25 +17,15 @@ DRST n
 FITS 100
 PORIENT L
 #
-21
-"<E>" 77 279 6 2 3 4 5 6 7 
-"" 1261 288 0 
-":ami_pna_chf_com:ami.grf" 312 88 1 13 
-":ami_pna_chf_com::chf.grf" 305 141 1 12 
-":ami_pna_chf_com:other_comorbidities.grf" 305 192 1 11 
-":disorder" 305 255 1 10 
-":ami_pna_chf_com:pna.grf" 294 338 1 9 
-":drug:prescription.grf" 294 479 1 8 
-"<E>/__ParsingFunction__prescriptionParser" 681 481 1 14 
-"<E>/__ParsingFunction__pnaParser" 681 346 1 15 
-"<E>/__ParsingFunction__disorderParser" 692 269 1 16 
-"<E>/__ParsingFunction__comorbidityParser" 687 198 1 17 
-"<E>/__ParsingFunction__chfParser" 692 134 1 18 
-"<E>/__ParsingFunction__amiParser" 693 81 1 19 
-"<E>" 927 477 1 1 
-"<E>" 927 331 1 1 
-"<E>" 938 267 1 1 
-"<E>" 954 195 1 1 
-"<E>" 938 136 1 1 
-"<E>" 936 83 1 1 
-"Calls all graphs together, used for when all types are queried+Only use top-level graphs. Sub-graphs will be queried separately." 18 44 0 
+11
+"<E>" 70 200 3 2 3 4 
+"" 969 200 0 
+":drug:drug.grf" 172 150 1 7 
+":disorder" 172 200 1 6 
+"__EHR_API_DELIMITER__" 169 259 1 5 
+"<E>" 418 259 1 8 
+"<E>/__ParsingFunction__disorderParser" 415 200 1 9 
+"<E>/__ParsingFunction__drugParser" 415 150 1 10 
+"<E>" 853 259 1 1 
+"<E>" 853 200 1 1 
+"<E>" 853 150 1 1 

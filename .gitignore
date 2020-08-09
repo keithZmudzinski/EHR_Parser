@@ -103,6 +103,8 @@ ENV/
 # Keith local files
 data
 data-prep/
+speed-test/
+temp.cod
 query_test.py
 speed-test/
 

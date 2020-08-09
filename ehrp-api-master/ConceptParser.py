@@ -1,8 +1,15 @@
 import os
 import sys
-from unitex.io import UnitexFile, rm, exists
+import struct
+from unitex.io import UnitexFile, rm, exists, ls, cp
 from DictionaryParser import DictionaryParser
-from unitex.tools import UnitexConstants, locate, dico, concord
+from unitex.tools import locate, dico, concord
+
+# Constants reflecting project file layout, please update if you change where files are stored.
+RESOURCES_FILE_PATH = 'resources'
+TEMPORARY_FOLDER_PATH = os.path.join(RESOURCES_FILE_PATH, 'Temporary')
+# Path to binary file used in batch processing of EHRs
+TEMPORARY_FILE_PATH = os.path.join(TEMPORARY_FOLDER_PATH, 'temp.cod')
 
 class ConceptParser:
     ''' Given text, grammar, dictionaries, and a parsing function, will extract
@@ -18,7 +25,10 @@ class ConceptParser:
     # dictionaries: list of paths to dictionaries to apply to text
     # parsing_function: input as name of parsing function to use, changed to function pointer to function of same name
     # ontology_names: strictly the names of the ontologies being used, no file extensions or paths attached
+    # batch_type: string denoting the size of query being processed, controls which files are cleaned up
     # index: file path of the index created by ConceptParser.locate_grammar()
+    # tokens_in_text: list of unique tokens found in the text
+    # indices_of_tokens_in_text: list of indices of tokens in the lext, in the order of text itself
 
     def __init__(self, **kwargs):
         # Update object member variable with passed in arguments.
@@ -37,12 +47,6 @@ class ConceptParser:
     def parse(self):
         ''' Apply given dictionaries, grammar, and parsing function to text. Return dictionary of found concepts. '''
 
-        # Apply dictionaries
-        #   Creates two files of interest
-        #   dlf: dictionay of simple words in text
-        #   dlc: dictionay of compound words in text
-        self.apply_dictionaries()
-
         # Create an index (File with locations of strings matching grammar)
         self.index = self.locate_grammar()
 
@@ -51,12 +55,12 @@ class ConceptParser:
 
         # Get words that are both in text and dictionary
         # dlf file holds dictionary of simple words that are in dictionaries
-        simple_words = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlf"))
+        single_words = os.path.join(self.directory, "dlf")
         # dlc file holds dictionary of compound words that are in dictionaries
-        compound_words = "%s%s"%(UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "dlc"))
+        multiple_words = os.path.join(self.directory, "dlc")
 
         # Parse all entities that matched in any dictionary
-        dictionary_parser = DictionaryParser(self.get_text(simple_words), self.get_text(compound_words), self.ontology_names)
+        dictionary_parser = DictionaryParser(self.get_text(single_words), self.get_text(multiple_words), self.ontology_names)
         dictionary_parser.parse_dictionaries()
 
         # Assign dictionaries
@@ -64,15 +68,44 @@ class ConceptParser:
         onto_dict = dictionary_parser.onto_dict
 
         # Get contexts
-        contexts_file_path = "%s%s"%(UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "concord.txt"))
-        contexts = self.get_text(contexts_file_path)
+        contexts_text_path = os.path.join(self.directory, "concord.txt")
+        contexts_text = self.get_text(contexts_text_path)
 
-        # Use parsing function specific to this grammar-dictionary/dictionaries combo
-        parsed_concepts = self.parsing_function(self, contexts, id_dict, onto_dict)
+        # If a large batch, we have been given all texts combined toegether
+        # We need to separate them and process them individually.
+        parsed_concepts = []
+        if self.batch_type == 'LARGE_BATCH':
+            # Get the tokens that comprise the text
+            tokens_in_text_path = os.path.join(self.directory, "tokens.txt")
+            self.tokens_in_text = self.get_text(tokens_in_text_path)[1:]
 
-        # Ensure grammars used afterwards only use assigned dictionaries
-        rm(simple_words)
-        rm(compound_words)
+            # Get indices of tokens that comprise the text
+            self.indices_of_tokens_in_text = self.get_indices()
+
+            # Get the indices of contexts in the text
+            contexts_indices_path = os.path.join(self.directory, "concord.ind")
+            contexts_indices = self.get_text(contexts_indices_path )
+
+            # Separate contexts of EHRs into separate lists
+            separated_contexts = self.separate_contexts(contexts_text, contexts_indices)
+
+            for separate_context in separated_contexts:
+                single_parsed_concept = self.parsing_function(self, separate_context, id_dict, onto_dict)
+                parsed_concepts.append([single_parsed_concept])
+
+        # If not a large batch, it is instead a small batch, and we don't need to separate EHRs
+        else:
+            # Use parsing function specific to this grammar
+            parsed_concepts = self.parsing_function(self, contexts_text, id_dict, onto_dict)
+
+        # Cleanup un-needed files to save space
+        for file in ls(self.directory):
+            # Get file name separate from directory name
+            _, file_name = os.path.split(file)
+            # Delete all files if a large batch query. Small batches are handled
+            #    in 'small_processing' in 'ehrp_utils.py'
+            if self.batch_type == 'LARGE_BATCH':
+                rm(file)
 
         # NOTE: parsed_concepts has specific format:
         #   {
@@ -89,28 +122,18 @@ class ConceptParser:
         #    }
         return parsed_concepts
 
-    def apply_dictionaries(self):
-        ''' Creates .dlf and .dlc files holding words in both dictionaries and text. '''
-        if self.dictionaries is not None:
-            dictionaries_applied_succesfully = dico(self.dictionaries, self.text, self.alphabet_unsorted, **self.options['tools']['dico'])
-
-            if dictionaries_applied_succesfully is False:
-                sys.stderr.write("[ERROR] Dictionaries application failed!\n")
-                sys.exit(1)
-        else:
-            sys.stderr.write("[ERROR] No dictionaries specified.\n")
 
     def locate_grammar(self):
         ''' Return index file path, holding locations of matching instances of grammar in text. '''
-
         # Locate patterns that match grammar
         grammar_applied_successfully = locate(self.grammar, self.text, self.alphabet_unsorted, **self.options['tools']['locate'])
 
         # Locate created concord.ind file
-        index = "%s%s" % (UnitexConstants.VFS_PREFIX, os.path.join(self.directory, "concord.ind"))
+        index = os.path.join(self.directory, "concord.ind")
 
         # If application failed or couldn't find associated file
-        if grammar_applied_successfully is False or exists(index) is None:
+        # if grammar_applied_successfully is False or exists(index) is None:
+        if grammar_applied_successfully is False:
             sys.stderr.write("[ERROR] Locate failed!\n")
 
         return index
@@ -133,8 +156,176 @@ class ConceptParser:
         unfile.close()
         return unfile_txt.splitlines()
 
+    def get_indices(self):
+        ''' Return the list of indices of tokens that comprise the text '''
+        # Get file path for binary file 'text.cod'
+        indices_of_tokens_in_text_path = os.path.join(self.directory, "text.cod")
+
+        # Save binary file to local filesystem
+        cp(indices_of_tokens_in_text_path, TEMPORARY_FILE_PATH)
+
+        # Open and read binary file
+        cod_file = open(TEMPORARY_FILE_PATH, 'rb')
+        lines = cod_file.read()
+
+        # We don't delete the temporary file, we just let it get
+        #   over-written by following queries
+
+        # Convert bytes to integers
+        indices_tuple = struct.unpack("i" * (len(lines) // 4), lines)
+
+        # Convert tuple to list
+        indices_list = list(indices_tuple)
+
+        return indices_list
+
     def make_concepts_object(self, name):
         return {'name': name, 'instances': []}
+
+    def separate_contexts(self, contexts_text, contexts_indices):
+        ''' Separate contexts into seprate lists per EHR '''
+        separated_contexts = []
+        previous_ehr_end = 0
+
+        # Remove metadata at beginning of list
+        contexts_indices = contexts_indices[1:]
+
+        # Go through indices of found contexts,
+        # When we find a delimiter, clean the surrounding contexts
+        for index_number, unitex_index in enumerate(contexts_indices):
+            # Now we need to clean the contexts so far
+            if '__EHR_API_DELIMITER__' in unitex_index:
+                # Keep track of the line separating the EHRs
+                most_recent_delimiter = index_number
+
+                # Make sure contexts before delimiter don't include the delimiter text
+                self.clean_contexts_before_delimiter(contexts_indices, contexts_text, index_number, unitex_index)
+
+                # Make sure contexts after delimiter don't include the delimiter text
+                self.clean_contexts_after_delimiter(contexts_indices, contexts_text, index_number, unitex_index)
+
+                # Save the cleaned contexts before the delimiter as an EHR
+                separated_contexts.append(contexts_text[previous_ehr_end:index_number])
+
+                # We add one so that we skip the deliminating context
+                previous_ehr_end = index_number + 1
+
+        # Add on last EHR
+        separated_contexts.append(contexts_text[most_recent_delimiter+1:])
+        return separated_contexts
+
+    def clean_contexts_before_delimiter(self, contexts_indices, contexts_text, index_of_delimiter, delimiter_token_start_and_end):
+        ''' Remove any trace of delimiter text in contexts before the delimiter '''
+
+        # Get the token number of where the delimiter starts
+        delimiter_token_start = self.get_token_number(delimiter_token_start_and_end, 'START')
+        # Get the index of the context we're checking
+        index_of_context_to_check = index_of_delimiter - 1
+
+        # Check if at beginning of list
+        if index_of_context_to_check < 0:
+            return
+
+        # Get the token number of where the right context starts
+        context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'END') + 1
+
+        # Keep checking and cleaning contexts until we find one that was already clean
+        while(self.context_was_cleaned(contexts_text, index_of_context_to_check, delimiter_token_start, context_to_check_token, 'LEFT')):
+            index_of_context_to_check -= 1
+            try:
+                context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'END') + 1
+            except IndexError:
+                break
+
+        return
+
+    def clean_contexts_after_delimiter(self, contexts_indices, contexts_text, index_of_delimiter, delimiter_token_start_and_end):
+        ''' Remove any trace of delimiter text in contexts after the delimiter '''
+
+        # Get the token number of where the delimiter starts
+        delimiter_token_start = self.get_token_number(delimiter_token_start_and_end, 'START')
+        # Get the index of the context we're checking
+        index_of_context_to_check = index_of_delimiter + 1
+        # Get the token number of where the left context starts
+        try:
+            context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'START') - 1
+        # Error occurs if at end of the list
+        except IndexError:
+            return
+
+        # Keep checking and cleaning contexts until we find one that was already clean
+        while(self.context_was_cleaned(contexts_text, index_of_context_to_check, delimiter_token_start, context_to_check_token, 'RIGHT')):
+            index_of_context_to_check += 1
+            try:
+                context_to_check_token = self.get_token_number(contexts_indices[index_of_context_to_check], 'START') + 1
+            except IndexError:
+                break
+
+        return
+
+    def get_token_number(self, token_string, desired_part):
+        ''' Extracts the start or stop token from a given line of the concord.ind file '''
+        parts = token_string.split(' ')
+        token = parts[0] if desired_part == 'START' else parts[1]
+        token_num, char_offset, _ = token.split('.')
+        return int(token_num)
+
+    # Just before right now
+    def context_was_cleaned(self, contexts_text, index_of_context_to_check, delimiter_token, context_to_check_token, direction):
+        ''' If given context contains part of delimiter, remove delimiter from context '''
+        left_context_to_check, term, right_context_to_check = contexts_text[index_of_context_to_check].split('\t')
+
+        # Assume we are moving to the right, and need to look at the left context
+        context = left_context_to_check
+        offset = -1
+        # If we are moving to the left, we need to look at the right context
+        if direction == 'LEFT':
+            context = right_context_to_check
+            offset = 1
+
+        # Set up variables necessay to loop through tokens
+        length_of_context = len(context)
+        sum_of_chars_per_token = 0
+        # Start the tokens at beginning/end of context to check
+        next_token_index = context_to_check_token
+
+        # Loop through tokens in context, take action if it overlaps with delimiter
+        while sum_of_chars_per_token < length_of_context:
+            # If we overlap with the delimiter
+            if next_token_index == delimiter_token:
+                if direction == 'LEFT':
+                    # Take everything up until the start of the delimiter
+                    context = context[:sum_of_chars_per_token]
+                    context = '\t'.join([left_context_to_check, term, context])
+                else:
+                    # Take everything starting after the delimiter
+                    context = context[length_of_context-sum_of_chars_per_token:]
+                    context = '\t'.join([context, term, right_context_to_check])
+                break
+
+            # Otherwise, just get next token in the sequence
+            # Get the index of which token comes next
+            curr_token_index = self.indices_of_tokens_in_text[next_token_index]
+            # Get that next token
+            curr_token = self.tokens_in_text[curr_token_index]
+
+            # Sum up the length of the token
+            sum_of_chars_per_token += len(curr_token)
+
+            # Now use the next token in the context
+            next_token_index = next_token_index + offset
+
+        # Runs when we do not break the loop, meaning context did not overlap
+        #   with delimiter
+        else:
+            # False indicates we did not have to clean the context
+            return False
+
+        # Update context with cleaned context
+        contexts_text[index_of_context_to_check] = context
+
+        # True indicates that yes, we did clean the context
+        return True
 
 # -------------- DEFINE PARSING FUNCTIONS BELOW ----------------
 # Each parsing function must return concepts like so:
@@ -288,192 +479,5 @@ class ConceptParser:
                     })
                 except KeyError as kerror:
                     continue
-
-        return concepts
-
-    # {
-    #     name: prescription,
-    #     instances: [
-    #         {
-    #             drug: '',
-    #             dosage: '',
-    #             umid: '',
-    #             onto: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def prescriptionParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('prescription')
-
-        for context in contexts:
-            parts = context.split('\t')
-            dosage = parts[1]
-            dosage_and_full_context = dosage.split('|')[0]
-            pre_dosage = dosage.split('|')[1]
-            post_dosage = dosage.split('|')[2]
-
-            # Skip if has no pre or post dosage
-            if not(pre_dosage or post_dosage):
-                continue
-
-            # The dosage and drug for which the prescription was made
-            full_dosage, drug = dosage_and_full_context.split('__SeparatE__')
-
-            # Full context surrounding prescription
-            context = parts[0] + full_dosage + parts[2]
-
-            try:
-                drug_id = id_dict[drug.lower()]
-                used_ontology = onto_dict[drug.lower()]
-            except KeyError as kerror:
-                drug_id = 'NA'
-                used_ontology = 'NA'
-
-            concepts['instances'].append({
-                'drug': drug,
-                'dosage': full_dosage,
-                'umid': drug_id,
-                'onto': used_ontology,
-                'context': context
-            })
-
-        return concepts
-
-     # {
-    #     name: chf,
-    #     instances: [
-    #         {
-    #             type: '',
-    #             trigger: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def chfParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('chf')
-
-        for i, context in enumerate(contexts):
-            parts = context.split('\t')
-            trigger = parts[1]
-            trigger, key = trigger.split('__SeparatE__')
-            context = parts[0] + trigger + parts[2]
-
-            concepts['instances'].append({
-                'type': key,
-                'trigger': trigger,
-                'context': context
-            })
-
-        return concepts
-
-       # {
-    #     name: ami,
-    #     instances: [
-    #         {
-    #             type: '',
-    #             trigger: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def amiParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('ami')
-
-        for i, context in enumerate(contexts):
-            parts = context.split('\t')
-            trigger = parts[1]
-            trigger, key = trigger.split('__SeparatE__')
-            context = parts[0] + trigger + parts[2]
-
-            concepts['instances'].append({
-                'type': key,
-                'trigger': trigger,
-                'context': context
-            })
-
-        return concepts
-
-    # {
-    #     name: pna,
-    #     instances: [
-    #         {
-    #             type: '',
-    #             trigger: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def pnaParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('pna')
-
-        for context in contexts:
-            parts = context.split('\t')
-            trigger = parts[1]
-            trigger, type = trigger.split('__SeparatE__')
-            context = parts[0] + trigger + parts[2]
-
-            concepts['instances'].append(({
-                'type': type,
-                'trigger': trigger,
-                'context': context
-            }))
-
-        return concepts
-
-    # {
-    #     name: comorbidity,
-    #     instances: [
-    #         {
-    #             type: '',
-    #             trigger: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def comorbidityParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('comorbidity')
-
-        for context in contexts:
-            parts = context.split('\t')
-            trigger = parts[1]
-            trigger, type = trigger.split('__SeparatE__')
-            context = parts[0] + trigger + parts[2]
-
-            concepts['instances'].append(({
-                'type': type,
-                'trigger': trigger,
-                'context': context
-            }))
-
-        return concepts
-
-    # {
-    #     name: pt_summary,
-    #     instances: [
-    #         {
-    #             trigger: '',
-    #             age: '',
-    #             gender: '',
-    #             context: ''
-    #         }
-    #     ]
-    # }
-    def pt_summaryParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('pt_summary')
-
-        for context in contexts:
-            parts = context.split('\t')
-            trigger = parts[1]
-            trigger, info = trigger.split('__SeparatE__')
-            age, gender = info.split(',')
-            context = parts[0] + trigger + parts[2]
-
-            concepts['instances'].append(({
-                'trigger': trigger,
-                'age': age,
-                'gender': gender,
-                'context': context
-            }))
 
         return concepts

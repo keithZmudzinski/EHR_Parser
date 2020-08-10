@@ -22,9 +22,16 @@ class DictionaryParser():
     def parse_dictionaries(self):
         for entity in self.entities:
             # This is expected format, need to make dictionary comply with expected format
-            parts = re.split(r'(?<!\\),', entity)
-            label = parts[0]
-            label = label.replace('\\,', ',')
+            term, info = re.split(r'(?<!\\),', entity)
+            lemma, info = re.split(r'(?<!\\)\.', info)
+
+            # Special case to parse homonyms
+            if lemma == 'HOMONYM':
+                self.parse_homonym(term, info)
+
+
+            term = label.replace('\\,', ',')
+
             cid = parts[-1].split('.')[0]
 
             # Get ontology name based on if ontology name in entity. Should be exactly one ontology name per entity.

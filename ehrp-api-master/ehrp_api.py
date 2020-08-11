@@ -104,7 +104,6 @@ def main():
     parser.add_argument('--host', type=str, default='localhost',
                         help="Host name (default: localhost)")
     parser.add_argument('--port', type=int, default='8020', help="Port (default: 8020)")
-    # parser.add_argument('--path', type=str, default='/ehrp', help="Path (default: /ehrp)")
     args = parser.parse_args()
 
     # Load resources
@@ -123,13 +122,12 @@ def main():
     ALL_DICTS_AND_ONTOLOGIES['dictionaries'] = dict_names_to_paths(ALL_DICTS_AND_ONTOLOGIES['dictionaries'])
 
     print("Starting app . . .")
-    ''''''
-    print('args: ', args)
-    # print('args.path: ', args.path)
-    print('args.conf: ', args.conf)
-    ''''''
     app = Flask(__name__)
-    api = Api(app, prefix='/ehrp/v1')
+    # Running DEBUG mode for flask. Makes JSON outputs more readable.
+    ''''''
+    app.config['DEBUG'] = True
+    ''''''
+    api = Api(app, prefix='/ehrp-api/v1')
 
     # Handle missing page 404 error
     @app.errorhandler(404)
@@ -144,10 +142,8 @@ def main():
         return error
 
     # Make extract and lookup pages available
-    # api.add_resource(Extract, args.path+'/extract')
-    # api.add_resource(Lookup, args.path+'/lookup')
-    api.add_resource(Extract, '/extract')
-    api.add_resource(Lookup, '/lookup')
+    api.add_resource(Extract, '/ehrs')
+    api.add_resource(Lookup, '/terms')
     app.run(host=args.host, port=args.port)
 
     # Free resources

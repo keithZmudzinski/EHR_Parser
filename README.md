@@ -65,7 +65,7 @@ ___
           'text': [medical_text_string1, medical_text_string2],
           'types': 'drug'
         }
-        response = requests.post('http://localhost:8021/ehrp/extract', data=args)
+        response = requests.post('http://localhost:8021/ehrp/v1/extract', data=args)
         ```
         + Possible values for 'types':  
           + 'drug': Looks for drug names

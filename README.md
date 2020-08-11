@@ -25,7 +25,7 @@ ___
 
   #### Lookup
   + `lookup` functionality is accessible through a `GET` request to the following URL<br>
-    URL : http://localhost:8020/ehrp/lookup<br>
+    URL : http://localhost:8020/ehrp/v1/lookup<br>
     ##### Parameters
     + Required:<br>
       + Name: 'text'
@@ -33,7 +33,7 @@ ___
         + Description: This should be the term you want to lookup.<br>
 
     ##### Example request:
-    + GET: http://localhost:8020/ehrp/lookup?text=hypertension
+    + GET: http://localhost:8020/ehrp/v1/lookup?text=hypertension
     + RESPONSE:<br>
     ```
     [
@@ -49,7 +49,7 @@ ___
 
 #### Extract
   + `extract` functionality is accessible through a `POST` request to the following URL<br>
-    URL : http://localhost:8020/ehrp/extract
+    URL : http://localhost:8020/ehrp/v1/extract
     ##### Parameters
     + Optional:
       + Name: 'text'
@@ -84,7 +84,7 @@ ___
         }
         
         text_file = open('medical_text_path', 'rb')
-        response = requests.post('http://localhost:8021/ehrp/extract', data=args, files={'file': text_file))
+        response = requests.post('http://localhost:8021/ehrp/v1/extract', data=args, files={'file': text_file))
         ```
 
 Both GET and POST requests return JSON objects.

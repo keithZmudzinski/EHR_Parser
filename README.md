@@ -28,12 +28,12 @@ ___
     URL : http://localhost:8020/ehrp-api/v1/terms<br>
     ##### Parameters
     + Required:<br>
-      + Name: 'text'
+      + Name: 'term'
         + Type: string
         + Description: This should be the term you want to lookup.<br>
 
     ##### Example request:
-    + GET: http://localhost:8020/ehrp-api/v1/terms?text=hypertension
+    + GET: http://localhost:8020/ehrp-api/v1/terms?term=hypertension
     + RESPONSE:<br>
     ```
     [

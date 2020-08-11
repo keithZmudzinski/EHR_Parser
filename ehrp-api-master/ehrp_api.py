@@ -13,8 +13,8 @@ from unitex import init_log_system
 from unitex.config import UnitexConfig
 import yaml
 
-class Extract(Resource):
-    '''Extract API for extracting Biomedical named entities and their respective concept IDs'''
+class Ehrs(Resource):
+    '''Ehrs API for extracting Biomedical named entities and their respective concept IDs'''
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         # Define allowable arguments
@@ -24,11 +24,11 @@ class Extract(Resource):
                                location=['values', 'json'], help="type of concept to extract")
         self.reqparse.add_argument('file', type=FileStorage, required=False, default=None,
                                location='files', help="optional file to be parsed, at most one of 'text' or 'file' should have data")
-        super(Extract, self).__init__()
+        super(Ehrs, self).__init__()
 
     def post(self):
         '''POST method'''
-        print("POST - Extract")     # for debugging
+        print("POST - Ehrs")     # for debugging
 
         # Get arguments
         args = self.reqparse.parse_args()
@@ -61,27 +61,27 @@ class Extract(Resource):
 
         return jsonify(concepts)
 
-class Lookup(Resource):
-    '''Lookup API for finding the relevant concept ID'''
+class Terms(Resource):
+    '''Terms API for finding the relevant concept ID'''
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('text', type=str, required=True, location='args',
+        self.reqparse.add_argument('term', type=str, required=True, location='args',
                                help="text for finding concept id")
-        super(Lookup, self).__init__()
+        super(Terms, self).__init__()
 
     def get(self):
         '''GET method'''
-        print("GET - Lookup")         # for debugging
+        print("GET - Terms")         # for debugging
 
         # Get argument
         args = self.reqparse.parse_args()
-        text = args['text']
+        term = args['term']
         
         # Make into a singleton list, as expected by 'extract_concepts'
-        text = [text]
+        term = [term]
 
         # Get results
-        concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, text, ['lookup'])
+        concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, term, ['lookup'])
 
         return jsonify(concepts)
 
@@ -142,8 +142,8 @@ def main():
         return error
 
     # Make extract and lookup pages available
-    api.add_resource(Extract, '/ehrs')
-    api.add_resource(Lookup, '/terms')
+    api.add_resource(Ehrs, '/ehrs')
+    api.add_resource(Terms, '/terms')
     app.run(host=args.host, port=args.port)
 
     # Free resources

@@ -75,10 +75,9 @@ class Terms(Resource):
 
         # Get argument
         args = self.reqparse.parse_args()
-        term = args['term']
-        
+
         # Make into a singleton list, as expected by 'extract_concepts'
-        term = [term]
+        term = [args['term']]
 
         # Get results
         concepts = extract_concepts(OPTIONS, ALL_GROUPINGS, ALL_DICTS_AND_ONTOLOGIES, term, ['lookup'])

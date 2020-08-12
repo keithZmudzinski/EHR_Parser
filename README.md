@@ -25,15 +25,15 @@ ___
 
   #### Lookup
   + `lookup` functionality is accessible through a `GET` request to the following URL<br>
-    URL : http://localhost:8020/ehrp/lookup<br>
+    URL : http://localhost:8020/ehrp-api/v1/terms<br>
     ##### Parameters
     + Required:<br>
-      + Name: 'text'
+      + Name: 'term'
         + Type: string
         + Description: This should be the term you want to lookup.<br>
 
     ##### Example request:
-    + GET: http://localhost:8020/ehrp/lookup?text=hypertension
+    + GET: http://localhost:8020/ehrp-api/v1/terms?term=hypertension
     + RESPONSE:<br>
     ```
     [
@@ -49,7 +49,7 @@ ___
 
 #### Extract
   + `extract` functionality is accessible through a `POST` request to the following URL<br>
-    URL : http://localhost:8020/ehrp/extract
+    URL : http://localhost:8020/ehrp-api/v1/ehrs
     ##### Parameters
     + Optional:
       + Name: 'text'
@@ -65,7 +65,7 @@ ___
           'text': [medical_text_string1, medical_text_string2],
           'types': 'drug'
         }
-        response = requests.post('http://localhost:8021/ehrp/extract', data=args)
+        response = requests.post('http://localhost:8021/ehrp-api/v1/ehrs', data=args)
         ```
         + Possible values for 'types':  
           + 'drug': Looks for drug names
@@ -84,7 +84,7 @@ ___
         }
         
         text_file = open('medical_text_path', 'rb')
-        response = requests.post('http://localhost:8021/ehrp/extract', data=args, files={'file': text_file))
+        response = requests.post('http://localhost:8021/ehrp-api/v1/ehrs', data=args, files={'file': text_file))
         ```
 
 Both GET and POST requests return JSON objects.

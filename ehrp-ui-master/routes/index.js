@@ -18,12 +18,12 @@ router.get('/', function(req, res) {
   }
 });
 
-router.post('/extract', function(req, res) {
+router.post('/ehrs', function(req, res) {
   var result;
   try {
     if (typeof(req.body.text) === 'string') {
       var body = String(req.body.text.trim());
-      var uri = API_URI+'extract';
+      var uri = API_URI+'ehrs';
       request.post({
         headers: {'content-type' : 'application/json'},
         url: uri,
@@ -63,13 +63,13 @@ router.post('/extract', function(req, res) {
   }
 });
 
-router.get('/lookup', function(req, res) {
+router.get('/terms', function(req, res) {
   var result;
-  console.log('Route: /lookup ' + req.query);
+  console.log('Route: /terms ' + req.query);
   try {
     if (typeof(req.query.text) === 'string') {
       var query = String(req.query.text.trim());
-      var uri = API_URI+'lookup?text='+query;
+      var uri = API_URI+'terms?term='+query;
       console.log('Route: The uri is \''+uri+'\'');
       request.get(uri, function (error, response, body) {
         if (response && response.statusCode === 200) {

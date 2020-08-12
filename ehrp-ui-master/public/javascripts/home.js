@@ -49,7 +49,7 @@ angular.module('ehrpui').controller('homeController', function ($scope, $http, $
     var postdata = {"text" : medtext.trim()};
 
     // Set URI to call the post method of class Extract in ehrp-api-master/ehr_api.py
-    var uri = getServer()+'/extract';
+    var uri = getServer()+'/ehrs';
     console.log('Public: '+uri);
 
     $scope.extractResults = [];
@@ -113,8 +113,8 @@ angular.module('ehrpui').controller('homeController', function ($scope, $http, $
     var query = '';
     var medterm = ($scope.medTerm === undefined)?'':String($scope.medTerm).trim();
     // var uriparams = encodeURIComponent('query='+query.trim()+'&count='+count);
-    var uriparams = 'text=' + medterm.trim();
-    var uri = getServer()+'/lookup?'+uriparams;
+    var uriparams = 'term=' + medterm.trim();
+    var uri = getServer()+'/terms?'+uriparams;
     console.log('Public:'+uri);
     $scope.lookupResults = [];
     $http.get(uri).then(function(response) {

@@ -4,7 +4,7 @@ console.log('Loading settings..');
 
 const SETTINGS = {
     // WEB_SERVICES_URI : 'http://t3610.istb4.dhcp.asu.edu:8020/',     //api link
-    WEB_SERVICES_URI : 'http://localhost:8020/ehrp/',     //api link
+    WEB_SERVICES_URI : 'http://localhost:8020/ehrp-api/v1/',     //api link
     SERVER_PORT : 3020                                              //port for nodejs
 };
 

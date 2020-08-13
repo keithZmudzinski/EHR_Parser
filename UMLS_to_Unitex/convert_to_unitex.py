@@ -9,15 +9,13 @@ def umls_to_unitex(conso_path, types_path, output_path):
     # Create a unitex dict file
     unitex_dict = open(output_path, 'w')
 
-    # Get array of types and cuis lines
-    types_lines = types_file.readlines()
+    # Make iterator over file, and start on first line
+    types_iter = iter(types_file)
+    line = next(types_iter, False)
 
     # Will store types per CUI, since multiple entries per CUI in MRCONSO
     types_cache = {}
     string_cache = {}
-
-    # Used to efficiently jump into types file
-    offset = 0
 
     # Make unitex entry per entry in MRCONSO
     for count, concept_synonym in enumerate(conso_file):
@@ -43,7 +41,7 @@ def umls_to_unitex(conso_path, types_path, output_path):
         # If haven't seen this cui, find all types in MRSTY and add to cache
         if types == None:
             # Get types and TUIs
-            types, offset = get_types(concept_info['cui'], types_lines, offset)
+            types, line = get_types(concept_info['cui'], types_iter, line)
             types = unescaped_sub(',', '\\,', types)
             types = types.replace('&#x7C;', '|')
             types_cache[concept_info['cui']] = types
@@ -73,14 +71,12 @@ def get_info(conso_line):
     info['term'] = info['term'].replace('&#x7C;', '|')
     return info
 
-def get_types(cui, types, offset):
+def get_types(cui, types, line):
     sem_types = ''
     tuis = ''
     hit_block = False
 
-    for i in range(len(types) - offset):
-        i += offset
-        line = types[i]
+    while(line):
         parts = line.split('|')
         type_cui = parts[0]
         if cui == type_cui:
@@ -89,6 +85,7 @@ def get_types(cui, types, offset):
             tuis += '+{}'.format(parts[1])
         elif (cui != type_cui and hit_block):
             break
+        line = next(types, False)
 
     all_types = sem_types + tuis
-    return all_types, i
+    return all_types, line

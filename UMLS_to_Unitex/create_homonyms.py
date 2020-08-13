@@ -1,5 +1,6 @@
 import re
 import sys
+import gc
 
 def create_homonyms(input_path, output_path):
     print('Creating homonym entries...')
@@ -49,14 +50,12 @@ def create_homonyms(input_path, output_path):
                 # Remove possibly included endlines
                 term_cache[term]['types'].add(type.strip())
             output_file.write(line)
+    input_file.close()
 
     homonyms = ''
     for term, term_info in term_cache.items():
         # If multiple cuis assigned to one term, term is a homonym
         if len(term_info['cuis']) > 1:
-            # if len(term_info['cuis']) != len(term_info['ontos']):
-            #     print('LENGTHS DON\'T MATCH')
-            #     sys.exit(1)
             cuis_and_ontos = zip(term_info['cuis'], term_info['ontos'])
             # Place CUI before the Ontology it refers to, and join on '+' symbol
             cuis_and_ontos = '+'.join(['{}+{}'.format(curr_cui, curr_onto) for curr_cui, curr_onto in cuis_and_ontos])
@@ -69,7 +68,6 @@ def create_homonyms(input_path, output_path):
             homonyms += homonym + '\n'
 
     # Close files
-    input_file.close()
     output_file.write(homonyms)
     output_file.close()
 

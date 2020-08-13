@@ -6,6 +6,7 @@ from create_homonyms import create_homonyms
 from add_main_type import create_categories
 from compress_homonyms import format_homonyms
 
+# NOTE: Due to size of the files, this program peaks at around 11GB of memory usage 
 def main():
     # Point these to your MRCONSO and MRSTY files
     conso_path = '/home/keith/Documents/Paea Intern/UMLS-2020AA_Full_Install/2020AA/META/MRCONSO.RRF'

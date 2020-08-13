@@ -17,9 +17,9 @@ Norvasc, 5 mg PO daily'''
 text1 = '''[Report de-identified (Safe-harbor compliant) by De-ID v.6.22.07.0]\n\n\nEXAMINATION PERFORMED:\nCT THORAX  WITHOUT CONTRAST   **DATE[Nov 02 07]     0944 HOURS\n\nCLINICAL HISTORY:   \nMultilobar pneumonia. Evaluation for response.\n\nCOMPARISON:   \nPrevious chest CT scan from **DATE[Oct 04 2007].\n\nTECHNIQUE:   \nHelical CT imaging of the chest was obtained without intravenous\nor oral contrast with contiguous 5.0mm thick axial reconstructions\nusing both lung and standard reconstruction algorithms.\n\nFINDINGS:   \nThe areas of patchy airspace consolidation in the left upper lobe\nhave resolved. There has been near complete resolution of the left\nlower lobe pneumonia. The left pleural effusion has resolved.\n\nThere is persistent extensive dense consolidation in the right\nupper lobe which has decreased. The areas of airspace\nconsolidation in the right lower lobe and right middle lobe have\ndecreased.\n\nIMPRESSION:   \n1. PERSISTENT VERY EXTENSIVE CONSOLIDATION IN THE RIGHT UPPER LOBE\n(WITH NORMAL PATENT AIRWAYS). THE DEGREE AND EXTENT OF RIGHT UPPER\nLOBE CONSOLIDATION HAVE DEFINITELY DECREASED FROM THE PREVIOUS\nSTUDY OF **DATE[Oct 04 2007] CONSISTENT WITH RESOLVING PNEUMONIA. THERE ARE\nNO FINDINGS TO INDICATE ENDOBRONCHIAL OBSTRUCTING LESIONS.\n2. INTERVAL DECREASE IN AREAS OF AIRSPACE CONSOLIDATION AND RIGHT\nLOWER LOBE AND RIGHT MIDDLE LOBE.\n3. NEAR COMPLETE RESOLUTION OF AREAS OF CONSOLIDATION IN LEFT\nUPPER LOBE AND LEFT LOWER LOBE.\n4. RESOLVED LEFT PLEURAL EFFUSION.\n\nMy signature below is attestation that I have interpreted\nthis/these examination(s) and agree with the findings as noted\nabove.\n\nEND OF IMPRESSION:\n\n\n\n\n'''
 
 
-base_url = 'http://localhost:8020/ehrp/'
-extract_url = 'extract'
-lookup_url = 'lookup'
+base_url = 'http://localhost:8020/ehrp-api/v1/'
+extract_url = 'ehrs'
+lookup_url = 'terms'
 file = 'pitt.txt'
 
 def extract(corpus, types=[]):
@@ -47,7 +47,7 @@ def extract(corpus, types=[]):
     return resp
 
 def lookup(text):
-    args = {'text': text}
+    args = {'term': text}
     resp = requests.get(base_url+lookup_url, args)
 
     print(resp.status_code)

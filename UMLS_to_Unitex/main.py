@@ -4,7 +4,6 @@ import os
 from convert_to_unitex import umls_to_unitex
 from create_homonyms import create_homonyms
 
-# NOTE: Due to size of the files, this program peaks at around 11GB of memory usage
 def main():
     # Point these to your MRCONSO and MRSTY files
     conso_path = '/home/keith/Documents/Paea Intern/UMLS-2020AA_Full_Install/2020AA/META/MRCONSO.RRF'

@@ -1,4 +1,5 @@
 import re
+from utility import get_category, unescaped_sub
 
 def umls_to_unitex(conso_path, types_path, output_path):
     print('Converting UMLS to Unitex format...')
@@ -49,15 +50,14 @@ def umls_to_unitex(conso_path, types_path, output_path):
         # Finish unitex entry
         unitex_entry += types + '\n'
 
-        # Save to disk
-        unitex_dict.write(unitex_entry)
+        # Only write entry if it is a category of interest
+        if get_category(types):
+            # Save to disk
+            unitex_dict.write(unitex_entry)
 
     conso_file.close()
     types_file.close()
     unitex_dict.close()
-
-def unescaped_sub(to_replace, replacement, line):
-    return re.sub(r'(?<!\\){}'.format(to_replace), replacement, line)
 
 def get_info(conso_line):
     parts = conso_line.split('|')

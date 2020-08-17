@@ -1,7 +1,7 @@
 The scripts in this directory, 'UMLS_to_Unitex', are for the conversion of UMLS information into Unitex format dictionaries.
 
 ### To use:
-1. Edit main.py<br>
+1. Edit `main.py`<br>
   On lines 11 and 12, change the `conso_path` and `types_path` to point to your local MRCONSO.RRF and MRSTY.RRF files, respectively.
 2. Run `python3 ./main.py`<br>
   This will take a few minutes, since the files are relatively large.<br>

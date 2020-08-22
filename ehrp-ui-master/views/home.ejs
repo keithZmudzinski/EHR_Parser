@@ -31,11 +31,6 @@
       <div class="row">
         <div class="col-md-25">
 
-          <!-- Extract Summary table --->
-          <div ng-if="_extractPt_summary">
-              <%- include('tables/extract/extractSummaryTable'); %>
-          </div>
-
           <!-- Extract Drugs table --->
           <div ng-if="_extractDrug">
               <%- include('tables/extract/extractDrugsTable'); %>
@@ -44,31 +39,6 @@
           <!-- Extract Disorders table --->
           <div ng-if="_extractDisorder">
               <%- include('tables/extract/extractDisordersTable'); %>
-          </div>
-
-          <!-- Extract Prescriptions table --->
-          <div ng-if="_extractPrescription">
-              <%- include('tables/extract/extractPrescriptionsTable'); %>
-          </div>
-
-          <!-- Extract Chf table --->
-          <div ng-if="_extractChf">
-              <%- include('tables/extract/extractChfTable'); %>
-          </div>
-
-          <!-- Extract Ami table --->
-          <div ng-if="_extractAmi">
-              <%- include('tables/extract/extractAmiTable'); %>
-          </div>
-
-          <!-- Extract Pna table --->
-          <div ng-if="_extractPna">
-              <%- include('tables/extract/extractPnaTable'); %>
-          </div>
-
-          <!-- Extract Comorbidities table --->
-          <div ng-if="_extractComorbidity">
-              <%- include('tables/extract/extractComorbidityTable'); %>
           </div>
 
       </div>

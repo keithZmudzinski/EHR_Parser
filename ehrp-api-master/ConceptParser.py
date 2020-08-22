@@ -24,7 +24,6 @@ class ConceptParser:
     # grammar: path of the grammar to apply to text
     # dictionaries: list of paths to dictionaries to apply to text
     # parsing_function: input as name of parsing function to use, changed to function pointer to function of same name
-    # ontology_names: strictly the names of the ontologies being used, no file extensions or paths attached
     # batch_type: string denoting the size of query being processed, controls which files are cleaned up
     # index: file path of the index created by ConceptParser.locate_grammar()
     # tokens_in_text: list of unique tokens found in the text
@@ -60,12 +59,7 @@ class ConceptParser:
         multiple_words = os.path.join(self.directory, "dlc")
 
         # Parse all entities that matched in any dictionary
-        dictionary_parser = DictionaryParser(self.get_text(single_words), self.get_text(multiple_words), self.ontology_names)
-        dictionary_parser.parse_dictionaries()
-
-        # Assign dictionaries
-        id_dict = dictionary_parser.id_dict
-        onto_dict = dictionary_parser.onto_dict
+        dictionary_parser = DictionaryParser(self.get_text(single_words), self.get_text(multiple_words))
 
         # Get contexts
         contexts_text_path = os.path.join(self.directory, "concord.txt")
@@ -90,13 +84,13 @@ class ConceptParser:
             separated_contexts = self.separate_contexts(contexts_text, contexts_indices)
 
             for separate_context in separated_contexts:
-                single_parsed_concept = self.parsing_function(self, separate_context, id_dict, onto_dict)
+                single_parsed_concept = self.parsing_function(self, separate_context, dictionary_parser)
                 parsed_concepts.append([single_parsed_concept])
 
         # If not a large batch, it is instead a small batch, and we don't need to separate EHRs
         else:
             # Use parsing function specific to this grammar
-            parsed_concepts = self.parsing_function(self, contexts_text, id_dict, onto_dict)
+            parsed_concepts = self.parsing_function(self, contexts_text, dictionary_parser)
 
         # Cleanup un-needed files to save space
         for file in ls(self.directory):
@@ -354,7 +348,7 @@ class ConceptParser:
     # masterParser is exception to schema of returned dictionaries
     # It returns a list of dictionaries, each dictionary made by a different parsing function
     # There is a try/except block in extract_concepts to handle this case.
-    def masterParser(self, contexts, id_dict, onto_dict):
+    def masterParser(self, contexts, dictionary_parser):
         used_concepts = {}
         parsed_concepts = []
 
@@ -374,7 +368,7 @@ class ConceptParser:
         # Apply appropriate parsing function to list of contexts
         for parsing_function_str, context_list in used_concepts.items():
             parsing_function = ConceptParser.__dict__[parsing_function_str]
-            concepts = parsing_function(self, context_list, id_dict, onto_dict)
+            concepts = parsing_function(self, context_list, dictionary_parser)
             parsed_concepts.append(concepts)
 
         return parsed_concepts
@@ -389,7 +383,7 @@ class ConceptParser:
     #         }
     #     ]
     # }
-    def lookupParser(self, contexts, id_dict, onto_dict):
+    def lookupParser(self, contexts, dictionary_parser):
         concepts = self.make_concepts_object('lookup');
 
         # What the user provided
@@ -399,19 +393,15 @@ class ConceptParser:
         term = raw_term.lower()
 
         # Find term in dictionaries
-        try:
-            id = id_dict[term]
-            onto = onto_dict[term]
+        cui, onto = dictionary_parser.get_entry(term, 'lookup', raw_term)
 
-            # Save term
+        # Save term if found
+        if cui:
             concepts['instances'].append({
                 'term': raw_term,
-                'umid': id,
+                'cui': cui,
                 'onto': onto
             })
-        # If term is not in any dictionary
-        except KeyError:
-            pass
 
         return concepts
 
@@ -427,7 +417,7 @@ class ConceptParser:
     #         }
     #     ]
     # }
-    def drugParser(self, contexts, id_dict, onto_dict):
+    def drugParser(self, contexts, dictionary_parser):
         concepts = self.make_concepts_object('drug');
 
         for context in contexts:
@@ -435,17 +425,17 @@ class ConceptParser:
             label = parts[1]
 
             for concept in label.split('/'):
-                try:
-                    onto = onto_dict[concept.lower()]
-                    umid = id_dict[concept.lower()]
+                context = parts[0] + label + parts[2]
+                cui, onto = dictionary_parser.get_entry(concept, 'drug', context)
+
+                # Save concept if found in dictionary
+                if cui:
                     concepts['instances'].append({
                         'label': label,
-                        'umid': umid,
+                        'cui': cui,
                         'onto': onto,
-                        'context': parts[0] + label + parts[2]
+                        'context': context
                     })
-                except KeyError as kerror:
-                    continue
 
         return concepts
 
@@ -460,7 +450,7 @@ class ConceptParser:
     #         }
     #     ]
     # }
-    def disorderParser(self, contexts, id_dict, onto_dict):
+    def disorderParser(self, contexts, dictionary_parser):
         concepts = self.make_concepts_object('disorder');
 
         for context in contexts:
@@ -468,16 +458,15 @@ class ConceptParser:
             label = parts[1]
 
             for concept in label.split('/'):
-                try:
-                    onto = onto_dict[concept.lower()]
-                    umid = id_dict[concept.lower()]
-                    concepts['instances'].append({
-                        'label': label,
-                        'umid': umid,
-                        'onto': onto,
-                        'context': parts[0] + label + parts[2]
-                    })
-                except KeyError as kerror:
-                    continue
+                context = parts[0] + label + parts[2]
+                cui, onto = dictionary_parser.get_entry(concept, 'disorder', context)
+
+                # Save concept if found in dictionary
+                concepts['instances'].append({
+                    'label': label,
+                    'cui': cui,
+                    'onto': onto,
+                    'context': context
+                })
 
         return concepts

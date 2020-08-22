@@ -50,9 +50,8 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     alphabet_unsorted = options["resources"]["alphabet"]
     alphabet_sorted = options["resources"]["alphabet-sorted"]
 
-    # Get list of dictionary files and ontology names to be used
+    # Get list of dictionary files to be used
     dictionaries = dicts_and_ontos['dictionaries']
-    ontologies = dicts_and_ontos['ontologies']
 
     # Get how many texts we need to process
     num_texts_to_process = len(text)
@@ -65,11 +64,11 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
     # Option 1: Apply dictionaries to combined texts, and share resultant files between each text
     if num_texts_to_process <= BATCH_CUTOFF:
         # Get the concepts from each text
-        concepts_per_ehr = small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options)
+        concepts_per_ehr = small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, chosen_groupings, options)
 
     # Option 2: For large batches, combine texts and process all together, then separate out results
     else:
-        concepts_per_ehr = batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options)
+        concepts_per_ehr = batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, chosen_groupings, options)
 
     # If only given one EHR, change singleton list to single object
     if num_texts_to_process == 1:
@@ -165,9 +164,8 @@ def to_VFS(file_path):
 # alphabet_unsorted: file path to alphabet unitex should use, unsorted
 # alphabet_sorted: file path to alphabet unitex should use, sorted
 # chosen_groupings: The groupings from GrammarParsingFunction.json that will be applied to the input text
-# ontologies: the names of the ontologies being used, allows dictionary file names to differ from the ontology they are using
 # batch_type: string denoting the size of the query being processed
-def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, ontologies, batch_type):
+def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphabet_sorted, chosen_groupings, batch_type):
     list_of_concepts = []
 
     # Set arguments that don't change across grammar/dictionary usage
@@ -177,7 +175,6 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
         text = snt,
         alphabet_unsorted = alphabet_unsorted,
         alphabet_sorted = alphabet_sorted,
-        ontology_names = ontologies,
         batch_type = batch_type
     )
 
@@ -210,10 +207,9 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
 # alphabet_unsorted: file path to the alphabet to be used, unsorted
 # alphabet_sorted: file path to the alphabet to be used, sorted
 # dictionaries: list of file paths to dictionaries to be used
-# ontologies: list of ontology names in use
 # chosen_groupings: the list of grammars and associated parsing functions to be applied to each text
 # options: dictionary of options for various unitex funtions
-def small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options):
+def small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, chosen_groupings, options):
     ''' Handles queres with small number of documents. '''
     # Put all texts together for preprocessing
     combined_text = '\n\n'.join(text)
@@ -264,7 +260,7 @@ def small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ont
         # Apply graphs to text and get found concepts
         concepts = get_concepts_for_grammars(health_record_folder, options, health_record_path,
                                             alphabet_unsorted, alphabet_sorted,
-                                            chosen_groupings, ontologies, 'MEDIUM_BATCH'
+                                            chosen_groupings, 'MEDIUM_BATCH'
                                             )
 
         # Remove unnecessary files to save space
@@ -278,10 +274,9 @@ def small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ont
 # alphabet_unsorted: file path to the alphabet to be used, unsorted
 # alphabet_sorted: file path to the alphabet to be used, sorted
 # dictionaries: list of file paths to dictionaries to be used
-# ontologies: list of ontology names in use
 # chosen_groupings: the list of grammars and associated parsing functions to be applied to each text
 # options: dictionary of options for various unitex funtions
-def batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ontologies, chosen_groupings, options):
+def batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, chosen_groupings, options):
     ''' Handles queries with large number of documents. '''
     # Put all texts together for preprocessing
     combined_text = '__EHR_API_DELIMITER__'.join(text)
@@ -320,7 +315,7 @@ def batch_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, ont
 
     concepts_per_ehr = get_concepts_for_grammars(folder_name, options, combined_processed_text_path,
                                                 alphabet_unsorted, alphabet_sorted,
-                                                chosen_groupings, ontologies, 'LARGE_BATCH'
+                                                chosen_groupings, 'LARGE_BATCH'
                                             )
     return concepts_per_ehr
 

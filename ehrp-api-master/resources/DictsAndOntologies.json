@@ -1,10 +1,8 @@
 {
   "dictionaries": [
-    "devices.bin",
-    "disorders.bin",
-    "drugs.bin",
-    "procedures.bin"
-  ],
-  "ontologies": [
+    "device.bin",
+    "disorder.bin",
+    "drug.bin",
+    "procedure.bin"
   ]
 }

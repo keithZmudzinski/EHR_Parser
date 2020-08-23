@@ -17,15 +17,21 @@ DRST n
 FITS 100
 PORIENT L
 #
-11
-"<E>" 70 200 3 2 3 4 
-"" 969 200 0 
-":drug" 172 150 1 7 
-":disorder" 172 200 1 6 
-"__EHR_API_DELIMITER__" 169 259 1 5 
-"<E>" 418 259 1 8 
-"<E>/__ParsingFunction__disorderParser" 415 200 1 9 
-"<E>/__ParsingFunction__drugParser" 415 150 1 10 
-"<E>" 853 259 1 1 
-"<E>" 853 200 1 1 
-"<E>" 853 150 1 1 
+17
+"<E>" 155 249 5 2 3 4 11 14 
+"" 1040 249 0 
+":drug" 256 249 1 7 
+":disorder" 256 299 1 6 
+"__EHR_API_DELIMITER__" 253 358 1 5 
+"<E>" 488 358 1 8 
+"<E>/__ParsingFunction__disorderParser" 488 299 1 9 
+"<E>/__ParsingFunction__drugParser" 488 249 1 10 
+"<E>" 925 358 1 1 
+"<E>" 925 299 1 1 
+"<E>" 925 249 1 1 
+":device" 257 188 1 12 
+"<E>/__ParsingFunction__deviceParser" 488 188 1 15 
+"<E>/__ParsingFunction__procedureParser" 488 137 1 16 
+":procedure" 258 137 1 13 
+"<E>" 925 188 1 1 
+"<E>" 925 137 1 1 

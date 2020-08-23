@@ -411,8 +411,8 @@ class ConceptParser:
     #     name: drug,
     #     instances: [
     #         {
-    #             label: '',
-    #             umid: '',
+    #             term: '',
+    #             cui: '',
     #             onto: '',
     #             context: '',
     #         }
@@ -423,16 +423,16 @@ class ConceptParser:
 
         for context in contexts:
             parts = context.split('\t')
-            label = parts[1]
+            term = parts[1]
+            context = parts[0] + term + parts[2]
 
-            for concept in label.split('/'):
-                context = parts[0] + label + parts[2]
+            for concept in term.split('/'):
                 cui, onto = dictionary_parser.get_entry(concept, 'drug', context)
 
                 # Save concept if found in dictionary
                 if cui:
                     concepts['instances'].append({
-                        'label': label,
+                        'term': term,
                         'cui': cui,
                         'onto': onto,
                         'context': context
@@ -444,8 +444,8 @@ class ConceptParser:
     #     name: disorder,
     #     instances: [
     #         {
-    #             label: '',
-    #             umid: '',
+    #             term: '',
+    #             cui: '',
     #             onto: '',
     #             context: ''
     #         }
@@ -456,26 +456,17 @@ class ConceptParser:
 
         for context in contexts:
             parts = context.split('\t')
-            label = parts[1]
-            context = parts[0] + label + parts[2]
+            term = parts[1]
+            context = parts[0] + term + parts[2]
 
-            split_labels = re.split('[\/\-]', label)
-            for split_label in split_labels:
-                try:
-                    cui, onto = dictionary_parser.get_entry(split_label, 'disorder', context)
-                except KeyError as err:
-                    print(parts)
-                    print('KEYERROR', err)
-                    print(context)
-                    print('label is', label)
-                    print('split label is', split_label)
-                    sys.exit(1)
-
+            split_terms = re.split('[\/\-]', term)
+            for split_term in split_terms:
+                cui, onto = dictionary_parser.get_entry(split_term, 'disorder', context)
 
                 # Save concept if found in dictionary
                 if cui:
                     concepts['instances'].append({
-                        'label': label,
+                        'term': term,
                         'cui': cui,
                         'onto': onto,
                         'context': context
@@ -488,7 +479,7 @@ class ConceptParser:
     #     instances: [
     #         {
     #             term: '',
-    #             umid: '',
+    #             cui: '',
     #             onto: '',
     #             context: ''
     #         }
@@ -519,8 +510,8 @@ class ConceptParser:
     #     name: procedure,
     #     instances: [
     #         {
-    #             label: '',
-    #             umid: '',
+    #             term: '',
+    #             cui: '',
     #             onto: '',
     #             context: ''
     #         }

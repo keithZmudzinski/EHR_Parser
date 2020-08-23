@@ -64,7 +64,7 @@ def get_info(conso_line):
     info = {
         'cui': parts[0],
         'onto': parts[11],
-        'term': parts[14]
+        'term': parts[14].lower()
     }
     info['onto'] = info['onto'].replace('.', '\\.')
     info['term'] = info['term'].replace(',', '\\,')

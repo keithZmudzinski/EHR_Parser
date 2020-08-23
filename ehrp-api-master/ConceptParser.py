@@ -379,7 +379,7 @@ class ConceptParser:
     #     instances: [
     #         {
     #             term: '',
-    #             umid: '',
+    #             cui: '',
     #             onto: '',
     #         }
     #     ]
@@ -461,7 +461,16 @@ class ConceptParser:
 
             split_labels = re.split('[\/\-]', label)
             for split_label in split_labels:
-                cui, onto = dictionary_parser.get_entry(split_label, 'disorder', context)
+                try:
+                    cui, onto = dictionary_parser.get_entry(split_label, 'disorder', context)
+                except KeyError as err:
+                    print(parts)
+                    print('KEYERROR', err)
+                    print(context)
+                    print('label is', label)
+                    print('split label is', split_label)
+                    sys.exit(1)
+
 
                 # Save concept if found in dictionary
                 if cui:
@@ -471,5 +480,69 @@ class ConceptParser:
                         'onto': onto,
                         'context': context
                     })
+
+        return concepts
+
+    # {
+    #     name: device,
+    #     instances: [
+    #         {
+    #             term: '',
+    #             umid: '',
+    #             onto: '',
+    #             context: ''
+    #         }
+    #     ]
+    # }
+    def deviceParser(self, contexts, dictionary_parser):
+        concepts = self.make_concepts_object('device');
+
+        for context in contexts:
+            parts = context.split('\t')
+            term = parts[1]
+            context = parts[0] + term + parts[2]
+
+            cui, onto = dictionary_parser.get_entry(term, 'device', context)
+
+            # Save concept if found in dictionary
+            if cui:
+                concepts['instances'].append({
+                    'term': term,
+                    'cui': cui,
+                    'onto': onto,
+                    'context': context
+                })
+
+        return concepts
+
+    # {
+    #     name: procedure,
+    #     instances: [
+    #         {
+    #             label: '',
+    #             umid: '',
+    #             onto: '',
+    #             context: ''
+    #         }
+    #     ]
+    # }
+    def procedureParser(self, contexts, dictionary_parser):
+        concepts = self.make_concepts_object('procedure');
+
+        for context in contexts:
+            parts = context.split('\t')
+            term = parts[1]
+            context = parts[0] + term + parts[2]
+
+            cui, onto = dictionary_parser.get_entry(term, 'procedure', context)
+
+            # Save concept if found in dictionary
+            if cui:
+                concepts['instances'].append({
+                    'term': term,
+                    'cui': cui,
+                    'onto': onto,
+                    'context': context
+                })
 
         return concepts

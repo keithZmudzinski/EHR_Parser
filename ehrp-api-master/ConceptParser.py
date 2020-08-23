@@ -1,6 +1,7 @@
 import os
 import sys
 import struct
+import re
 from unitex.io import UnitexFile, rm, exists, ls, cp
 from DictionaryParser import DictionaryParser
 from unitex.tools import locate, dico, concord
@@ -456,17 +457,19 @@ class ConceptParser:
         for context in contexts:
             parts = context.split('\t')
             label = parts[1]
+            context = parts[0] + label + parts[2]
 
-            for concept in label.split('/'):
-                context = parts[0] + label + parts[2]
-                cui, onto = dictionary_parser.get_entry(concept, 'disorder', context)
+            split_labels = re.split('[\/\-]', label)
+            for split_label in split_labels:
+                cui, onto = dictionary_parser.get_entry(split_label, 'disorder', context)
 
                 # Save concept if found in dictionary
-                concepts['instances'].append({
-                    'label': label,
-                    'cui': cui,
-                    'onto': onto,
-                    'context': context
-                })
+                if cui:
+                    concepts['instances'].append({
+                        'label': label,
+                        'cui': cui,
+                        'onto': onto,
+                        'context': context
+                    })
 
         return concepts

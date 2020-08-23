@@ -20,7 +20,7 @@ PORIENT L
 11
 "<E>" 70 200 3 2 3 4 
 "" 969 200 0 
-":drug:drug.grf" 172 150 1 7 
+":drug" 172 150 1 7 
 ":disorder" 172 200 1 6 
 "__EHR_API_DELIMITER__" 169 259 1 5 
 "<E>" 418 259 1 8 

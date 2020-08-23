@@ -11,8 +11,9 @@ class DictionaryParser():
         self.compound_entities = compound_words
         self.entities = self.simple_entities + self.compound_entities
 
+        # Lookup table of terms found in the text
         self.terms = {}
-        self.terms = self.parse_entities()
+        self.parse_entities()
 
 
     def parse_entities(self):
@@ -20,18 +21,28 @@ class DictionaryParser():
         for entity in self.entities:
             # Parse Unitex format dictionary entry
             decomposed_entity = self.decompose(entity)
+            instances = decomposed_entity.instances
+
+            # Make all terms lowercase, for normalization
+            term = decomposed_entity.term.lower()
 
             # Put relevant information into lookup table
-            self.terms[decomposed_entity.term] = decomposed_entity.instances
+            try:
+                if decomposed_entity.is_homonym:
+                    self.terms[term].extend(instances)
+                else:
+                    self.terms[term] = instances
+            except KeyError:
+                self.terms[term] = instances
 
     def get_entry(self, term, category, context):
         ''' Get CUI and ONTO of 'term' '''
-        entity = self.entities[term]
+        instances = self.terms[term.lower()]
 
-        # If the entity has multiple meanings
-        if entity.is_homonym():
+        # If the term has multiple meanings
+        if len(instances) > 1:
             # Decide which meaning is most appropriate, given the context
-            instance = WSD.get_meaning(entity.instances, entity.term, context)
+            instance = WSD.get_meaning(instances, term, context)
 
             # If most appropriate meaning is the same as current category
             if instance.category == category:
@@ -40,35 +51,18 @@ class DictionaryParser():
             else:
                 return None, None
         else:
-            # entity only has one instance
-            instance = entity.instance[0]
+            # term only has one meaning
+            instance = instances[0]
             return instance.cui, instance.onto
 
     def decompose(self, entity):
-        ''' Break Unitex format entry into an Entity '''
-        lemma_separator = entity.find('.')
-        while lemma_separator >= 0:
-            # try:
-            # A cui is 8 characters long
-            cui_start = lemma_separator - 8
-            # A homonym lemma is 7 characters long
-            homonym_start = lemma_separator - 7
+        ''' Break Unitex format entry into a list of Instances '''
 
-            possible_cui = entity[cui_start:lemma_separator]
-            possible_homonym = entity[homonym_start:lemma_separator]
+        # Separate term and lemma from the entity
+        term, lemma, info = initial_separate(entity)
 
-            if is_cui(possible_cui):
-                # Term is from the beginning until 1 character before the cui starts
-                term = entity[:cui_start-1]
-                lemma = possible_cui
-                info = entity[lemma_separator+1:]
-                break
-            elif possible_homonym == 'HOMONYM':
-                term = entity[:homonym_start-1]
-                lemma = possible_homonym
-                info = entity[lemma_separator+1:]
-                break
-            lemma_separator = entity[lemma_separator:].find('.')
+        # Boolean indicating if the entity is a homonym or not
+        is_homonym = True if lemma == 'HOMONYM' else False
 
         # Split remaining attributes
         attributes = unescaped_split('\\+', info)
@@ -82,8 +76,8 @@ class DictionaryParser():
         # Aggregate information into 'instances' list
         instances = []
 
-        # If entity has multiple possible meanings, return Entity
-        if lemma == 'HOMONYM':
+        # If entity has multiple possible meanings
+        if is_homonym:
             cuis = []
 
             for attribute in attributes:
@@ -101,29 +95,57 @@ class DictionaryParser():
                 else:
                     break
 
-        # If entity has just one meaning, return Instance
+        # If entity has just one meaning
         else:
             # If entity is not a homonym, onto follows category
             onto = attributes[0]
             instances = [ Instance(lemma, onto, category) ]
 
-        return  Entity(term, instances)
+        return Entity(term, is_homonym, instances)
+
+def initial_separate(entity):
+    # Find first '.'
+    lemma_separator = entity.find('.')
+
+    # While we can find '.'s
+    while lemma_separator >= 0:
+        # A cui is 8 characters long
+        cui_start = lemma_separator - 8
+        # A homonym lemma is 7 characters long
+        homonym_start = lemma_separator - 7
+
+        possible_cui = entity[cui_start:lemma_separator]
+        possible_homonym = entity[homonym_start:lemma_separator]
+
+        if is_cui(possible_cui):
+            # Term is from the beginning until 1 character before the cui starts
+            term = entity[:cui_start-1]
+            lemma = possible_cui
+            info = entity[lemma_separator+1:]
+            break
+        elif possible_homonym == 'HOMONYM':
+            term = entity[:homonym_start-1]
+            lemma = possible_homonym
+            info = entity[lemma_separator+1:]
+            break
+        lemma_separator = entity[lemma_separator:].find('.')
+
+    return term, lemma, info
 
 class Entity:
-    def __init__(self, term, instances):
+    def __init__(self, term, is_homonym, instances):
         self.term = term
+        self.is_homonym = is_homonym
         self.instances = instances
-
-    def is_homonym(self):
-        if len(self.instances) > 1:
-            return True
-        return False
 
 class Instance:
     def __init__(self, cui, onto, category):
         self.cui = cui
         self.onto = onto
         self.category = category
+
+def is_homonym(instances):
+    return True if len(instances) > 1 else False
 
 def unescaped_split(delimiter, line):
     # Only split on unescaped versions of delimiter in line

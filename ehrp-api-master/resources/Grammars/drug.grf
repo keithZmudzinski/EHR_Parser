@@ -20,28 +20,28 @@ PORIENT L
 27
 "<E>" 48 99 1 26 
 "" 780 99 0 
-"<DRUG>" 257 99 2 4 15 
+"<Drug>" 257 99 2 4 15 
 "<E>" 153 99 1 2 
 "-+\/" 353 142 1 5 
-"<DRUG>" 398 142 2 6 15 
+"<Drug>" 398 142 2 6 15 
 "-+\/" 484 165 1 7 
-"<DRUG>" 526 173 1 15 
+"<Drug>" 526 173 1 15 
 "allow for combination drugs" 375 113 0 
-"<DRUG>" 178 247 1 10 
+"<Drug>" 178 247 1 10 
 "\(" 281 247 1 11 
-"<DRUG>" 329 247 1 12 
+"<Drug>" 329 247 1 12 
 "\)" 420 247 1 13 
 "<E>" 632 247 1 1 
 "tradename and ingredient together, useful also for \"drug finder\" search for new drugs or abbreviations" 168 210 0 
 "<E>" 641 99 1 1 
 "\(" 176 323 1 17 
-"<DRUG>" 251 323 2 18 21 
+"<Drug>" 251 323 2 18 21 
 "\)" 592 323 1 19 
 "<E>" 637 323 1 1 
 "TODO: determine more specific contexts of parenthetical drug lists" 190 293 0 
 "-+\/" 331 356 1 22 
-"<DRUG>" 377 356 2 23 18 
+"<Drug>" 377 356 2 23 18 
 "-+\/" 453 385 1 24 
-"<DRUG>" 503 385 1 18 
+"<Drug>" 503 385 1 18 
 "DRUG eg \"acetaminophen\" or \"acetaminophen (Tylenol)\" or \"acetaminophen-hydrocodone\" or \"APAP\/kiphenhydramine\/phenylephrine\"" 22 35 0 
 "<E>" 90 174 3 3 9 16 

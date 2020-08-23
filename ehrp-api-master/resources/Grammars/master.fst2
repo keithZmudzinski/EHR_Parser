@@ -13,7 +13,7 @@ t
 : 1 11 
 : 1 5 
 f 
--2 drug:drug
+-2 drug
 : 10 2 7 1 
 t 10 4 9 3 8 3 
 : 7 5 
@@ -42,11 +42,11 @@ f
 %DELIMITER
 %<E>/__ParsingFunction__disorderParser
 %<E>/__ParsingFunction__drugParser
-%<DRUG>
+%<Drug>
 %-
 %/
 %(
 %)
-%<DISORDER>
+%<Disorder>
 @ 
 f

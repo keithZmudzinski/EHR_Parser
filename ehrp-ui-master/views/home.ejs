@@ -41,6 +41,16 @@
               <%- include('tables/extract/extractDisordersTable'); %>
           </div>
 
+          <!-- Extract Devices table --->
+          <div ng-if="_extractDevice">
+              <%- include('tables/extract/extractDevicesTable'); %>
+          </div>
+
+          <!-- Extract Procedures table --->
+          <div ng-if="_extractProcedure">
+              <%- include('tables/extract/extractProceduresTable'); %>
+          </div>
+
       </div>
     </div>
   </div>

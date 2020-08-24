@@ -2,6 +2,7 @@ import os
 import sys
 import struct
 import re
+import sys
 from unitex.io import UnitexFile, rm, exists, ls, cp
 from DictionaryParser import DictionaryParser
 from unitex.tools import locate, dico, concord
@@ -426,8 +427,8 @@ class ConceptParser:
             term = parts[1]
             context = parts[0] + term + parts[2]
 
-            for concept in term.split('/'):
-                cui, onto = dictionary_parser.get_entry(concept, 'drug', context)
+            try:
+                cui, onto = dictionary_parser.get_entry(term, 'Disorder', context)
 
                 # Save concept if found in dictionary
                 if cui:
@@ -437,6 +438,30 @@ class ConceptParser:
                         'onto': onto,
                         'context': context
                     })
+
+            # If term is not in dictionary, we must've found a hyphenated or slashed combination of disorders
+            except KeyError:
+
+                # Handle hyphenated and slashed drugs
+                split_terms = re.split('[\/\-]', term)
+                split_terms = [term.strip() for term in split_terms]
+
+                for split_term in split_terms:
+                    try:
+                        cui, onto = dictionary_parser.get_entry(split_term, 'Drug', context)
+                    except KeyError as err:
+                        print('Drug:', err)
+                        print('[ERROR]: {}'.format(context))
+                        sys.exit(1)
+
+                    # Save concept if found in dictionary
+                    if cui:
+                        concepts['instances'].append({
+                            'term': term,
+                            'cui': cui,
+                            'onto': onto,
+                            'context': context
+                        })
 
         return concepts
 
@@ -459,9 +484,9 @@ class ConceptParser:
             term = parts[1]
             context = parts[0] + term + parts[2]
 
-            split_terms = re.split('[\/\-]', term)
-            for split_term in split_terms:
-                cui, onto = dictionary_parser.get_entry(split_term, 'disorder', context)
+            # Get CUI and onto of the term
+            try:
+                cui, onto = dictionary_parser.get_entry(term, 'Disorder', context)
 
                 # Save concept if found in dictionary
                 if cui:
@@ -471,6 +496,29 @@ class ConceptParser:
                         'onto': onto,
                         'context': context
                     })
+
+            # If term is not in dictionary, we must've found a hyphenated or slashed combination of disorders
+            except KeyError:
+                # Handle hyphenated and slashed disorders
+                split_terms = re.split('[\/\-]', term)
+                split_terms = [term.strip() for term in split_terms]
+
+                for split_term in split_terms:
+                    try:
+                        cui, onto = dictionary_parser.get_entry(split_term, 'Disorder', context)
+                    except KeyError as err:
+                        print('Disorder:', err)
+                        print('[ERROR]: {}'.format(context))
+                        sys.exit(1)
+
+                    # Save concept if found in dictionary
+                    if cui:
+                        concepts['instances'].append({
+                            'term': term,
+                            'cui': cui,
+                            'onto': onto,
+                            'context': context
+                        })
 
         return concepts
 
@@ -493,7 +541,12 @@ class ConceptParser:
             term = parts[1]
             context = parts[0] + term + parts[2]
 
-            cui, onto = dictionary_parser.get_entry(term, 'device', context)
+            try:
+                cui, onto = dictionary_parser.get_entry(term, 'Device', context)
+            except KeyError as err:
+                print('Device:', err)
+                print('[ERROR]: {}'.format(context))
+                sys.exit(1)
 
             # Save concept if found in dictionary
             if cui:
@@ -525,7 +578,12 @@ class ConceptParser:
             term = parts[1]
             context = parts[0] + term + parts[2]
 
-            cui, onto = dictionary_parser.get_entry(term, 'procedure', context)
+            try:
+                cui, onto = dictionary_parser.get_entry(term, 'Procedure', context)
+            except KeyError as err:
+                print('Procedure:', err)
+                print('[ERROR]: {}'.format(context))
+                sys.exit(1)
 
             # Save concept if found in dictionary
             if cui:

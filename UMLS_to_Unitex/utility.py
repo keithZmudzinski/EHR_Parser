@@ -15,7 +15,8 @@ def get_category(types):
         'Virus',
         'Neoplastic Process',
         'Anatomical Abnormality',
-        'Acquired Abnormality'
+        'Acquired Abnormality',
+        'Finding'
     ]
 
     device_labels = [

@@ -23,7 +23,11 @@ class DictionaryParser():
             decomposed_entity = self.decompose(entity)
             # The term itself, ex: 'tylenol'
             term = decomposed_entity.term
-            print(term)
+
+            # Changed escaped commas and periods to unescaped versions
+            term = term.replace('\\,', ',')
+            term = term.replace('\\.', '.')
+
             # List of Instance objects
             instances = decomposed_entity.instances
 
@@ -69,7 +73,6 @@ class DictionaryParser():
         lemma_end = info.find('.')
         lemma = info[:lemma_end]
         info = info[lemma_end+1:]
-        # term, lemma, info = initial_separate(entity)
 
         # Boolean indicating if the entity is a homonym or not
         is_homonym = True if lemma == 'HOMONYM' else False

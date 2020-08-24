@@ -447,7 +447,8 @@ class ConceptParser:
                 split_terms = [term.strip() for term in split_terms]
 
                 for split_term in split_terms:
-                        cui, onto = dictionary_parser.get_entry(split_term, 'Drug', context)
+                    cui, onto = dictionary_parser.get_entry(split_term, 'Drug', context)
+
                     # Save concept if found in dictionary
                     if cui:
                         concepts['instances'].append({

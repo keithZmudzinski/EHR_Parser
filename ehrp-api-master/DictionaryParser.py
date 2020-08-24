@@ -23,6 +23,7 @@ class DictionaryParser():
             decomposed_entity = self.decompose(entity)
             # The term itself, ex: 'tylenol'
             term = decomposed_entity.term
+            print(term)
             # List of Instance objects
             instances = decomposed_entity.instances
 
@@ -64,7 +65,11 @@ class DictionaryParser():
         ''' Break Unitex format entry into a list of Instances. '''
 
         # Separate term and lemma from the entity
-        term, lemma, info = initial_separate(entity)
+        term, info = unescaped_split(',', entity)
+        lemma_end = info.find('.')
+        lemma = info[:lemma_end]
+        info = info[lemma_end+1:]
+        # term, lemma, info = initial_separate(entity)
 
         # Boolean indicating if the entity is a homonym or not
         is_homonym = True if lemma == 'HOMONYM' else False
@@ -117,52 +122,6 @@ class DictionaryParser():
 
         return Entity(term, is_homonym, instances)
 
-def initial_separate(entity):
-    '''
-    Separate term and lemma from rest of Unitex-format entry,
-    without relying on escaped characters.
-    '''
-    # Find first '.'
-    lemma_separator = entity.find('.')
-
-    # While we can find  a '.'
-    while lemma_separator >= 0:
-
-        # A cui is 8 characters long
-        cui_start = lemma_separator - 8
-        # A homonym lemma is 7 characters long
-        homonym_start = lemma_separator - 7
-
-        # Get the lemma, assuming entry is not a homonym
-        possible_cui = entity[cui_start:lemma_separator]
-        # Get the lemma, assuming entry is a homonym
-        possible_homonym = entity[homonym_start:lemma_separator]
-
-        # If entry is not a homonym
-        if is_cui(possible_cui):
-            # term is from the beginning of line until 1 character before the cui starts
-            term = entity[:cui_start-1]
-            lemma = possible_cui
-            # info is the rest of the line, without term or lemma
-            info = entity[lemma_separator+1:]
-            break
-
-        # If entry is a homonym
-        elif possible_homonym == 'HOMONYM':
-            # term is from the beginning of line until 1 character before 'HOMONYM' starts
-            term = entity[:homonym_start-1]
-            lemma = possible_homonym
-            # info is the rest of the line, without term or lemma
-            info = entity[lemma_separator+1:]
-            break
-
-        # If we've used the incorrect '.' as the lemma separator
-        else:
-            # Try again
-            lemma_separator = entity[lemma_separator:].find('.')
-
-    return term, lemma, info
-
 class Entity:
     def __init__(self, term, is_homonym, instances):
         self.term = term
@@ -185,6 +144,10 @@ def unescaped_split(delimiter, line):
 
 def is_cui(attribute):
     ''' Given a string attribute, determine if it is a CUI. '''
+
+    # Attribute must exist
+    if len(attribute) == 0:
+        return False
 
     # All CUIs start with 'C'
     starts_with_C = attribute[0] == 'C'

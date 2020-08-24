@@ -19,21 +19,23 @@ class DictionaryParser():
     def parse_entities(self):
         ''' Create a lookup table of entities, indexed by term '''
         for entity in self.entities:
-            # Parse Unitex format dictionary entry
+            # Get an Entity object, after parsing Unitex format dictionary entry
             decomposed_entity = self.decompose(entity)
+            # The term itself, ex: 'tylenol'
+            term = decomposed_entity.term
+            # List of Instance objects
             instances = decomposed_entity.instances
 
-            # Make all terms lowercase, for normalization
-            term = decomposed_entity.term.lower()
-
-            # Put relevant information into lookup table
-            try:
-                if decomposed_entity.is_homonym:
+            # If entity is a homonym, put all instances together
+            if decomposed_entity.is_homonym:
+                try:
                     self.terms[term].extend(instances)
-                else:
+                except KeyError:
                     self.terms[term] = instances
-            except KeyError:
+            # If not a homonym, create entry
+            else:
                 self.terms[term] = instances
+
 
     def get_entry(self, term, category, context):
         ''' Get CUI and ONTO of 'term' '''

@@ -447,13 +447,7 @@ class ConceptParser:
                 split_terms = [term.strip() for term in split_terms]
 
                 for split_term in split_terms:
-                    try:
                         cui, onto = dictionary_parser.get_entry(split_term, 'Drug', context)
-                    except KeyError as err:
-                        print('Drug:', err)
-                        print('[ERROR]: {}'.format(context))
-                        sys.exit(1)
-
                     # Save concept if found in dictionary
                     if cui:
                         concepts['instances'].append({
@@ -504,12 +498,7 @@ class ConceptParser:
                 split_terms = [term.strip() for term in split_terms]
 
                 for split_term in split_terms:
-                    try:
-                        cui, onto = dictionary_parser.get_entry(split_term, 'Disorder', context)
-                    except KeyError as err:
-                        print('Disorder:', err)
-                        print('[ERROR]: {}'.format(context))
-                        sys.exit(1)
+                    cui, onto = dictionary_parser.get_entry(split_term, 'Disorder', context)
 
                     # Save concept if found in dictionary
                     if cui:

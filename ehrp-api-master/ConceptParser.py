@@ -422,15 +422,40 @@ class ConceptParser:
     def drugParser(self, contexts, dictionary_parser):
         concepts = self.make_concepts_object('drug');
 
+        # These strings surround each instance of a drug in the found term
+        drug_start_delimiter = '__DRUG_START__'
+        drug_end_delimiter = '__DRUG_END__'
+
+        drug_start_offset = len(drug_start_delimiter)
+        drug_end_offset = len(drug_end_delimiter)
+
+        # Look at each context
         for context in contexts:
+            # Split the context into the left/right contexts, and the term that was found
             parts = context.split('\t')
             term = parts[1]
             context = parts[0] + term + parts[2]
 
-            try:
-                cui, onto = dictionary_parser.get_entry(term, 'Disorder', context)
+            # Get first instance of the drug_start_delimiter
+            drug_start = term.find(drug_start_delimiter)
+            # While we can find drug_start_delimiter, get the paired drug_end_delimiter.
+            #   Use these indices to get the drug between them, and update the term,
+            #   removing the drug from term.
+            while drug_start > -1:
+                # Get paired drug_end_delimiter
+                drug_end = term.find(drug_end_delimiter)
 
-                # Save concept if found in dictionary
+                # Get drug
+                drug = term[drug_start + drug_start_offset:drug_end]
+
+                # Remove drug from term
+                term = term[drug_end + drug_end_offset:]
+
+                # Lookup cui and onto for this drug
+                cui, onto = get_entry(drug, 'Drug', context)
+
+                # Cuis is None if drug is a homonym and is not a Drug in this context,
+                #   but is instead a different category (Disorder, Procedure, Device)
                 if cui:
                     concepts['instances'].append({
                         'term': term,
@@ -439,24 +464,7 @@ class ConceptParser:
                         'context': context
                     })
 
-            # If term is not in dictionary, we must've found a hyphenated or slashed combination of disorders
-            except KeyError:
-
-                # Handle hyphenated and slashed drugs
-                split_terms = re.split('[\/\-]', term)
-                split_terms = [term.strip() for term in split_terms]
-
-                for split_term in split_terms:
-                    cui, onto = dictionary_parser.get_entry(split_term, 'Drug', context)
-
-                    # Save concept if found in dictionary
-                    if cui:
-                        concepts['instances'].append({
-                            'term': term,
-                            'cui': cui,
-                            'onto': onto,
-                            'context': context
-                        })
+                drug_start = term.find(drug_start_delimter)
 
         return concepts
 

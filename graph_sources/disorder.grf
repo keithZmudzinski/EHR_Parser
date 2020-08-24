@@ -17,11 +17,17 @@ DRST n
 FITS 100
 PORIENT L
 #
-7
-"<E>" 58 167 1 2 
-"" 827 224 0 
-"<Disorder>" 151 167 2 3 1 
-"-+\/" 264 224 1 4 
-"<Disorder>" 322 224 2 1 5 
-"-+\/" 448 280 1 6 
-"<Disorder>" 511 280 1 1 
+13
+"<E>" 58 167 1 7 
+"" 1249 126 0 
+"<Disorder>" 288 126 2 8 9 
+"-+\/" 325 276 1 10 
+"<Disorder>" 568 276 2 9 11 
+"-+\/" 827 351 1 12 
+"<Disorder>" 1035 351 1 9 
+"<E>/__DISORDER_START__" 111 126 1 2 
+"<E>/__DISORDER_END__" 156 276 1 3 
+"<E>/__DISORDER_END__" 1075 126 1 1 
+"<E>/__DISORDER_START__" 381 276 1 4 
+"<E>/__DISORDER_END__" 644 351 1 5 
+"<E>/__DISORDER_START__" 874 351 1 6 

@@ -433,7 +433,11 @@ class ConceptParser:
             # Split the context into the left/right contexts, and the term that was found
             parts = context.split('\t')
             term = parts[1]
-            context = parts[0] + term + parts[2]
+
+            cleaned_term = term.replace(drug_start_delimiter, '')
+            cleaned_term = cleaned_term.replace(drug_end_delimiter, '')
+
+            context = parts[0] + cleaned_term + parts[2]
 
             # Get first instance of the drug_start_delimiter
             drug_start = term.find(drug_start_delimiter)
@@ -446,6 +450,7 @@ class ConceptParser:
 
                 # Get drug
                 drug = term[drug_start + drug_start_offset:drug_end]
+                drug = drug.strip()
 
                 # Remove drug from term
                 term = term[drug_end + drug_end_offset:]
@@ -457,13 +462,13 @@ class ConceptParser:
                 #   but is instead a different category (Disorder, Procedure, Device)
                 if cui:
                     concepts['instances'].append({
-                        'term': term,
+                        'term': cleaned_term,
                         'cui': cui,
                         'onto': onto,
                         'context': context
                     })
 
-                drug_start = term.find(drug_start_delimter)
+                drug_start = term.find(drug_start_delimiter)
 
         return concepts
 
@@ -493,7 +498,11 @@ class ConceptParser:
             # Split the context into the left/right contexts, and the term that was found
             parts = context.split('\t')
             term = parts[1]
-            context = parts[0] + term + parts[2]
+
+            cleaned_term = term.replace(disorder_start_delimiter, '')
+            cleaned_term = cleaned_term.replace(disorder_end_delimiter, '')
+
+            context = parts[0] + cleaned_term + parts[2]
 
             # Get first instance of the disorder_start_delimiter
             disorder_start = term.find(disorder_start_delimiter)
@@ -506,6 +515,7 @@ class ConceptParser:
 
                 # Get disorder
                 disorder = term[disorder_start + disorder_start_offset:disorder_end]
+                disorder = disorder.strip()
 
                 # Remove disorder from term
                 term = term[disorder_end + disorder_end_offset:]
@@ -517,13 +527,13 @@ class ConceptParser:
                 #   but is instead a different category (Drug, Procedure, Device)
                 if cui:
                     concepts['instances'].append({
-                        'term': term,
+                        'term': cleaned_term,
                         'cui': cui,
                         'onto': onto,
                         'context': context
                     })
 
-                disorder_start = term.find(disorder_start_delimter)
+                disorder_start = term.find(disorder_start_delimiter)
         return concepts
 
     # {

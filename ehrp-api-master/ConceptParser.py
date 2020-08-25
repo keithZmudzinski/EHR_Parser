@@ -2,7 +2,6 @@ import os
 import sys
 import struct
 import re
-import sys
 from unitex.io import UnitexFile, rm, exists, ls, cp
 from DictionaryParser import DictionaryParser
 from unitex.tools import locate, dico, concord
@@ -452,7 +451,7 @@ class ConceptParser:
                 term = term[drug_end + drug_end_offset:]
 
                 # Lookup cui and onto for this drug
-                cui, onto = get_entry(drug, 'Drug', context)
+                cui, onto = dictionary_parser.get_entry(drug, 'Drug', context)
 
                 # Cuis is None if drug is a homonym and is not a Drug in this context,
                 #   but is instead a different category (Disorder, Procedure, Device)
@@ -512,7 +511,7 @@ class ConceptParser:
                 term = term[disorder_end + disorder_end_offset:]
 
                 # Lookup cui and onto for this disorder
-                cui, onto = get_entry(disorder, 'Disorder', context)
+                cui, onto = dictionary_parser.get_entry(disorder, 'Disorder', context)
 
                 # Cuis is None if disorder is a homonym and is not a Disorder in this context,
                 #   but is instead a different category (Drug, Procedure, Device)
@@ -546,12 +545,7 @@ class ConceptParser:
             term = parts[1]
             context = parts[0] + term + parts[2]
 
-            try:
-                cui, onto = dictionary_parser.get_entry(term, 'Device', context)
-            except KeyError as err:
-                print('Device:', err)
-                print('[ERROR]: {}'.format(context))
-                sys.exit(1)
+            cui, onto = dictionary_parser.get_entry(term, 'Device', context)
 
             # Save concept if found in dictionary
             if cui:
@@ -583,12 +577,7 @@ class ConceptParser:
             term = parts[1]
             context = parts[0] + term + parts[2]
 
-            try:
-                cui, onto = dictionary_parser.get_entry(term, 'Procedure', context)
-            except KeyError as err:
-                print('Procedure:', err)
-                print('[ERROR]: {}'.format(context))
-                sys.exit(1)
+            cui, onto = dictionary_parser.get_entry(term, 'Procedure', context)
 
             # Save concept if found in dictionary
             if cui:

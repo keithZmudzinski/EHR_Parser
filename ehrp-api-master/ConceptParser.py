@@ -482,16 +482,40 @@ class ConceptParser:
     def disorderParser(self, contexts, dictionary_parser):
         concepts = self.make_concepts_object('disorder');
 
+        # These strings surround each instance of a disorder in the found term
+        disorder_start_delimiter = '__DISORDER_START__'
+        disorder_end_delimiter = '__DISORDER_END__'
+
+        disorder_start_offset = len(disorder_start_delimiter)
+        disorder_end_offset = len(disorder_end_delimiter)
+
+        # Look at each context
         for context in contexts:
+            # Split the context into the left/right contexts, and the term that was found
             parts = context.split('\t')
             term = parts[1]
             context = parts[0] + term + parts[2]
 
-            # Get CUI and onto of the term
-            try:
-                cui, onto = dictionary_parser.get_entry(term, 'Disorder', context)
+            # Get first instance of the disorder_start_delimiter
+            disorder_start = term.find(disorder_start_delimiter)
+            # While we can find disorder_start_delimiter, get the paired disorder_end_delimiter.
+            #   Use these indices to get the disorder between them, and update the term,
+            #   removing the disorder from term.
+            while disorder_start > -1:
+                # Get paired disorder_end_delimiter
+                disorder_end = term.find(disorder_end_delimiter)
 
-                # Save concept if found in dictionary
+                # Get disorder
+                disorder = term[disorder_start + disorder_start_offset:disorder_end]
+
+                # Remove disorder from term
+                term = term[disorder_end + disorder_end_offset:]
+
+                # Lookup cui and onto for this disorder
+                cui, onto = get_entry(disorder, 'Disorder', context)
+
+                # Cuis is None if disorder is a homonym and is not a Disorder in this context,
+                #   but is instead a different category (Drug, Procedure, Device)
                 if cui:
                     concepts['instances'].append({
                         'term': term,
@@ -500,24 +524,7 @@ class ConceptParser:
                         'context': context
                     })
 
-            # If term is not in dictionary, we must've found a hyphenated or slashed combination of disorders
-            except KeyError:
-                # Handle hyphenated and slashed disorders
-                split_terms = re.split('[\/\-]', term)
-                split_terms = [term.strip() for term in split_terms]
-
-                for split_term in split_terms:
-                    cui, onto = dictionary_parser.get_entry(split_term, 'Disorder', context)
-
-                    # Save concept if found in dictionary
-                    if cui:
-                        concepts['instances'].append({
-                            'term': term,
-                            'cui': cui,
-                            'onto': onto,
-                            'context': context
-                        })
-
+                disorder_start = term.find(disorder_start_delimter)
         return concepts
 
     # {

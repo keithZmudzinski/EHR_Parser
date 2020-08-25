@@ -20,7 +20,7 @@ GRAMMAR_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Grammars')
 DICTIONARY_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Dictionaries')
 
 # Constants obtained by empirical tests
-BATCH_CUTOFF = 145
+BATCH_CUTOFF = 0
 
 # Called from ehrp_api.py
 def load_alphabets(options):
@@ -190,6 +190,7 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
         concept_parser.setup()
 
         # Process snt using concept_parser.grammar, concept_parser.dictionaries, and concept_parser.parsing_function
+        print('batch mode got to parse, line 193')
         concepts = concept_parser.parse()
 
         try:

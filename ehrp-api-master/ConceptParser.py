@@ -3,8 +3,8 @@ import sys
 import struct
 import re
 from unitex.io import UnitexFile, rm, exists, ls, cp
+from unitex.tools import locate, dico, concord 
 from DictionaryParser import DictionaryParser
-from unitex.tools import locate, dico, concord
 
 # Constants reflecting project file layout, please update if you change where files are stored.
 RESOURCES_FILE_PATH = 'resources'

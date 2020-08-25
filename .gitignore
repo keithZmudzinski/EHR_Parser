@@ -107,6 +107,8 @@ speed-test/
 temp.cod
 query_test.py
 speed-test/
+ehrp-api-master/resources/Dictionaries
+UMLS_to_Unitex/Categorized_Dictionaries
 
 # Project Specific
 resources/Temporary/temp.cod

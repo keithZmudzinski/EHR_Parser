@@ -65,15 +65,14 @@ router.post('/ehrs', function(req, res) {
 
 router.get('/terms', function(req, res) {
   var result;
-  console.log('Route: /terms ' + req.query);
+  console.log('Route: /terms ' + JSON.stringify(req.query));
   try {
-    if (typeof(req.query.text) === 'string') {
-      var query = String(req.query.text.trim());
+    if (typeof(req.query.term) === 'string') {
+      var query = String(req.query.term.trim());
       var uri = API_URI+'terms?term='+query;
       console.log('Route: The uri is \''+uri+'\'');
       request.get(uri, function (error, response, body) {
         if (response && response.statusCode === 200) {
-          // console.log(body)
           var rawRecords = JSON.parse(body);
           console.log('Route: Success '+ rawRecords.length + ' retrieved.');
           result = {

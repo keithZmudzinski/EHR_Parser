@@ -190,7 +190,6 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
         concept_parser.setup()
 
         # Process snt using concept_parser.grammar, concept_parser.dictionaries, and concept_parser.parsing_function
-        print('batch mode got to parse, line 193')
         concepts = concept_parser.parse()
 
         try:

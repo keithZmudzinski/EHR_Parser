@@ -21,6 +21,7 @@ class DictionaryParser():
         for entity in self.entities:
             # Get an Entity object, after parsing Unitex format dictionary entry
             decomposed_entity = self.decompose(entity)
+
             # The term itself, ex: 'tylenol'
             term = decomposed_entity.term
 

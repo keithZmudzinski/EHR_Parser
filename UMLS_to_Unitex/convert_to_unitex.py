@@ -71,7 +71,7 @@ def get_info(conso_line):
 
     # Truncate term to 50 chars length, too long of a term causes stack problems
     if len(info['term']) > 50:
-        info['term'] = info['term'][:50]
+        info['term'] = info['term'][:50].strip()
     # Escape any commas in the term
     info['term'] = info['term'].replace(',', '\\,')
 

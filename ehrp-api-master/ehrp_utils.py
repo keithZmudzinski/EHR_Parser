@@ -232,7 +232,7 @@ def small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, cho
         # Apply graphs to text and get found concepts
         concepts = get_concepts_for_grammars(health_record_folder, options, health_record_path,
                                         alphabet_unsorted, alphabet_sorted,
-                                        chosen_groupings, ontologies, 'SMALL_BATCH'
+                                        chosen_groupings, 'SMALL_BATCH'
                                         )
         concepts_per_ehr.append(concepts)
 

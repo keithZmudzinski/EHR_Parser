@@ -66,8 +66,16 @@ def get_info(conso_line):
         'onto': parts[11],
         'term': parts[14].lower()
     }
+    # Replace periods with escaped periods ('HL7V2.5', and 'HL7V3.0')
     info['onto'] = info['onto'].replace('.', '\\.')
+
+    # Truncate term to 50 chars length, too long of a term causes stack problems
+    if len(info['term']) > 50:
+        info['term'] = info['term'][:50]
+    # Escape any commas in the term
     info['term'] = info['term'].replace(',', '\\,')
+
+    # Replace html code with actual character
     info['term'] = info['term'].replace('&#x7C;', '|')
     return info
 

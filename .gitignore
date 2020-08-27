@@ -109,6 +109,7 @@ query_test.py
 speed-test/
 ehrp-api-master/resources/Dictionaries
 UMLS_to_Unitex/Categorized_Dictionaries
+FindProblemEntry/
 
 # Project Specific
 resources/Temporary/temp.cod

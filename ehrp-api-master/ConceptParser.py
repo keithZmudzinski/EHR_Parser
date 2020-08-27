@@ -3,7 +3,7 @@ import sys
 import struct
 import re
 from unitex.io import UnitexFile, rm, exists, ls, cp
-from unitex.tools import locate, dico, concord 
+from unitex.tools import locate, dico, concord
 from DictionaryParser import DictionaryParser
 
 # Constants reflecting project file layout, please update if you change where files are stored.
@@ -144,7 +144,7 @@ class ConceptParser:
     def get_text(self, file_path):
         '''Get text contents from a file'''
         if exists(file_path) is False:
-            sys.stderr.write("[ERROR] File not found\n")
+            sys.stderr.write("[ERROR] File {} not found\n".format(file_path))
         unfile = UnitexFile()
         unfile.open(file_path, mode='r')
         unfile_txt = unfile.read()

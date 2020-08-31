@@ -5,8 +5,8 @@ The scripts in this directory, 'UMLS_to_Unitex', are for the conversion of UMLS 
   On lines 11 and 12, change the `conso_path` and `types_path` to point to your local MRCONSO.RRF and MRSTY.RRF files, respectively.
 2. Run `python3 ./main.py`<br>
   This will take a few minutes, since the files are relatively large.<br>
-  Additionally, it might be helpful to close other programs, since this program seems to peek at almost 8GB of memory usage.
-  
+  Additionally, it might be helpful to close other programs, since this program can have high amounts of memory usage.
+
 ### Results:
 Inside the 'UMLS_to_Unitex/Categorized_Dictionaries', there will now be 14 files.
 1. 'drug.dic'

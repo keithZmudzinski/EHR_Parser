@@ -1,6 +1,20 @@
 import re
 from utility import get_category, unescaped_sub
 
+ACCEPTABLE_ONTOLOGIES = [
+    'SNOMEDCT_US',
+    'RXNORM',
+    'MED-RT',
+    'ICD9CM',
+    'ICD10',
+    'ICD10CM',
+    'MDR',
+    'MSH',
+    'ATC',
+    'HCPT',
+    'HCPCS'
+]
+
 def umls_to_unitex(conso_path, types_path, output_path):
     print('Converting UMLS to Unitex format...')
     # Get file objects for each file
@@ -24,14 +38,19 @@ def umls_to_unitex(conso_path, types_path, output_path):
         if count % 500000 == 0:
             print('On line {}'.format(count))
 
-        # Break apart entry in MRCONSO into relavant info
+        # Break apart entry in MRCONSO into relevant info
         concept_info = get_info(concept_synonym)
 
-        # Skip entry if we've already seen that term and cui combo before
-        if string_cache.get(concept_info['term']) == concept_info['cui']:
+        # If entry comes from an acceptable ontology
+        acceptable = concept_info['onto'] in ACCEPTABLE_ONTOLOGIES
+
+        # Skip entry if we've already seen that term and cui combo before or not from acceptable ontology
+        if string_cache.get(concept_info['term']) == concept_info['cui'] or not(acceptable):
             continue
+        # Only add entry if haven't seen it before and  it comes from acceptable ontology
         else:
             string_cache[concept_info['term']] = concept_info['cui']
+
 
         # Start unitex entry, setting inflected form = term, lemma = cui, first semantic info = onto
         unitex_entry = '{},{}.{}'.format(concept_info['term'], concept_info['cui'], concept_info['onto'])

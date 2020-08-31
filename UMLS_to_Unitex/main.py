@@ -8,8 +8,8 @@ from compress_dictionaries import compress_dictionaries
 
 def main():
     # Point these to your MRCONSO and MRSTY files
-    conso_path = '/home/keith/Documents/Paea Intern/UMLS-2020AA_Full_Install/2020AA/META/MRCONSO.RRF'
-    types_path = '/home/keith/Documents/Paea Intern/UMLS-2020AA_Full_Install/2020AA/META/MRSTY.RRF'
+    conso_path = '/home/keith/Documents/Paea Intern/2020AA/META/MRCONSO.RRF'
+    types_path = '/home/keith/Documents/Paea Intern/2020AA/META/MRSTY.RRF'
 
     # Combine MRCONSO and MRSTY to create a unitex-style dictionary
     umls_to_unitex(conso_path, types_path, 'umls.dic')

@@ -210,7 +210,7 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
 # chosen_groupings: the list of grammars and associated parsing functions to be applied to each text
 # options: dictionary of options for various unitex funtions
 def medium_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, chosen_groupings, options):
-    ''' Handles queres with small number of documents. '''
+    ''' Handles queries with small number of documents. '''
     # Put all texts together for preprocessing
     combined_text = '\n\n'.join(text)
 

@@ -47,10 +47,9 @@ def umls_to_unitex(conso_path, types_path, output_path):
         # Skip entry if we've already seen that term and cui combo before or not from acceptable ontology
         if string_cache.get(concept_info['term']) == concept_info['cui'] or not(acceptable):
             continue
-        # Only add entry if haven't seen it before and  it comes from acceptable ontology
+        # Only add entry if haven't seen it before and it comes from acceptable ontology
         else:
             string_cache[concept_info['term']] = concept_info['cui']
-
 
         # Start unitex entry, setting inflected form = term, lemma = cui, first semantic info = onto
         unitex_entry = '{},{}.{}'.format(concept_info['term'], concept_info['cui'], concept_info['onto'])

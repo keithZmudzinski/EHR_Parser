@@ -16,6 +16,7 @@ def get_category(types):
         'Neoplastic Process',
         'Anatomical Abnormality',
         'Acquired Abnormality',
+        'Sign or Symptom',
         'Finding'
     ]
 

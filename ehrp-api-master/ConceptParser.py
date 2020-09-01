@@ -265,9 +265,8 @@ class ConceptParser:
         token_num, char_offset, _ = token.split('.')
         return int(token_num)
 
-    # Just before right now
     def context_was_cleaned(self, contexts_text, index_of_context_to_check, delimiter_token, context_to_check_token, direction):
-        ''' If given context contains part of delimiter, remove delimiter from context '''
+        ''' If given context contains part of delimiter, remove delimiter from context and return True, else False'''
         left_context_to_check, term, right_context_to_check = contexts_text[index_of_context_to_check].split('\t')
 
         # Assume we are moving to the right, and need to look at the left context

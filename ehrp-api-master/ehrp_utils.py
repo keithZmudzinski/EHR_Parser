@@ -20,8 +20,7 @@ GRAMMAR_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Grammars')
 DICTIONARY_RELATIVE_PATH = os.path.join(RESOURCES_RELATIVE_PATH, 'Dictionaries')
 
 # Constants obtained by empirical tests
-SMALL_CUTOFF = 100000000
-MEDIUM_CUTOFF = 100
+MEDIUM_CUTOFF = 730
 
 # Called from ehrp_api.py
 def load_alphabets(options):
@@ -62,11 +61,7 @@ def extract_concepts(options, all_groupings, dicts_and_ontos, text, concepts_to_
 
     # Choose most efficient option for processing texts
 
-    # Option 1: Process each text sequentially, nothing special is done here
-    if num_texts_to_process <= SMALL_CUTOFF:
-        concepts_per_ehr = small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, chosen_groupings, options)
-
-    # Option 2: Apply dictionaries to combined texts, and share resultant files between each text
+    # Option 1: Apply dictionaries to combined texts, and share resultant files between each text
     if num_texts_to_process <= MEDIUM_CUTOFF:
         # Get the concepts from each text
         concepts_per_ehr = medium_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, chosen_groupings, options)
@@ -206,37 +201,6 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
             list_of_concepts.extend(concepts)
 
     return list_of_concepts
-
-# Function: small_processing; Processes each text provided, and returns a list of concepts extracted from each one
-# text: list of strings to be processed, each string is one health record
-# alphabet_unsorted: file path to the alphabet to be used, unsorted
-# alphabet_sorted: file path to the alphabet to be used, sorted
-# dictionaries: list of file paths to dictionaries to be used
-# chosen_groupings: the list of grammars and associated parsing functions to be applied to each text
-# options: dictionary of options for various unitex funtions
-def small_processing(text, alphabet_unsorted, alphabet_sorted, dictionaries, chosen_groupings, options):
-    ''' Handles queries with small number of documents. '''
-
-    # To hold the concepts found in each ehr
-    concepts_per_ehr = []
-
-    # Create a text file in the VFS for each health record
-    health_record_paths = pre_process_texts(text, alphabet_unsorted, options)
-
-    # Process each created text file
-    for record_number, health_record_path in enumerate(health_record_paths):
-        # Create dlf and dlc files per text
-        apply_dictionaries(dictionaries, health_record_path, alphabet_unsorted, options)
-        # The folder in which all relevant tiles to the text are stored
-        health_record_folder = to_VFS("text_%d_snt" % record_number)
-        # Apply graphs to text and get found concepts
-        concepts = get_concepts_for_grammars(health_record_folder, options, health_record_path,
-                                        alphabet_unsorted, alphabet_sorted,
-                                        chosen_groupings, 'SMALL_BATCH'
-                                        )
-        concepts_per_ehr.append(concepts)
-
-    return concepts_per_ehr
 
 # Function: medium_processing; Processes each text provided, and returns a list of concepts extracted from each one
 # text: list of strings to be processed, each string is one health record

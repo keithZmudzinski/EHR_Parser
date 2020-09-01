@@ -6,20 +6,6 @@ angular.module('ehrpui').controller('homeController', function ($scope, $http, $
   $scope.lookupResults = null;
 
   $scope.initMedText = function() {
-    // $scope.medText= "87 yo F with h/o CHF, COPD on 5 L oxygen at baseline, tracheobronchomalacia s/p stent, presents with acute dyspnea over several days, and lethargy. "+
-    // "This morning patient developed an acute worsening in dyspnea, and called EMS. EMS found patient tachypnic at saturating 90% on 5L. "+
-    // "Patient was noted to be tripoding. She was given a nebulizer and brought to the ER.\n"+
-    // "According the patient's husband, she was experiencing symptoms consistent with prior COPD flares. "+
-    // "Apparently patient was without cough, chest pain, fevers, chills, orthopnea, PND, dysuria, diarrhea, confusion and neck pain. "+
-    // "Her husband is a physician and gave her a dose of levaquin this morning.\n"+
-    // "In the ED, patient was saturating 96% on NRB. CXR did not reveal any consolidation. Per report EKG was unremarkable. "+
-    // "Laboratory evaluation revealed a leukocytosis if 14 and lactate of 2.2. Patient received combivent nebs, solumedrol 125 mg IV x1, aspirin 325 mg po x1. "+
-    // "Mg sulfate 2 g IV x1, azithromycin 500 mg IVx1, levofloxacin 750 mg IVx1, and Cefrtiaxone 1g IVx1."+
-    // "Patient became tachpnic so was trialed on non-invasive ventilation but became hypotensive to systolics of 80, so noninvasive was removed and patient did well on NRB and nebulizers for about 2 hours. "+
-    // "At that time patient became agitated, hypoxic to 87% and tachypnic to the 40s, so patient was intubated. Post intubation ABG was 7.3/60/88/31. "+
-    // "Propafol was switched to fentanyl/midazolam for hypotension to the 80s. Received 2L of NS. On transfer, patient VS were 102, 87/33, 100% on 60% 450 x 18 PEEP 5. "+
-    // "Patient has peripheral access x2.\nIn the ICU, patient appeared comfortable.";
-
     $scope.medText= "This 68 yo female presents with intermittent dizziness, nausea, vomiting, and diarrhea of about 1 week duration. "+
     "Over this period of time, she has been unable to take in any significant PO intake without vomiting. Her dizziness and lightheadedness are most notable when she stands up, and she has difficulty maintaining her balance due to this. "+
     "She also notes that has been very tired for this past week, spending approximately 20 hours per day in bed sleeping. "+

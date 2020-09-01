@@ -45,7 +45,11 @@ class DictionaryParser():
 
     def get_entry(self, term, category, context):
         ''' Get CUI and ONTO of 'term'. '''
-        instances = self.terms[term.lower()]
+        instances = self.terms.get(term.lower(), None)
+
+        # If not fount (Lookup can cause this), return
+        if not(instances):
+            return None, None
 
         # If the term has multiple meanings
         if len(instances) > 1:

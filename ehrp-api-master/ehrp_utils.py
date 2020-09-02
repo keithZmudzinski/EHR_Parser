@@ -208,8 +208,6 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
             if concepts['term']:
                 list_of_concepts.append(concepts)
 
-
-
     return list_of_concepts
 
 # Function: small_processing; Processes each text provided, and returns a list of concepts extracted from each one

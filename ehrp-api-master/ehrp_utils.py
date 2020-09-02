@@ -91,20 +91,15 @@ def get_concepts_from_groupings(all_groupings, concepts_to_get):
     # This is faster than making many individual queries.
     if concepts_to_get == 'ALL':
         for grouping in all_groupings:
-            # is_sub_graph = grouping.get('sub_graph', False)
-            # # Only accept sub_graphs with 'True' as value,
-            # #  in case programmer places 'False' as value.
-            # if is_sub_graph == 'True':
-            #     concepts.append(grouping)
             if grouping['grammar'] == 'master.fst2':
                 concepts.append(grouping)
-        return concepts
+                return concepts
 
     # If specific concepts are desired
     for concept in concepts_to_get:
         # Match desired concepts with associated grouping
         for grouping in all_groupings:
-            # Accepted concept types are specified in GrammarDictionaryParsingFunction.json
+            # Accepted concept types are specified in GrammarParsingFunction.json
             if grouping['grammar'] == concept + '.fst2':
                 concepts.append(grouping)
                 break

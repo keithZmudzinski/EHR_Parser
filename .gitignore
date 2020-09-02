@@ -110,3 +110,6 @@ speed-test/
 
 # Project Specific
 resources/Temporary/temp.cod
+
+# Yuta local files
+.DS_Store

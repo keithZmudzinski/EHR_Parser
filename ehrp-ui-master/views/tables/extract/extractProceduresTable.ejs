@@ -1,0 +1,17 @@
+<table class="table table-striped table-hover table-condensed table-responsive">
+  <caption>Procedures</caption>
+  <thead>
+    <th>Label</th>
+    <th>CUI</th>
+    <th>Ontology</th>
+    <th>Context</th>
+  </thead>
+  <tbody>
+    <tr ng-repeat="device in _extractProcedure.instances">
+      <td class="no-wrap">{{device.term}}</td>
+      <td class="no-wrap">{{device.cui}}</td>
+      <td class="no-wrap">{{device.onto}}</td>
+      <td class="word-wrap">{{device.context.replace("\t","*")}}</td>
+    </tr>
+  </tbody>
+</table>

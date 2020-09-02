@@ -1,9 +1,10 @@
 import os
 import sys
 import struct
+import re
 from unitex.io import UnitexFile, rm, exists, ls, cp
-from DictionaryParser import DictionaryParser
 from unitex.tools import locate, dico, concord
+from DictionaryParser import DictionaryParser
 
 # Constants reflecting project file layout, please update if you change where files are stored.
 RESOURCES_FILE_PATH = 'resources'
@@ -24,7 +25,6 @@ class ConceptParser:
     # grammar: path of the grammar to apply to text
     # dictionaries: list of paths to dictionaries to apply to text
     # parsing_function: input as name of parsing function to use, changed to function pointer to function of same name
-    # ontology_names: strictly the names of the ontologies being used, no file extensions or paths attached
     # batch_type: string denoting the size of query being processed, controls which files are cleaned up
     # index: file path of the index created by ConceptParser.locate_grammar()
     # tokens_in_text: list of unique tokens found in the text
@@ -60,12 +60,7 @@ class ConceptParser:
         multiple_words = os.path.join(self.directory, "dlc")
 
         # Parse all entities that matched in any dictionary
-        dictionary_parser = DictionaryParser(self.get_text(single_words), self.get_text(multiple_words), self.ontology_names)
-        dictionary_parser.parse_dictionaries()
-
-        # Assign dictionaries
-        id_dict = dictionary_parser.id_dict
-        onto_dict = dictionary_parser.onto_dict
+        dictionary_parser = DictionaryParser(self.get_text(single_words), self.get_text(multiple_words))
 
         # Get contexts
         contexts_text_path = os.path.join(self.directory, "concord.txt")
@@ -90,13 +85,13 @@ class ConceptParser:
             separated_contexts = self.separate_contexts(contexts_text, contexts_indices)
 
             for separate_context in separated_contexts:
-                single_parsed_concept = self.parsing_function(self, separate_context, id_dict, onto_dict)
+                single_parsed_concept = self.parsing_function(self, separate_context, dictionary_parser)
                 parsed_concepts.append([single_parsed_concept])
 
         # If not a large batch, it is instead a small batch, and we don't need to separate EHRs
         else:
             # Use parsing function specific to this grammar
-            parsed_concepts = self.parsing_function(self, contexts_text, id_dict, onto_dict)
+            parsed_concepts = self.parsing_function(self, contexts_text, dictionary_parser)
 
         # Cleanup un-needed files to save space
         for file in ls(self.directory):
@@ -149,7 +144,7 @@ class ConceptParser:
     def get_text(self, file_path):
         '''Get text contents from a file'''
         if exists(file_path) is False:
-            sys.stderr.write("[ERROR] File not found\n")
+            sys.stderr.write("[ERROR] File {} not found\n".format(file_path))
         unfile = UnitexFile()
         unfile.open(file_path, mode='r')
         unfile_txt = unfile.read()
@@ -270,9 +265,8 @@ class ConceptParser:
         token_num, char_offset, _ = token.split('.')
         return int(token_num)
 
-    # Just before right now
     def context_was_cleaned(self, contexts_text, index_of_context_to_check, delimiter_token, context_to_check_token, direction):
-        ''' If given context contains part of delimiter, remove delimiter from context '''
+        ''' If given context contains part of delimiter, remove delimiter from context and return True, else False'''
         left_context_to_check, term, right_context_to_check = contexts_text[index_of_context_to_check].split('\t')
 
         # Assume we are moving to the right, and need to look at the left context
@@ -354,7 +348,7 @@ class ConceptParser:
     # masterParser is exception to schema of returned dictionaries
     # It returns a list of dictionaries, each dictionary made by a different parsing function
     # There is a try/except block in extract_concepts to handle this case.
-    def masterParser(self, contexts, id_dict, onto_dict):
+    def masterParser(self, contexts, dictionary_parser):
         used_concepts = {}
         parsed_concepts = []
 
@@ -374,7 +368,7 @@ class ConceptParser:
         # Apply appropriate parsing function to list of contexts
         for parsing_function_str, context_list in used_concepts.items():
             parsing_function = ConceptParser.__dict__[parsing_function_str]
-            concepts = parsing_function(self, context_list, id_dict, onto_dict)
+            concepts = parsing_function(self, context_list, dictionary_parser)
             parsed_concepts.append(concepts)
 
         return parsed_concepts
@@ -384,12 +378,12 @@ class ConceptParser:
     #     instances: [
     #         {
     #             term: '',
-    #             umid: '',
+    #             cui: '',
     #             onto: '',
     #         }
     #     ]
     # }
-    def lookupParser(self, contexts, id_dict, onto_dict):
+    def lookupParser(self, contexts, dictionary_parser):
         concepts = self.make_concepts_object('lookup');
 
         # What the user provided
@@ -399,19 +393,15 @@ class ConceptParser:
         term = raw_term.lower()
 
         # Find term in dictionaries
-        try:
-            id = id_dict[term]
-            onto = onto_dict[term]
+        cui, onto = dictionary_parser.get_entry(term, 'lookup', raw_term)
 
-            # Save term
+        # Save term if found
+        if cui:
             concepts['instances'].append({
                 'term': raw_term,
-                'umid': id,
+                'cui': cui,
                 'onto': onto
             })
-        # If term is not in any dictionary
-        except KeyError:
-            pass
 
         return concepts
 
@@ -420,32 +410,65 @@ class ConceptParser:
     #     name: drug,
     #     instances: [
     #         {
-    #             label: '',
-    #             umid: '',
+    #             term: '',
+    #             cui: '',
     #             onto: '',
     #             context: '',
     #         }
     #     ]
     # }
-    def drugParser(self, contexts, id_dict, onto_dict):
+    def drugParser(self, contexts, dictionary_parser):
         concepts = self.make_concepts_object('drug');
 
-        for context in contexts:
-            parts = context.split('\t')
-            label = parts[1]
+        # These strings surround each instance of a drug in the found term
+        drug_start_delimiter = '__DRUG_START__'
+        drug_end_delimiter = '__DRUG_END__'
 
-            for concept in label.split('/'):
-                try:
-                    onto = onto_dict[concept.lower()]
-                    umid = id_dict[concept.lower()]
+        drug_start_offset = len(drug_start_delimiter)
+        drug_end_offset = len(drug_end_delimiter)
+
+        # Look at each context
+        for context in contexts:
+            # Split the context into the left/right contexts, and the term that was found
+            parts = context.split('\t')
+            term = parts[1]
+
+            cleaned_term = term.replace(drug_start_delimiter, '')
+            cleaned_term = cleaned_term.replace(drug_end_delimiter, '')
+
+            context = parts[0] + cleaned_term + parts[2]
+            context = context.strip()
+
+            # Get first instance of the drug_start_delimiter
+            drug_start = term.find(drug_start_delimiter)
+            # While we can find drug_start_delimiter, get the paired drug_end_delimiter.
+            #   Use these indices to get the drug between them, and update the term,
+            #   removing the drug from term.
+            while drug_start > -1:
+                # Get paired drug_end_delimiter
+                drug_end = term.find(drug_end_delimiter)
+
+                # Get drug
+                drug = term[drug_start + drug_start_offset:drug_end]
+                drug = drug.strip()
+
+                # Remove drug from term
+                term = term[drug_end + drug_end_offset:]
+
+                # Lookup cui and onto for this drug
+                cui, onto = dictionary_parser.get_entry(drug, 'Drug', context)
+
+                # Cuis is None if drug is a homonym and is not a Drug in this context,
+                #   but is instead a different category (Disorder, Procedure, Device)
+                if cui:
                     concepts['instances'].append({
-                        'label': label,
-                        'umid': umid,
+                        'term': cleaned_term,
+                        'cui': cui,
                         'onto': onto,
-                        'context': parts[0] + label + parts[2]
+                        'context': context
                     })
-                except KeyError as kerror:
-                    continue
+
+                drug_start = term.find(drug_start_delimiter)
 
         return concepts
 
@@ -453,31 +476,129 @@ class ConceptParser:
     #     name: disorder,
     #     instances: [
     #         {
-    #             label: '',
-    #             umid: '',
+    #             term: '',
+    #             cui: '',
     #             onto: '',
     #             context: ''
     #         }
     #     ]
     # }
-    def disorderParser(self, contexts, id_dict, onto_dict):
+    def disorderParser(self, contexts, dictionary_parser):
         concepts = self.make_concepts_object('disorder');
+
+        # These strings surround each instance of a disorder in the found term
+        disorder_start_delimiter = '__DISORDER_START__'
+        disorder_end_delimiter = '__DISORDER_END__'
+
+        disorder_start_offset = len(disorder_start_delimiter)
+        disorder_end_offset = len(disorder_end_delimiter)
+
+        # Look at each context
+        for context in contexts:
+            # Split the context into the left/right contexts, and the term that was found
+            parts = context.split('\t')
+            term = parts[1]
+
+            cleaned_term = term.replace(disorder_start_delimiter, '')
+            cleaned_term = cleaned_term.replace(disorder_end_delimiter, '')
+
+            context = parts[0] + cleaned_term + parts[2]
+            context = context.strip()
+
+            # Get first instance of the disorder_start_delimiter
+            disorder_start = term.find(disorder_start_delimiter)
+            # While we can find disorder_start_delimiter, get the paired disorder_end_delimiter.
+            #   Use these indices to get the disorder between them, and update the term,
+            #   removing the disorder from term.
+            while disorder_start > -1:
+                # Get paired disorder_end_delimiter
+                disorder_end = term.find(disorder_end_delimiter)
+
+                # Get disorder
+                disorder = term[disorder_start + disorder_start_offset:disorder_end]
+                disorder = disorder.strip()
+
+                # Remove disorder from term
+                term = term[disorder_end + disorder_end_offset:]
+
+                # Lookup cui and onto for this disorder
+                cui, onto = dictionary_parser.get_entry(disorder, 'Disorder', context)
+
+                # Cuis is None if disorder is a homonym and is not a Disorder in this context,
+                #   but is instead a different category (Drug, Procedure, Device)
+                if cui:
+                    concepts['instances'].append({
+                        'term': cleaned_term,
+                        'cui': cui,
+                        'onto': onto,
+                        'context': context
+                    })
+
+                disorder_start = term.find(disorder_start_delimiter)
+        return concepts
+
+    # {
+    #     name: device,
+    #     instances: [
+    #         {
+    #             term: '',
+    #             cui: '',
+    #             onto: '',
+    #             context: ''
+    #         }
+    #     ]
+    # }
+    def deviceParser(self, contexts, dictionary_parser):
+        concepts = self.make_concepts_object('device');
 
         for context in contexts:
             parts = context.split('\t')
-            label = parts[1]
+            term = parts[1]
+            context = parts[0] + term + parts[2]
+            context = context.strip()
 
-            for concept in label.split('/'):
-                try:
-                    onto = onto_dict[concept.lower()]
-                    umid = id_dict[concept.lower()]
-                    concepts['instances'].append({
-                        'label': label,
-                        'umid': umid,
-                        'onto': onto,
-                        'context': parts[0] + label + parts[2]
-                    })
-                except KeyError as kerror:
-                    continue
+            cui, onto = dictionary_parser.get_entry(term, 'Device', context)
+
+            # Save concept if found in dictionary
+            if cui:
+                concepts['instances'].append({
+                    'term': term,
+                    'cui': cui,
+                    'onto': onto,
+                    'context': context
+                })
+
+        return concepts
+
+    # {
+    #     name: procedure,
+    #     instances: [
+    #         {
+    #             term: '',
+    #             cui: '',
+    #             onto: '',
+    #             context: ''
+    #         }
+    #     ]
+    # }
+    def procedureParser(self, contexts, dictionary_parser):
+        concepts = self.make_concepts_object('procedure');
+
+        for context in contexts:
+            parts = context.split('\t')
+            term = parts[1]
+            context = parts[0] + term + parts[2]
+            context = context.strip()
+
+            cui, onto = dictionary_parser.get_entry(term, 'Procedure', context)
+
+            # Save concept if found in dictionary
+            if cui:
+                concepts['instances'].append({
+                    'term': term,
+                    'cui': cui,
+                    'onto': onto,
+                    'context': context
+                })
 
         return concepts

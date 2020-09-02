@@ -2,37 +2,14 @@
   <caption>Drugs</caption>
   <thead>
     <th>Label</th>
-    <th>UMID</th>
+    <th>CUI</th>
     <th>Ontology</th>
     <th>Context</th>
   </thead>
   <tbody>
     <tr ng-repeat="drug in _extractDrug.instances">
-      <td class="no-wrap">{{drug.label}}</td>
-
-      <!--- Use correct URL for used ontology --->
-      <td ng-if="drug.onto == 'DRUGBANK'" class="no-wrap">
-        <a href="https://www.drugbank.ca/drugs/{{drug.umid}}" target="_blank">{{drug.umid}}</a>
-      </td>
-
-      <!--- RXNORM ontology can use two types of identifiers, need to differentiate --->
-      <td ng-if="drug.onto == 'MEDDRA' || drug.onto == 'RXNORM'" class="no-wrap">
-        <a ng-if="drug.umid[0] == 'C'" href="http://bioportal.bioontology.org/search?q={{drug.umid}}&ontologies={{drug.onto}}&include_properties=false&include_views=false&includeObsolete=false&require_definition=false&exact_match=false&categories=" target="_blank">{{drug.umid}}</a>
-        <a ng-if="drug.umid[0] != 'C'" href="http://bioportal.bioontology.org/ontologies/{{drug.onto}}?p=classes&conceptid={{drug.umid}}" target="_blank">{{drug.umid}}</a>
-      </td>
-
-      <td ng-if="drug.onto == 'ORANGEBOOK'" class="nowrap">
-        <a href="https://www.accessdata.fda.gov/scripts/cder/ob/results_product.cfm?Appl_Type={{drug.umid[0]}}&Appl_No={{drug.umid.slice(1)}}" target="_blank">{{drug.umid}}</a>
-      </td>
-
-      <td ng-if="drug.onto == 'DRUGSATFDA'" class="no-wrap">
-        <a href="https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo={{drug.umid}}" target="_blank">{{drug.umid}}</a>
-      </td>
-
-      <td ng-if="drug.onto == 'NDDF' || drug.onto == 'ATC'" class="no-wrap">
-        <a href="http://bioportal.bioontology.org/search?q={{drug.umid}}&ontologies={{drug.onto}}&include_properties=false&include_views=false&includeObsolete=false&require_definition=false&exact_match=false&categories=" target="_blank">{{drug.umid}}</a>
-      </td>
-
+      <td class="no-wrap">{{drug.term}}</td>
+      <td class="no-wrap">{{drug.cui}}</td>
       <td class="no-wrap">{{drug.onto}}</td>
       <td class="word-wrap">{{drug.context.replace("\t","*")}}</td>
     </tr>

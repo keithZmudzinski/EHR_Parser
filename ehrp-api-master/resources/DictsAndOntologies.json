@@ -1,22 +1,8 @@
 {
   "dictionaries": [
-    "Meddra.bin",
-    "DrugBank.bin",
-    "RxNorm.bin",
-    "RxNorm_Tradenames.bin",
-    "RxNorm_Ingredients.bin",
-    "ATC_Ingredients.bin",
-    "FDB_Ingredients.bin",
-    "DrugsAtFDA.bin",
-    "OrangeBook.bin"
-  ],
-  "ontologies": [
-    "Meddra",
-    "DrugBank",
-    "RxNorm",
-    "OrangeBook",
-    "ATC",
-    "NDDF",
-    "DrugsAtFDA"
+    "device.bin",
+    "disorder.bin",
+    "drug.bin",
+    "procedure.bin"
   ]
 }

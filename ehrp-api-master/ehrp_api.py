@@ -96,7 +96,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     # RESOURCE LOCATIONS
-    parser.add_argument('--conf', type=str, default='resources/unitex-med.yaml',
+    parser.add_argument('--conf', type=str, default=os.path.join(RESOURCES_RELATIVE_PATH, 'unitex-med.yaml'),
                         help="Path to yaml file")
 
     # API SETTINGS

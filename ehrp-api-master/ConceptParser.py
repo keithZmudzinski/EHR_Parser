@@ -387,7 +387,6 @@ class ConceptParser:
     #     ]
     # }
     def lookupParser(self, contexts, id_dict, onto_dict):
-        # concepts = self.make_concepts_object('lookup');
         concepts = {
             'name': 'term',
             'term': '',

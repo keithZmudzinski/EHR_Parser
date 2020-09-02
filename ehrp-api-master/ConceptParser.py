@@ -437,6 +437,7 @@ class ConceptParser:
             cleaned_term = cleaned_term.replace(drug_end_delimiter, '')
 
             context = parts[0] + cleaned_term + parts[2]
+            context = context.strip()
 
             # Get first instance of the drug_start_delimiter
             drug_start = term.find(drug_start_delimiter)
@@ -502,6 +503,7 @@ class ConceptParser:
             cleaned_term = cleaned_term.replace(disorder_end_delimiter, '')
 
             context = parts[0] + cleaned_term + parts[2]
+            context = context.strip()
 
             # Get first instance of the disorder_start_delimiter
             disorder_start = term.find(disorder_start_delimiter)
@@ -553,6 +555,7 @@ class ConceptParser:
             parts = context.split('\t')
             term = parts[1]
             context = parts[0] + term + parts[2]
+            context = context.strip()
 
             cui, onto = dictionary_parser.get_entry(term, 'Device', context)
 
@@ -585,6 +588,7 @@ class ConceptParser:
             parts = context.split('\t')
             term = parts[1]
             context = parts[0] + term + parts[2]
+            context = context.strip()
 
             cui, onto = dictionary_parser.get_entry(term, 'Procedure', context)
 

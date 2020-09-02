@@ -380,17 +380,19 @@ class ConceptParser:
         return parsed_concepts
 
     # {
-    #     name: lookup,
-    #     instances: [
-    #         {
-    #             term: '',
-    #             umid: '',
-    #             onto: '',
-    #         }
+    #     name: term,
+    #     term: '',
+    #     umid: '',
+    #     onto: '',
     #     ]
     # }
     def lookupParser(self, contexts, id_dict, onto_dict):
-        concepts = self.make_concepts_object('lookup');
+        concepts = {
+            'name': 'term',
+            'term': '',
+            'umid': '',
+            'onto': ''
+        }
 
         # What the user provided
         raw_term = contexts[0].strip()
@@ -402,13 +404,9 @@ class ConceptParser:
         try:
             id = id_dict[term]
             onto = onto_dict[term]
-
-            # Save term
-            concepts['instances'].append({
-                'term': raw_term,
-                'umid': id,
-                'onto': onto
-            })
+            concepts['term'] = raw_term
+            concepts['umid'] = id
+            concepts['onto'] = onto
         # If term is not in any dictionary
         except KeyError:
             pass

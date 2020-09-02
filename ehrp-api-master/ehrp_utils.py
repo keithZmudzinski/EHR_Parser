@@ -202,6 +202,13 @@ def get_concepts_for_grammars(directory, options, snt, alphabet_unsorted, alphab
         # This happens if we are parsing the master graph
         except TypeError:
             list_of_concepts.extend(concepts)
+        # This happens if we are parsing the lookup graph
+        except KeyError:
+            # Only return lookup results if actually found something
+            if concepts['term']:
+                list_of_concepts.append(concepts)
+
+
 
     return list_of_concepts
 

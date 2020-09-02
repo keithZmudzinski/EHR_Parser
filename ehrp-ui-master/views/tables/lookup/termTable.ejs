@@ -1,0 +1,34 @@
+<table class="table table-striped table-hover table-condensed table-responsive">
+  <caption>Lookup results</caption>
+  <thead>
+    <th>Term</th>
+    <th>UMID</th>
+    <th>Ontology</th>
+  </thead>
+  <tbody>
+    <tr>
+    <td class="no-wrap">{{_lookupTerm.term}}</td>
+
+    <!--- Use correct URL for used ontology --->
+    <td ng-if="_lookupTerm.onto == 'DRUGBANK'" class="no-wrap">
+      <a href="https://www.drugbank.ca/drugs/{{_lookupTerm.umid}}" target="_blank">{{_lookupTerm.umid}}</a>
+    </td>
+
+    <!--- RXNORM ontology can use two types of identifiers, need to differentiate --->
+    <td ng-if="_lookupTerm.onto == 'MEDDRA' || _lookupTerm.onto == 'RXNORM'" class="no-wrap">
+      <a ng-if="_lookupTerm.umid[0] == 'C'" href="http://bioportal.bioontology.org/search?q={{_lookupTerm.umid}}&ontologies={{_lookupTerm.onto}}&include_properties=false&include_views=false&includeObsolete=false&require_definition=false&exact_match=false&categories=" target="_blank">{{_lookupTerm.umid}}</a>
+      <a ng-if="_lookupTerm.umid[0] != 'C'" href="http://bioportal.bioontology.org/ontologies/{{_lookupTerm.onto}}?p=classes&conceptid={{_lookupTerm.umid}}" target="_blank">{{_lookupTerm.umid}}</a>
+    </td>
+
+    <td ng-if="_lookupTerm.onto == 'DRUGSATFDA'" class="no-wrap">
+      <a href="https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo={{_lookupTerm.umid}}" target="_blank">{{_lookupTerm.umid}}</a>
+    </td>
+
+    <td ng-if="_lookupTerm.onto == 'NDDF' || _lookupTerm.onto == 'ATC'" class="no-wrap">
+      <a href="http://bioportal.bioontology.org/search?q={{_lookupTerm.umid}}&ontologies={{_lookupTerm.onto}}&include_properties=false&include_views=false&includeObsolete=false&require_definition=false&exact_match=false&categories=" target="_blank">{{_lookupTerm.umid}}</a>
+    </td>
+
+    <td class="no-wrap">{{_lookupTerm.onto}}</td>
+    </tr>
+  </tbody>
+</table>

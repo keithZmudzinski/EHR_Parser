@@ -107,8 +107,8 @@ angular.module('ehrpui').controller('homeController', function ($scope, $http, $
         if (response.status === 200) {
           // Get data returned from extract_concepts
           const lookupResults = response.data.records;
-          let numResults = 0;
-          let variableName = ''
+          let numResults = 1;
+          let variableName = '';
 
           // Reset displayed tables
           for (var property of Object.keys($scope)) {
@@ -120,24 +120,19 @@ angular.module('ehrpui').controller('homeController', function ($scope, $http, $
           // Break list of different types into distinct variables
           for (const result of lookupResults) {
 
-              // Change ontology names to uppercase
-              for (var instance of result.instances) {
-                if (instance.onto) {
-                  instance.onto = instance.onto.toUpperCase();
-                }
-              }
+            // Change ontology names to uppercase
+            result.onto = result.onto.toUpperCase();
 
-              // Create angular variable
-              // normalize result.name, replacing all whitespace with underscores
-              variableName = result.name.replace('/\s/g', '_').toLowerCase();
+            // Create angular variable
+            // normalize result.name, replacing all whitespace with underscores
+            variableName = result.name.replace('/\s/g', '_').toLowerCase();
 
-              // Uppercase just the first letter of the variable name
-              variableName = variableName.toUpperCase().charAt(0) + variableName.slice(1);
+            // Uppercase just the first letter of the variable name
+            variableName = variableName.toUpperCase().charAt(0) + variableName.slice(1);
 
-              // To differentiate between extract results and lookup results
-              variableName = `_lookup${variableName}`;
-              $scope[variableName] = result;
-              numResults += result.instances.length;
+            // To differentiate between extract results and lookup results
+            variableName = `_lookup${variableName}`;
+            $scope[variableName] = result;
           }
 
           // Create message in response to search

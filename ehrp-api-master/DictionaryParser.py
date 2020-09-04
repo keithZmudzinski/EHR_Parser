@@ -1,6 +1,6 @@
 import re
 import sys
-import WordSenseDisambiguation as WSD
+from WordSenseDisambiguation import WSD as WSD
 
 '''
     Provides the 'get_entry' functionality to get the CUI and ONTO of a term.
@@ -10,6 +10,7 @@ class DictionaryParser():
         self.simple_entities =  simple_words
         self.compound_entities = compound_words
         self.entities = self.simple_entities + self.compound_entities
+        self.disambiguator = WSD('NEW_MODEL')
 
         # Lookup table of terms found in the text
         self.terms = {}
@@ -54,7 +55,7 @@ class DictionaryParser():
         # If the term has multiple meanings
         if len(instances) > 1:
             # Decide which meaning is most appropriate, given the context
-            instance = WSD.get_meaning(instances, term, context)
+            instance = self.disambiguator.get_meaning(instances, term, context)
 
             # If most appropriate meaning is the same as current category
             if instance.category == category:

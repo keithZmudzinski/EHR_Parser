@@ -13,6 +13,7 @@ from string_grouper import match_most_similar, match_strings
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import csr_matrix
 import sparse_dot_topn.sparse_dot_topn as ct
+import random
 
 base_url = 'http://localhost:8020/ehrp/'
 extract_url = 'extract'
@@ -47,9 +48,8 @@ def build_potential_corpus(corpus, sorted_labels):
 
     # text - medical words = potentially medical words
     labels = set(sorted_labels)
-    with open(corpus, 'r') as infile:
-        text = infile.read()
-
+    text = get_text(corpus)
+    
     resultWords  = [word for word in re.split("[^a-zA-Z0-9_-]+",text) if word not in labels]
     if resultWords is not None:
         resultWords = ' '.join(resultWords)
@@ -59,11 +59,10 @@ def build_potential_corpus(corpus, sorted_labels):
     
     return file_name
 
-def get_matches(corpus, sorted_labels, ratio=0.8, context_size=100, context=True, group_labels=True):
+def get_matches(resp_json, corpus, sorted_labels, ratio=0.8, context_size=100, max_context=-1, context=True, group_labels=True):
     f_time = time.time()
     corpus_clean = build_potential_corpus(corpus, sorted_labels)
-    with open(corpus_clean, 'r') as infile:
-        text_string = infile.read()
+    text_string = get_text(corpus_clean)
 
     Stext =  split_n_grams_s(text_string, 1)
     labels = get_labels_df(sorted_labels)
@@ -72,7 +71,10 @@ def get_matches(corpus, sorted_labels, ratio=0.8, context_size=100, context=True
     matches_df = get_cosim_matches(labels, Stext, ratio, group_labels)
     #for now
     if (context == True):
-        matches_df = add_context(matches_df, text_string, context_size)
+        text = get_text(corpus)
+        matches_df = add_context(matches_df, text, context_size)
+        if(max_context > 0):
+            matches_df = limit_context(matches_df, max_context)
     matches_df.to_csv(name_file('cosim_match.csv', '.csv'))
 
     print('Total time taken to get_matches:', time.time()-f_time)
@@ -86,16 +88,22 @@ def get_cosim_matches(labels, text, ratio, group_labels):
    # matches_df.to_csv('test_matches_ungroupped.csv')
     if(group_labels == True):
         m_time = time.time()
-        matches_df = matches_df.groupby(matches_df.columns.tolist()).size().reset_index().rename(columns={0:'freq','left_side':'label','right_side':'text','similarity':'cosim'})
+        matches_df = matches_df.groupby(matches_df.columns.tolist()).size().reset_index().rename(columns={0:'freq_match','left_side':'label','right_side':'match','similarity':'cosim'})
         matches_df = matches_df.sort_values(by='cosim', ascending=False).reset_index().drop(columns=['index'])
         print('\tTime taken to group same matches:', time.time()-m_time)
     else:
-        matches_df = matches_df.rename(columns={'left_side':'label','right_side':'text','similarity':'cosim'}).sort_values(by=['label','cosim'], ascending=False).reset_index().drop(columns=['index'])
+        matches_df = matches_df.rename(columns={'left_side':'label','right_side':'match','similarity':'cosim'}).sort_values(by=['label','cosim'], ascending=False).reset_index().drop(columns=['index'])
     
     return matches_df
 
+
 # TODO: Improve text chunks to consider left side + WORD + right side instead of randomn
 # cuts out n-length character chunks from s
+
+def get_text(file):
+    with open(file, 'r') as infile:
+        text = infile.read()
+    return text
 
 def get_context(word, text_chunks):
     contexts = [context + '.' for context in text_chunks if word in context]
@@ -104,8 +112,14 @@ def get_context(word, text_chunks):
 def add_context(matches_df, text, chunk_n):
     f_time = time.time()
     text_chunks = chunks(text, chunk_n)
-    matches_df['context'] = matches_df['text'].apply(get_context, args=[text_chunks])
+    matches_df['context_match'] = matches_df['match'].apply(get_context, args=[text_chunks])
+    matches_df['context_label'] = matches_df['label'].apply(get_context, args=[text_chunks])
     print('\tTime taken to get contexts:', time.time()-f_time)
+    return matches_df
+
+def limit_context(matches_df, max_context):
+    matches_df['context_match'] = matches_df['context_match'].apply(lambda x: x if len(x) <= max_context else random.choices(x,k=max_context))
+    matches_df['context_label'] = matches_df['context_label'].apply(lambda x: x if len(x) <= max_context else random.choices(x,k=max_context))
     return matches_df
 
 # Using pip install python-Levenshtein
@@ -256,8 +270,8 @@ def get_matches_df(sparse_matrix, name_vector, top=100):
 def get_cosim_matches_faster(corpus, sorted_labels, ratio):
     f_time = time.time()
     corpus_clean = build_potential_corpus(corpus, sorted_labels)
-    with open(corpus_clean, 'r') as infile:
-        text = infile.read()
+    text = get_text(corpus_clean)
+
     (labels_df, size) = get_label_length_df(sorted_labels)
     print(labels_df.head())
     # text =  split_n_grams_s(text, 2)
@@ -331,7 +345,7 @@ def main():
         resp_json = preprocess_json(resp.json())
 
         sorted_labels = create_sorted_labels(resp_json, False)
-        get_matches(corpus, sorted_labels, 0.8, 80, False , True)
+        get_matches(resp_json, corpus, sorted_labels, 0.8, 80, 5, True , True)
         # get_cosim_matches_faster(corpus, sorted_labels, 0.8)
         #get_levsh_matches(sorted_labels, 90)
 

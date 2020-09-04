@@ -124,7 +124,7 @@ def main():
     app = Flask(__name__)
     # Running DEBUG mode for flask. Makes JSON outputs more readable.
     ''''''
-    app.config['DEBUG'] = True
+    app.config['DEBUG'] = False
     ''''''
     api = Api(app, prefix='/ehrp-api/v1')
 

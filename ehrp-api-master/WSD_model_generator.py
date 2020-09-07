@@ -26,7 +26,7 @@ def main():
 
     # Must be at least 10 EHRS
     num_documents = 9104
-    num_compound_words_to_make = 1
+    num_compound_words_to_make = 2
 
     # Where to save the model
     output_path = os.path.join(output_folder, model_name)
@@ -39,12 +39,11 @@ def main():
     test_results = make_query(test_ehrs, type)
 
     # Create compound words from monosemous terms
-    train_compound_words = make_compound_words(train_results, num_compound_words_to_make, dic_path)
-    test_compound_words = make_compound_words(test_results, num_compound_words_to_make, dic_path, train_compound_words)
+    compound_words = make_compound_words(train_results, test_results, num_compound_words_to_make, dic_path)
 
     # Get instances of compound words
-    train_data = extract_words(train_results, train_compound_words)
-    test_data = extract_words(test_results, test_compound_words)
+    train_data = extract_words(train_results, compound_words)
+    test_data = extract_words(test_results, compound_words)
     print('TRAINING DATA')
     print(train_data,'\n\n')
     print('TEST DATA')
@@ -139,27 +138,31 @@ def get_instances(ehr):
     instances = [instance for list_of_instances in lists_of_instances for instance in list_of_instances]
     return instances
 
-def make_compound_words(results, num_to_make, dic_path, exclude=[]):
-    words = set()
+def make_compound_words(train_results, test_results, num_to_make, dic_path):
+    train_words = set()
+    test_words = set()
+
     with open(dic_path, 'r') as dic_file:
         dic_contents = dic_file.readlines()
 
-    for ehr in results:
+    for ehr in train_results:
         instances = get_instances(ehr)
         # Make set of term/cuis found in text
         for instance in instances:
-            words.add((instance['term'], instance['cui']))
+            train_words.add((instance['term'], instance['cui']))
+
+    for ehr in test_results:
+        instances = get_instances(ehr)
+        # Make set of term/cuis found in text
+        for instance in instances:
+            test_words.add((instance['term'], instance['cui']))
 
     compound_words = []
     for _ in range(num_to_make):
+        # Get two monosemous words, each in both train and testing set
         try:
-            word1 = get_monoseme(words, dic_contents)
-            while(find_compound_word(word1['term'], exclude)):
-                word1 = get_monoseme(words, dic_contents)
-
-            word2 = get_monoseme(words, dic_contents)
-            while(find_compound_word(word2['term'], exclude)):
-                word2 = get_monoseme(words, dic_contents)
+            word1 = get_monoseme(train_words, test_words, dic_contents)
+            word2 = get_monoseme(train_words, test_words, dic_contents)
 
         # words became empty, so no more possible compounds words to be made
         except KeyError:
@@ -173,10 +176,8 @@ def make_compound_words(results, num_to_make, dic_path, exclude=[]):
             'cui1': word1['cui'],
             'cui2': word2['cui']
         }
-
-
-
         compound_words.append(compound_word)
+
     return compound_words
 
 def find_compound_word(atom, compound_words):
@@ -211,25 +212,38 @@ def extract_words(results, compound_words):
     data = np.delete(data, 0, 0)
     return data
 
-def get_monoseme(word_set, dic_contents):
-    word = word_set.pop()
+def get_monoseme(train_word_set, test_word_set, dic_contents):
+    word_is_monoseme = False
 
-    while(is_homonym(word[0], dic_contents)):
-        word = word_set.pop()
+    # Loop until our word is a monoseme and in both word sets
+    while(not(word_is_monoseme)):
+        word = get_word_in_both(train_word_set, test_word_set)
+        word_is_monoseme = True if is_monoseme(word[0], dic_contents) else False
 
     word = {
         'term': word[0],
         'cui': word[1]
     }
+
     return word
 
-def is_homonym(word, dic_contents):
+def get_word_in_both(train_word_set, test_word_set):
+    # Get a word that is in training set
+    word = train_word_set.pop()
+
+    # Loop until we find a word that is in both training and testing set
+    while(not(word in test_word_set)):
+        word = train_word_set.pop()
+
+    return word
+
+def is_monoseme(word, dic_contents):
     for line in dic_contents:
         term, info = unescaped_split('\\,', line)
         lemma, _ = unescaped_split('\\.', info)
 
         if term == word:
-            return lemma == 'HOMONYM'
+            return lemma != 'HOMONYM'
 
 def unescaped_split(delimiter, line):
     # Only split on unescaped versions of delimiter in line

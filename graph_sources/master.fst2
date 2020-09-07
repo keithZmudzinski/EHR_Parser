@@ -15,7 +15,7 @@ t
 : 1 13 
 : 1 7 
 f 
--2 drug
+-2 basic_drug
 : 15 2 12 1 
 : 15 3 
 : 9 4 
@@ -41,7 +41,7 @@ t 11 21 10 21
 : 9 23 
 : 14 11 
 f 
--3 disorder
+-3 basic_disorder
 : 17 1 
 : 16 2 
 : 18 3 
@@ -55,11 +55,11 @@ t 11 8 10 8
 : 18 11 
 t 
 f 
--4 device
+-4 basic_device
 : 19 1 
 t 
 f 
--5 procedure
+-5 basic_procedure
 : 20 1 
 t 
 f 

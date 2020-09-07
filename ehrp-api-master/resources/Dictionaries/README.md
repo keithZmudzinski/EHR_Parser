@@ -1,15 +1,7 @@
 The dictionary files are too large to upload to github. Follow these directions to create them and place them in the correct locations.
 
 The 'Dictionaries' directory is for holding '.dic', '.inf', '.bin' files. It also holds two files, 'dlc' and 'dlf', inside the 'Internal_api_use' sub-directory.
-There are two ways to get these files, either downloading them or creating them.
 
-### Downloading files from Google Drive
-1. Download the 'Dictionaries' folder: https://drive.google.com/drive/folders/179xBlST2qYNPy-hTdYa1Ipqq00cuP1Yn?usp=sharing
-
-2. Place contents of downloaded 'Dictionaries' folder into this current folder 'ehrp-api-master/resources/Dictionaries', overriding if necessary
-
-
-### Creating Files
 1. These files can be created by running `main.py`, which can be found inside the 'UMLS_to_Unitex' directory.
      Note: `main.py` will need to be altered to point to your local MRCONSO and MRSYS files.
  

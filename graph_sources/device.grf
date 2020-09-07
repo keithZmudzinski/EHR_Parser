@@ -17,7 +17,8 @@ DRST n
 FITS 100
 PORIENT L
 #
-3
-"<E>" 70 200 1 2 
-"" 300 200 0 
-"<Device>" 167 200 1 1 
+4
+"<E>" 70 200 2 2 3 
+"" 294 190 0 
+":basic_device" 117 171 1 1 
+"__EHR_API_DELIMITER__" 117 222 1 1 

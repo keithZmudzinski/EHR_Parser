@@ -1,3 +1,4 @@
+import numpy as np
 import random
 import time
 import requests
@@ -22,8 +23,10 @@ def main():
     type = 'drug'
     dic_path = 'resources/Dictionaries/' + 'drug.dic'
     model_name = 'test_model'
-    num_documents = 100
-    num_compound_words_to_make = 10
+
+    # Must be at least 10 EHRS
+    num_documents = 914
+    num_compound_words_to_make = 1
 
     # Where to save the model
     output_path = os.path.join(output_folder, model_name)
@@ -42,6 +45,10 @@ def main():
     # Get instances of compound words
     train_data = extract_words(train_results, train_compound_words)
     test_data = extract_words(test_results, test_compound_words)
+    print('TRAINING DATA')
+    print(train_data,'\n\n')
+    print('TEST DATA')
+    print(test_data, '\n\n')
 
     # Modify the data somehow if necessary
     train_data = feature_engineer(train_data)
@@ -123,16 +130,22 @@ def make_query(ehrs, type):
 
     return response.json()
 
+def get_instances(ehr):
+    ''' Break ehr results down into a list of instances '''
+    # Should only be one type
+    types = [type for type in ehr]
+    lists_of_instances = [type['instances'] for type in types]
+
+    instances = [instance for list_of_instances in lists_of_instances for instance in list_of_instances]
+    return instances
+
 def make_compound_words(results, num_to_make, dic_path, exclude=[]):
     words = set()
     with open(dic_path, 'r') as dic_file:
         dic_contents = dic_file.readlines()
 
     for ehr in results:
-        # Should only be one type
-        types = [type for type in ehr]
-        lists_of_instances = [type['instances'] for type in types]
-        instances = [instance for list_of_instances in lists_of_instances for instance in list_of_instances]
+        instances = get_instances(ehr)
         # Make set of term/cuis found in text
         for instance in instances:
             words.add((instance['term'], instance['cui']))
@@ -148,13 +161,45 @@ def make_compound_words(results, num_to_make, dic_path, exclude=[]):
             break
         compound_term = word1['term'] + '-' + word2['term']
         compound_word = {
-            'term': compound_term,
+            'compound_term': compound_term,
+            'term1': word1['term'],
+            'term2': word2['term'],
             'cui1': word1['cui'],
             'cui2': word2['cui']
         }
         compound_words.append(compound_word)
-    print(compound_words)
     return compound_words
+
+def find_compound_word(atom, compound_words):
+    for compound_word in compound_words:
+        # If the atom is part of the compound word
+        if atom == compound_word['term1'] or atom == compound_word['term2']:
+            return compound_word
+
+def extract_words(results, compound_words):
+    ''' Returns numpy table of compound words in corpus '''
+    # Get list of instances from all ehrs in results
+    instances = []
+    for ehr in results:
+        instances.extend(get_instances(ehr))
+
+    # Look at each instance, if part of a compound word, add it to data
+    data = np.array(['compound_word', 'context', 'correct_word', 'correct_cui'])
+    for instance in instances:
+        found_compound = find_compound_word(instance['term'], compound_words)
+        if found_compound:
+            compound_word = found_compound['compound_term']
+            context = instance['context']
+            correct_word = instance['term']
+            correct_cui = instance['cui']
+
+            # Cols look like: Compound word, context, correct word, correct cui
+            instance_to_add = np.array([compound_word, context, correct_word, correct_cui])
+            data = np.vstack((data, instance_to_add))
+
+    # Delete header row
+    data = np.delete(data, 0, 0)
+    return data
 
 def get_monoseme(word_set, dic_contents):
     word = word_set.pop()
@@ -179,21 +224,6 @@ def is_homonym(word, dic_contents):
 def unescaped_split(delimiter, line):
     # Only split on unescaped versions of delimiter in line
     return re.split(r'(?<!\\){}'.format(delimiter), line)
-
-def get_data(train_ehrs, test_ehrs, num_documents, type, dic_path):
-    # Get tagger results
-    train_results = make_query(train_ehrs, type)
-    test_results = make_query(test_ehrs, type)
-
-    # Create compound words from monsemous terms
-    train_compound_words = make_compound_words(train_results, num_to_make)
-    test_compound_words = make_compound_words(test_results, num_to_make, train_compound_words)
-
-    # Get instances of compound words
-    train_data = extract_words(train_results, train_compound_words)
-    test_data = extract_words(test_results, test_compound_words)
-
-    return train_data, test_data
 
 def evaluate(model, data):
     # generate bunha info and scores

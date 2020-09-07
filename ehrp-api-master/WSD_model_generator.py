@@ -51,7 +51,7 @@ def main():
 
     os.environ['model_location'] = 'this is keith'
     # Create new model
-    wsd = WSD()
+    wsd = WSD('NEW_MODEL')
 
     # CREATE MODEL IN SOME FASHION
     # wsd.model = SOMETHING

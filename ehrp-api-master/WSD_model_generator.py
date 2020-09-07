@@ -44,10 +44,6 @@ def main():
     # Get instances of compound words
     train_data = extract_words(train_results, compound_words)
     test_data = extract_words(test_results, compound_words)
-    print('TRAINING DATA')
-    print(train_data,'\n\n')
-    print('TEST DATA')
-    print(test_data, '\n\n')
 
     # Modify the data somehow if necessary
     train_data = feature_engineer(train_data)
@@ -60,32 +56,16 @@ def main():
     # CREATE MODEL IN SOME FASHION
     # wsd.model = SOMETHING
 
-    # Save the dictionary before modifying it
-    save_dic(dic_path, 'saved_dic')
-
-    # Train and test data don't overlap, so okay to add both at same time
-    add_to_dic(train_compound_words)
-    add_to_dic(test_compound_words)
-
-    # Replace monosemous terms with compound terms
-    updated_train_ehrs = update_ehrs(train_ehrs, train_compound_words)
-    updated_test_ehrs = update_ehrs(test_ehrs, test_compound_words)
-
-    # Get results after using model
-    train_evaluation_results = make_query(updated_train_ehrs, type)
-    test_evaluation_results = make_query(updated_test_ehrs, type)
-
-    # Just get parts we care about
-    train_evaluation_results = parse_results(train_evaluation_results, train_compound_words)
-    test_evaluation_results = parse_results(test_evaluation_results, test_compound_words)
-
-    # Combine with known info
-    train_x_and_y = combine_x_and_y(train_evaluation_results, train_data)
-    test_x_and_y = combine_x_and_y(test_evaluation_results, test_data)
+    # Get results on training and testing data
+    train_results = apply_model(train_data)
+    test_results = apply_model(test_data)
 
     # Get evaluation of model
-    evaluate(train_x_and_y)
-    evaluate(test_x_and_y)
+    evaluate(train_results)
+    evaluate(test_results)
+
+    # Save model for re-use
+    wsd.save()
 
 def get_ehrs(path, num_documents):
     pitt_file = open(path, 'r')

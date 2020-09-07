@@ -25,7 +25,7 @@ def main():
     model_name = 'test_model'
 
     # Must be at least 10 EHRS
-    num_documents = 914
+    num_documents = 9104
     num_compound_words_to_make = 1
 
     # Where to save the model
@@ -154,11 +154,17 @@ def make_compound_words(results, num_to_make, dic_path, exclude=[]):
     for _ in range(num_to_make):
         try:
             word1 = get_monoseme(words, dic_contents)
+            while(find_compound_word(word1['term'], exclude)):
+                word1 = get_monoseme(words, dic_contents)
+
             word2 = get_monoseme(words, dic_contents)
+            while(find_compound_word(word2['term'], exclude)):
+                word2 = get_monoseme(words, dic_contents)
 
         # words became empty, so no more possible compounds words to be made
         except KeyError:
             break
+
         compound_term = word1['term'] + '-' + word2['term']
         compound_word = {
             'compound_term': compound_term,
@@ -167,6 +173,9 @@ def make_compound_words(results, num_to_make, dic_path, exclude=[]):
             'cui1': word1['cui'],
             'cui2': word2['cui']
         }
+
+
+
         compound_words.append(compound_word)
     return compound_words
 
@@ -175,6 +184,7 @@ def find_compound_word(atom, compound_words):
         # If the atom is part of the compound word
         if atom == compound_word['term1'] or atom == compound_word['term2']:
             return compound_word
+    return None
 
 def extract_words(results, compound_words):
     ''' Returns numpy table of compound words in corpus '''

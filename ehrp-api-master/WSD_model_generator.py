@@ -8,6 +8,7 @@ import re
 
 # Model imports
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.feature_extraction.text import HashingVectorizer
 
 def add_to_path(path):
     sys.path.append(path)
@@ -49,24 +50,8 @@ def main():
     test_data = extract_words(test_results, compound_words)
 
     # Modify the data somehow if necessary
-    train_X, train_Y = feature_engineer(train_data)
-    test_X, test_Y = feature_engineer(test_data)
-
-    print('TRAIN DATA')
-    print('TRAIN X')
-    for thing in train_X:
-        print(thing)
-    print('TRAIN Y')
-    for thing in train_Y:
-        print(thing)
-
-    print('TEST DATA')
-    print('TEST X')
-    for thing in test_X:
-        print(thing)
-    print('TEST Y')
-    for thing in test_Y:
-        print(thing)
+    train_x, train_y = feature_engineer(train_data)
+    test_x, test_y = feature_engineer(test_data)
 
     os.environ['model_location'] = 'this is keith'
     # Create new model
@@ -74,14 +59,12 @@ def main():
 
     # CREATE MODEL IN SOME FASHION
     # wsd.model = SOMETHING
-
-    # Get results on training and testing data
-    train_results = apply_model(train_data)
-    test_results = apply_model(test_data)
+    nearest_neighbor_model = KNeighborsClassifier()
+    nearest_neighbor_model.fit(train_x, train_y)
 
     # Get evaluation of model
-    evaluate(train_results)
-    evaluate(test_results)
+    evaluate(nearest_neighbor_model, train_x, train_y)
+    evaluate(nearest_neighbor_model, test_x, test_y)
 
     # Save model for re-use
     wsd.save()
@@ -205,7 +188,7 @@ def extract_words(results, compound_words):
 
             # Replace the term with compound term in the context
             context = context.replace(correct_word, compound_word)
-            
+
             # Cols look like: Compound word, context, correct word, correct cui
             instance_to_add = np.array([compound_word, context, correct_word, correct_cui])
             data = np.vstack((data, instance_to_add))
@@ -252,15 +235,19 @@ def unescaped_split(delimiter, line):
     # Only split on unescaped versions of delimiter in line
     return re.split(r'(?<!\\){}'.format(delimiter), line)
 
-def evaluate(model, data):
+def evaluate(model, X, Y):
     # generate bunha info and scores
     pass
 
 def feature_engineer(data):
     ''' Modify features in some way '''
+    contexts = data[:, 1]
+
+    vectorizer = HashingVectorizer(n_features = 2 ** 8)
+    X = vectorizer.fit_transform(contexts)
 
     # Split data into inputs and expected outputs
-    return data[:, :2], data[:, 2]
+    return X, data[:, 2]
 
 if __name__ == '__main__':
     main()

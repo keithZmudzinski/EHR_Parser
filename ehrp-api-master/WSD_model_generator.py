@@ -6,6 +6,9 @@ import os
 import sys
 import re
 
+# Model imports
+from sklearn.neighbors import KNeighborsClassifier
+
 def add_to_path(path):
     sys.path.append(path)
 
@@ -25,8 +28,8 @@ def main():
     model_name = 'test_model'
 
     # Must be at least 10 EHRS
-    num_documents = 9104
-    num_compound_words_to_make = 2
+    num_documents = 200
+    num_compound_words_to_make = 1
 
     # Where to save the model
     output_path = os.path.join(output_folder, model_name)
@@ -46,8 +49,24 @@ def main():
     test_data = extract_words(test_results, compound_words)
 
     # Modify the data somehow if necessary
-    train_data = feature_engineer(train_data)
-    test_data = feature_engineer(test_data)
+    train_X, train_Y = feature_engineer(train_data)
+    test_X, test_Y = feature_engineer(test_data)
+
+    print('TRAIN DATA')
+    print('TRAIN X')
+    for thing in train_X:
+        print(thing)
+    print('TRAIN Y')
+    for thing in train_Y:
+        print(thing)
+
+    print('TEST DATA')
+    print('TEST X')
+    for thing in test_X:
+        print(thing)
+    print('TEST Y')
+    for thing in test_Y:
+        print(thing)
 
     os.environ['model_location'] = 'this is keith'
     # Create new model
@@ -184,6 +203,9 @@ def extract_words(results, compound_words):
             correct_word = instance['term']
             correct_cui = instance['cui']
 
+            # Replace the term with compound term in the context
+            context = context.replace(correct_word, compound_word)
+            
             # Cols look like: Compound word, context, correct word, correct cui
             instance_to_add = np.array([compound_word, context, correct_word, correct_cui])
             data = np.vstack((data, instance_to_add))
@@ -222,6 +244,7 @@ def is_monoseme(word, dic_contents):
         term, info = unescaped_split('\\,', line)
         lemma, _ = unescaped_split('\\.', info)
 
+        # Always finds term, since term comes from the dic
         if term == word:
             return lemma != 'HOMONYM'
 
@@ -235,7 +258,9 @@ def evaluate(model, data):
 
 def feature_engineer(data):
     ''' Modify features in some way '''
-    pass
+
+    # Split data into inputs and expected outputs
+    return data[:, :2], data[:, 2]
 
 if __name__ == '__main__':
     main()

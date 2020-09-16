@@ -14,7 +14,9 @@ This repository provides code for both the API itself, and an example interface 
 + [flask-restful](https://flask-restful.readthedocs.io/en/latest/installation.html) (`pip install flask-restful`)
 
 ### Usage
-The API provides two main functions; `extract` and `lookup`. `extract` is used to pull and return medical information from a user-provided piece of text. `lookup` is used to return medical information about a user-provided search term.
+The API provides two endpoints;
+
+The API provides two main functions;  extract` and `lookup`. `extract` is used to pull and return medical information from a user-provided piece of text. `lookup` is used to return medical information about a user-provided search term.
 
 #### To start the API
 1. `cd` into the ehrp-api-master directory
@@ -82,7 +84,7 @@ ___
         args = {
           'types': ['drug', 'pt_summary', 'ami']
         }
-        
+
         text_file = open('medical_text_path', 'rb')
         response = requests.post('http://localhost:8021/ehrp-api/v1/ehrs', data=args, files={'file': text_file))
         ```
@@ -100,9 +102,17 @@ Both GET and POST requests return JSON objects.
 
 ___
 ## Example Interface
-1. install nodejs
+1. Install nodejs
 2. `cd` into the ehrp-ui-master directory
 3. execute `npm install`
 4. execute `npm start` to start the local server
 5. Visit URL at http://localhost:3020/<br>
 Port numbers and REST api can be configured in bin/settings.js file
+
+## Documentation
+1. Install nodejs
+2. `cd` into the documentation directory
+3. Execute `npm install`
+4. Execute `npm start` to start the local server
+5. Visit URL at http://localhost:3030/<br>
+Port number can be configured in documentation/server.js file

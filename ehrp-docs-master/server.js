@@ -30,4 +30,5 @@ app.use('*',function(req, res){
 
 app.listen(3030, function () {
     console.log('Documentation listening on port 3030!');
+    console.log('Visit http://localhost:3030/ to view the documentation.');
 })

@@ -1,107 +1,37 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <!--head Start -->
+    <!-- Include <head> -->
     <%- include('partials/head') %>
-    <!--head Start -->
     <body>
+        <!-- Page Wrapper Start -->
         <div class="page-wrapper chiller-theme toggled">
 
-            <!-- Sidebar -->
+            <!-- Include Sidebar -->
             <%- include('partials/sidebar') %>
-            <!-- /#sidebar-wrapper -->
 
+            <!-- Main Page Content Start -->
             <main class="page-content">
-              <div class="container">
-                <h2>Pro Sidebar</h2>
-                <hr>
-                <div class="row">
-                  <div class="form-group col-md-12">
-                    <p>This is a responsive sidebar template with dropdown menu based on bootstrap 4 framework.</p>
-                    <p> You can find the complete code on <a href="https://github.com/azouaoui-med/pro-sidebar-template" target="_blank">
-                        Github</a>, it contains more themes and background image option</p>
-                  </div>
-                  <div class="form-group col-md-12">
-                    <iframe src="https://ghbtns.com/github-btn.html?user=azouaoui-med&repo=pro-sidebar-template&type=star&count=true&size=small" frameborder="0" scrolling="0" width="90px" height="30px"></iframe>
-                    <iframe src="https://ghbtns.com/github-btn.html?user=azouaoui-med&repo=pro-sidebar-template&type=fork&count=true&size=small" frameborder="0" scrolling="0" width="90px" height="30px"></iframe>
-                  </div>
-                  <div class="form-group col-md-12">
-                    <div class="alert alert-success" role="alert">
-                      <h4 class="alert-heading">New !</h4>
-                      <p>New react pro sidebar library is now available on <a href="https://www.npmjs.com/package/react-pro-sidebar" target="_blank">npm</a> <a href="https://github.com/azouaoui-med/react-pro-sidebar" target="_blank">
-                          <img alt="GitHub stars" src="https://img.shields.io/github/stars/azouaoui-med/react-pro-sidebar?style=social" />
-                        </a></p>
-                      <a href="https://github.com/azouaoui-med/react-pro-sidebar" target="_blank" class="btn btn-sm btn-primary mr-2">
-                        Github</a>
-                      <a href="https://azouaoui-med.github.io/react-pro-sidebar" target="_blank" class="btn btn-sm btn-success">
-                        Demo</a>
+                <!-- Content Container Start -->
+                <div class="container">
+                    <!-- Title of Page -->
+                    <h2> Introduction </h2>
+                    <hr>
 
-                    </div>
+                    <!-- Include Footer -->
+                    <%- include('partials/footer') %>
 
-                  </div>
                 </div>
-                <h5>More templates</h5>
-                <hr>
-                <div class="row">
-                  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                    <div class="card rounded-0 p-0 shadow-sm">
-                      <img src="https://user-images.githubusercontent.com/25878302/58369568-a49b2480-7efc-11e9-9ca9-2be44afacda1.png" class="card-img-top rounded-0" alt="Angular pro sidebar">
-                      <div class="card-body text-center">
-                        <h6 class="card-title">Angular Pro Sidebar</h6>
-                        <a href="https://github.com/azouaoui-med/angular-pro-sidebar" target="_blank" class="btn btn-primary btn-sm">Github</a>
-                        <a href="https://azouaoui-med.github.io/angular-pro-sidebar/demo/" target="_blank" class="btn btn-success btn-sm">Demo</a>
-                        <hr>
-                        <a href="https://github.com/azouaoui-med/react-pro-sidebar" target="_blank">
-                          <img alt="GitHub stars" src="https://img.shields.io/github/stars/azouaoui-med/angular-pro-sidebar?style=social" />
-                        </a>
-                        <a href="https://github.com/azouaoui-med/react-pro-sidebar" target="_blank">
-                          <img alt="GitHub stars" src="https://img.shields.io/github/forks/azouaoui-med/angular-pro-sidebar?style=social" />
-                        </a>
-
-                      </div>
-
-                    </div>
-                  </div>
-                  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                    <div class="card rounded-0 p-0 shadow-sm">
-                      <img src="https://user-images.githubusercontent.com/25878302/58369258-33f20900-7ef8-11e9-8ff3-b277cb7ed7b4.PNG" class="card-img-top rounded-0" alt="Angular pro sidebar">
-                      <div class="card-body text-center">
-                        <h6 class="card-title">Angular Dashboard</h6>
-                        <a href="https://github.com/azouaoui-med/lightning-admin-angular" target="_blank" class="btn btn-primary btn-sm">Github</a>
-                        <a href="https://azouaoui-med.github.io/lightning-admin-angular/demo/" target="_blank" class="btn btn-success btn-sm">Demo</a>
-                        <hr>
-                        <a href="https://github.com/azouaoui-med/react-pro-sidebar" target="_blank">
-                          <img alt="GitHub stars" src="https://img.shields.io/github/stars/azouaoui-med/lightning-admin-angular?style=social" />
-                        </a>
-                        <a href="https://github.com/azouaoui-med/react-pro-sidebar" target="_blank">
-                          <img alt="GitHub stars" src="https://img.shields.io/github/forks/azouaoui-med/lightning-admin-angular?style=social" />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <hr>
-
-                <!-- Footer Start -->
-                <%- include('partials/footer') %>
-                <!-- Footer End -->
-
-              </div>
+                <!-- Content Container End -->
 
             </main>
-            <!-- page-content" -->
+            <!-- Main Page Content End -->
 
 
         </div>
-        <!-- page-wrapper -->
+        <!-- Page Wrapper End -->
 
+        <!-- Include Scripts -->
+        <%- include('partials/scripts') %>
 
-        <!-- Bootstrap Core JavaScript -->
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-        <script src="https://kit.fontawesome.com/7a89000f21.js" crossorigin="anonymous"></script>
-        <!-- Menu Toggle Script -->
-        <script src="/javascript/util.js"></script>
     </body>
 </html>

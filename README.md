@@ -107,7 +107,7 @@ ___
 3. execute `npm install`
 4. execute `npm start` to start the local server
 5. Visit URL at http://localhost:3020/<br>
-Port numbers and REST api can be configured in bin/settings.js file
+Port numbers and REST api can be configured in ehrp-ui-master/bin/settings.js file
 
 ## Documentation
 1. Install nodejs
@@ -115,4 +115,4 @@ Port numbers and REST api can be configured in bin/settings.js file
 3. Execute `npm install`
 4. Execute `npm start` to start the local server
 5. Visit URL at http://localhost:3030/<br>
-Port number can be configured in documentation/server.js file
+Port number can be configured in ehrp-docs-master/server.js file

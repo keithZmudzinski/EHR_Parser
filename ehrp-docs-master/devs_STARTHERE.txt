@@ -59,6 +59,10 @@ that means that either:
           modularity of the page. The "<%- include('partials/[filename]') %>"
           are separate components store in in views/partials.
 
+    - views/template.ejs
+        - This is the template for all of the landing pages. Use this as a guide
+          when adding any new landing pages.
+
     - views/partials: Folder
         - These are the HTML partials used throughout the web site. All of the
           files will show up on every single landing page on the site.
@@ -75,3 +79,5 @@ i) Adding new landing pages
 
     4. Make sure you can navigate to it by adding a link to the
        /views/partials/sidebar.ejs.
+
+4. External resources
